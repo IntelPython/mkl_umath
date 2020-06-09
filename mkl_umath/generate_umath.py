@@ -8,8 +8,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 import ufunc_docstrings as docstrings
 sys.path.pop(0)
 
-Zero = "PyInt_FromLong(0)"
-One = "PyInt_FromLong(1)"
+Zero = "PyLong_FromLong(0)"
+One = "PyLong_FromLong(1)"
 True_ = "(Py_INCREF(Py_True), Py_True)"
 False_ = "(Py_INCREF(Py_False), Py_False)"
 None_ = object()
@@ -1178,11 +1178,9 @@ def make_code(funcdict, filename):
 
         Please make changes to the code generator program (%s)
     **/
-    #include "ufunc_object.h"
-    #include "ufunc_type_resolution.h"
-    #include "loops.h"
-    #include "matmul.h"
-    #include "clip.h"
+    #include "Python.h"
+    #include "numpy/ufuncobject.h"
+    #include "loops_intel.h"
     %s
 
     static int

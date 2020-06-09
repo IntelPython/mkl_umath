@@ -1,6 +1,8 @@
 /* -*- c -*- */
 #include "mkl.h"
+#include <float.h>
 #include <fenv.h>
+#include "mathimf.h"
 #include "Python.h"
 
 #define _UMATHMODULE
@@ -8,10 +10,12 @@
 #define NPY_NO_DEPRECATED_API NPY_API_VERSION
 
 #include "numpy/npy_common.h"
-#include "numpy/arrayobject.h"
+#include "numpy/ndarraytypes.h"
+#include "numpy/ndarrayobject.h"
 #include "numpy/ufuncobject.h"
 #include "numpy/npy_math.h"
 #include "blocking_utils.h"
+#include "loops_intel.h"
 
 /*
  * largest simd vector size in bytes numpy supports
@@ -109,6 +113,30 @@
 #include "fast_loop_macros.h"
 #include <stdio.h>
 
+static inline npy_double spacing(npy_double x) {
+    return nextafter(x, HUGE_VAL) - x;
+}
+
+static inline npy_float spacingf(npy_float x) {
+    return nextafterf(x, HUGE_VALF) - x;
+}
+
+static inline npy_double divmod(npy_double x1, npy_double x2, npy_double *mod) {
+    npy_double q = rint(x1 / x2);
+
+    *mod = x1 - q * x2;
+
+    return q;
+}
+
+static inline npy_float divmodf(npy_float x1, npy_float x2, npy_float *mod) {
+    npy_float q = rintf(x1 / x2);
+
+    *mod = x1 - q * x2;
+
+    return q;
+}
+
 /*
  *****************************************************************************
  **                             FLOAT LOOPS                                 **
@@ -120,7 +148,7 @@
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_sqrtf, npy_sqrt#
+ *  #scalarf = sqrtf, sqrt#
  */
 
 NPY_NO_EXPORT void
@@ -148,7 +176,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_invsqrtf, npy_invsqrt#
+ *  #scalarf = (1.0f)/sqrtf, (1.0)/sqrt#
  */
 
 NPY_NO_EXPORT void
@@ -177,7 +205,7 @@ NPY_NO_EXPORT void
  *  #TYPE = FLOAT, DOUBLE#
  *  #A = F, #
  *  #c = s, d#
- *  #scalarf = npy_expf, npy_exp#
+ *  #scalarf = expf, exp#
  */
 
 NPY_NO_EXPORT void
@@ -214,7 +242,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_exp2f, npy_exp2#
+ *  #scalarf = exp2f, exp2#
  */
 
 /* TODO: Use VML */
@@ -236,7 +264,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_expm1f, npy_expm1#
+ *  #scalarf = expm1f, expm1#
  */
 
 NPY_NO_EXPORT void
@@ -264,7 +292,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_erff, npy_erf#
+ *  #scalarf = erff, erf#
  */
 
 NPY_NO_EXPORT void
@@ -292,7 +320,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_logf, npy_log#
+ *  #scalarf = logf, log#
  */
 
 NPY_NO_EXPORT void
@@ -320,7 +348,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_log2f, npy_log2#
+ *  #scalarf = log2f, log2#
  */
 
 /* TODO: Use VML */
@@ -342,7 +370,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_log10f, npy_log10#
+ *  #scalarf = log10f, log10#
  */
 
 NPY_NO_EXPORT void
@@ -370,7 +398,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_log1pf, npy_log1p#
+ *  #scalarf = log1pf, log1p#
  */
 
 NPY_NO_EXPORT void
@@ -398,7 +426,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_cosf, npy_cos#
+ *  #scalarf = cosf, cos#
  */
 
 NPY_NO_EXPORT void
@@ -426,7 +454,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_sinf, npy_sin#
+ *  #scalarf = sinf, sin#
  */
 
 NPY_NO_EXPORT void
@@ -454,7 +482,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_tanf, npy_tan#
+ *  #scalarf = tanf, tan#
  */
 
 NPY_NO_EXPORT void
@@ -482,7 +510,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_acosf, npy_acos#
+ *  #scalarf = acosf, acos#
  */
 
 NPY_NO_EXPORT void
@@ -510,7 +538,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_asinf, npy_asin#
+ *  #scalarf = asinf, asin#
  */
 
 NPY_NO_EXPORT void
@@ -538,7 +566,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_atanf, npy_atan#
+ *  #scalarf = atanf, atan#
  */
 
 NPY_NO_EXPORT void
@@ -566,7 +594,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_coshf, npy_cosh#
+ *  #scalarf = coshf, cosh#
  */
 
 NPY_NO_EXPORT void
@@ -594,7 +622,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_sinhf, npy_sinh#
+ *  #scalarf = sinhf, sinh#
  */
 
 NPY_NO_EXPORT void
@@ -622,7 +650,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_tanhf, npy_tanh#
+ *  #scalarf = tanhf, tanh#
  */
 
 NPY_NO_EXPORT void
@@ -650,7 +678,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_acoshf, npy_acosh#
+ *  #scalarf = acoshf, acosh#
  */
 
 NPY_NO_EXPORT void
@@ -678,7 +706,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_asinhf, npy_asinh#
+ *  #scalarf = asinhf, asinh#
  */
 
 NPY_NO_EXPORT void
@@ -706,7 +734,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_atanhf, npy_atanh#
+ *  #scalarf = atanhf, atanh#
  */
 
 NPY_NO_EXPORT void
@@ -734,7 +762,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_fabsf, npy_fabs#
+ *  #scalarf = fabsf, fabs#
  */
 
 NPY_NO_EXPORT void
@@ -755,7 +783,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_floorf, npy_floor#
+ *  #scalarf = floorf, floor#
  */
 
 NPY_NO_EXPORT void
@@ -783,7 +811,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_ceilf, npy_ceil#
+ *  #scalarf = ceilf, ceil#
  */
 
 NPY_NO_EXPORT void
@@ -811,7 +839,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_rintf, npy_rint#
+ *  #scalarf = rintf, rint#
  */
 
 NPY_NO_EXPORT void
@@ -839,7 +867,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_truncf, npy_trunc#
+ *  #scalarf = truncf, trunc#
  */
 
 NPY_NO_EXPORT void
@@ -867,7 +895,7 @@ NPY_NO_EXPORT void
  *  #type = npy_float, npy_double#
  *  #TYPE = FLOAT, DOUBLE#
  *  #c = s, d#
- *  #scalarf = npy_cbrtf, npy_cbrt#
+ *  #scalarf = cbrtf, cbrt#
  */
 
 NPY_NO_EXPORT void
@@ -1684,7 +1712,7 @@ NPY_NO_EXPORT void
 
 /**begin repeat1
  * #kind = isnan, isinf, isfinite, signbit#
- * #func = npy_isnan, npy_isinf, npy_isfinite, npy_signbit#
+ * #func = isnan, isinf, isfinite, signbit#
  **/
 NPY_NO_EXPORT void
 @TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
@@ -1695,7 +1723,7 @@ NPY_NO_EXPORT void
             *((npy_bool *)op1) = @func@(in1) != 0;
         }
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 
@@ -1704,7 +1732,7 @@ NPY_NO_EXPORT void
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = npy_spacing@c@(in1);
+        *((@type@ *)op1) = (nextafter@c@(in1, HUGE_VAL)) - in1;
     }
 }
 
@@ -1714,7 +1742,7 @@ NPY_NO_EXPORT void
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
-        *((@type@ *)op1)= npy_copysign@c@(in1, in2);
+        *((@type@ *)op1)= copysign@c@(in1, in2);
     }
 }
 
@@ -1724,7 +1752,7 @@ NPY_NO_EXPORT void
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
-        *((@type@ *)op1)= npy_nextafter@c@(in1, in2);
+        *((@type@ *)op1)= nextafter@c@(in1, in2);
     }
 }
 
@@ -1741,7 +1769,7 @@ NPY_NO_EXPORT void
             BINARY_REDUCE_LOOP(@type@) {
                 const @type@ in2 = *(@type@ *)ip2;
                 /* Order of operations important for MSVC 2015 */
-                io1 = (io1 @OP@ in2 || npy_isnan(io1)) ? io1 : in2;
+                io1 = (io1 @OP@ in2 || isnan(io1)) ? io1 : in2;
             }
             *((@type@ *)iop1) = io1;
         }
@@ -1751,11 +1779,11 @@ NPY_NO_EXPORT void
             @type@ in1 = *(@type@ *)ip1;
             const @type@ in2 = *(@type@ *)ip2;
             /* Order of operations important for MSVC 2015 */
-            in1 = (in1 @OP@ in2 || npy_isnan(in1)) ? in1 : in2;
+            in1 = (in1 @OP@ in2 || isnan(in1)) ? in1 : in2;
             *((@type@ *)op1) = in1;
         }
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 
@@ -1771,7 +1799,7 @@ NPY_NO_EXPORT void
         BINARY_REDUCE_LOOP(@type@) {
             const @type@ in2 = *(@type@ *)ip2;
             /* Order of operations important for MSVC 2015 */
-            io1 = (io1 @OP@ in2 || npy_isnan(in2)) ? io1 : in2;
+            io1 = (io1 @OP@ in2 || isnan(in2)) ? io1 : in2;
         }
         *((@type@ *)iop1) = io1;
     }
@@ -1780,10 +1808,10 @@ NPY_NO_EXPORT void
             const @type@ in1 = *(@type@ *)ip1;
             const @type@ in2 = *(@type@ *)ip2;
             /* Order of operations important for MSVC 2015 */
-            *((@type@ *)op1) = (in1 @OP@ in2 || npy_isnan(in2)) ? in1 : in2;
+            *((@type@ *)op1) = (in1 @OP@ in2 || isnan(in2)) ? in1 : in2;
         }
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 
@@ -1794,7 +1822,7 @@ NPY_NO_EXPORT void
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
         @type@ mod;
-        *((@type@ *)op1) = npy_divmod@c@(in1, in2, &mod);
+        *((@type@ *)op1) = divmod@c@(in1, in2, &mod);
     }
 }
 
@@ -1804,7 +1832,7 @@ NPY_NO_EXPORT void
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
-        npy_divmod@c@(in1, in2, (@type@ *)op1);
+        divmod@c@(in1, in2, (@type@ *)op1);
     }
 }
 
@@ -1814,7 +1842,7 @@ NPY_NO_EXPORT void
     BINARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
-        *((@type@ *)op1) = npy_divmod@c@(in1, in2, (@type@ *)op2);
+        *((@type@ *)op1) = divmod@c@(in1, in2, (@type@ *)op2);
     }
 }
 
@@ -1892,7 +1920,7 @@ NPY_NO_EXPORT void
             *((@type@ *)op1) = tmp + 0;
         }
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 
 NPY_NO_EXPORT void
@@ -1930,7 +1958,7 @@ NPY_NO_EXPORT void
 {
     UNARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = npy_modf@c@(in1, (@type@ *)op2);
+        *((@type@ *)op1) = modf@c@(in1, (@type@ *)op2);
     }
 }
 
@@ -1939,7 +1967,7 @@ NPY_NO_EXPORT void
 {
     UNARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = npy_frexp@c@(in1, (int *)op2);
+        *((@type@ *)op1) = frexp@c@(in1, (int *)op2);
     }
 }
 
@@ -1949,7 +1977,7 @@ NPY_NO_EXPORT void
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
         const int in2 = *(int *)ip2;
-        *((@type@ *)op1) = npy_ldexp@c@(in1, in2);
+        *((@type@ *)op1) = ldexp@c@(in1, in2);
     }
 }
 
@@ -1966,7 +1994,7 @@ NPY_NO_EXPORT void
         const long in2 = *(long *)ip2;
         if (((int)in2) == in2) {
             /* Range OK */
-            *((@type@ *)op1) = npy_ldexp@c@(in1, ((int)in2));
+            *((@type@ *)op1) = ldexp@c@(in1, ((int)in2));
         }
         else {
             /*
@@ -1974,10 +2002,10 @@ NPY_NO_EXPORT void
              * given that exponent has less bits than npy_int.
              */
             if (in2 > 0) {
-                *((@type@ *)op1) = npy_ldexp@c@(in1, NPY_MAX_INT);
+                *((@type@ *)op1) = ldexp@c@(in1, NPY_MAX_INT);
             }
             else {
-                *((@type@ *)op1) = npy_ldexp@c@(in1, NPY_MIN_INT);
+                *((@type@ *)op1) = ldexp@c@(in1, NPY_MIN_INT);
             }
         }
     }
@@ -1993,13 +2021,13 @@ NPY_NO_EXPORT void
  *****************************************************************************
  */
 
-#define CGE(xr,xi,yr,yi) ((xr > yr && !npy_isnan(xi) && !npy_isnan(yi)) \
+#define CGE(xr,xi,yr,yi) ((xr > yr && !isnan(xi) && !isnan(yi)) \
                           || (xr == yr && xi >= yi))
-#define CLE(xr,xi,yr,yi) ((xr < yr && !npy_isnan(xi) && !npy_isnan(yi)) \
+#define CLE(xr,xi,yr,yi) ((xr < yr && !isnan(xi) && !isnan(yi)) \
                           || (xr == yr && xi <= yi))
-#define CGT(xr,xi,yr,yi) ((xr > yr && !npy_isnan(xi) && !npy_isnan(yi)) \
+#define CGT(xr,xi,yr,yi) ((xr > yr && !isnan(xi) && !isnan(yi)) \
                           || (xr == yr && xi > yi))
-#define CLT(xr,xi,yr,yi) ((xr < yr && !npy_isnan(xi) && !npy_isnan(yi)) \
+#define CLT(xr,xi,yr,yi) ((xr < yr && !isnan(xi) && !isnan(yi)) \
                           || (xr == yr && xi < yi))
 #define CEQ(xr,xi,yr,yi) (xr == yr && xi == yi)
 #define CNE(xr,xi,yr,yi) (xr != yr || xi != yi)
@@ -2148,8 +2176,8 @@ NPY_NO_EXPORT void
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
         const @ftype@ in2r = ((@ftype@ *)ip2)[0];
         const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        const @ftype@ in2r_abs = npy_fabs@c@(in2r);
-        const @ftype@ in2i_abs = npy_fabs@c@(in2i);
+        const @ftype@ in2r_abs = fabs@c@(in2r);
+        const @ftype@ in2i_abs = fabs@c@(in2i);
         if (in2r_abs >= in2i_abs) {
             if (in2r_abs == 0 && in2i_abs == 0) {
                 /* divide by zero should yield a complex inf or nan */
@@ -2180,14 +2208,14 @@ NPY_NO_EXPORT void
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
         const @ftype@ in2r = ((@ftype@ *)ip2)[0];
         const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if (npy_fabs@c@(in2r) >= npy_fabs@c@(in2i)) {
+        if (fabs@c@(in2r) >= fabs@c@(in2i)) {
             const @ftype@ rat = in2i/in2r;
-            ((@ftype@ *)op1)[0] = npy_floor@c@((in1r + in1i*rat)/(in2r + in2i*rat));
+            ((@ftype@ *)op1)[0] = floor@c@((in1r + in1i*rat)/(in2r + in2i*rat));
             ((@ftype@ *)op1)[1] = 0;
         }
         else {
             const @ftype@ rat = in2r/in2i;
-            ((@ftype@ *)op1)[0] = npy_floor@c@((in1r*rat + in1i)/(in2i + in2r*rat));
+            ((@ftype@ *)op1)[0] = floor@c@((in1r*rat + in1i)/(in2i + in2r*rat));
             ((@ftype@ *)op1)[1] = 0;
         }
     }
@@ -2254,7 +2282,7 @@ NPY_NO_EXPORT void
 
 /**begin repeat1
  * #kind = isnan, isinf, isfinite#
- * #func = npy_isnan, npy_isinf, npy_isfinite#
+ * #func = isnan, isinf, isfinite#
  * #OP = ||, ||, &&#
  **/
 NPY_NO_EXPORT void
@@ -2265,7 +2293,7 @@ NPY_NO_EXPORT void
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
         *((npy_bool *)op1) = @func@(in1r) @OP@ @func@(in1i);
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 
@@ -2286,7 +2314,7 @@ NPY_NO_EXPORT void
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        if (npy_fabs@c@(in1i) <= npy_fabs@c@(in1r)) {
+        if (fabs@c@(in1i) <= fabs@c@(in1r)) {
             const @ftype@ r = in1i/in1r;
             const @ftype@ d = in1r + in1i*r;
             ((@ftype@ *)op1)[0] = 1/d;
@@ -2340,7 +2368,7 @@ NPY_NO_EXPORT void
             if(in1r == 0.0 && in1i == 0.0){
                 ignore_fpstatus = 1;
             }
-            *((@ftype@ *)op1) = npy_hypot@c@(in1r, in1i);
+            *((@ftype@ *)op1) = hypot@c@(in1r, in1i);
         }
     }
 
@@ -2355,7 +2383,7 @@ NPY_NO_EXPORT void
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        *((@ftype@ *)op1) = npy_atan2@c@(in1i, in1r);
+        *((@ftype@ *)op1) = atan2@c@(in1i, in1r);
     }
 }
 
@@ -2386,14 +2414,14 @@ NPY_NO_EXPORT void
         @ftype@ in1i = ((@ftype@ *)ip1)[1];
         const @ftype@ in2r = ((@ftype@ *)ip2)[0];
         const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if ( !(npy_isnan(in1r) || npy_isnan(in1i) || @OP@(in1r, in1i, in2r, in2i))) {
+        if ( !(isnan(in1r) || isnan(in1i) || @OP@(in1r, in1i, in2r, in2i))) {
             in1r = in2r;
             in1i = in2i;
         }
         ((@ftype@ *)op1)[0] = in1r;
         ((@ftype@ *)op1)[1] = in1i;
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 
@@ -2409,7 +2437,7 @@ NPY_NO_EXPORT void
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
         const @ftype@ in2r = ((@ftype@ *)ip2)[0];
         const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if (npy_isnan(in2r) || npy_isnan(in2i) || @OP@(in1r, in1i, in2r, in2i)) {
+        if (isnan(in2r) || isnan(in2i) || @OP@(in1r, in1i, in2r, in2i)) {
             ((@ftype@ *)op1)[0] = in1r;
             ((@ftype@ *)op1)[1] = in1i;
         }
@@ -2418,7 +2446,7 @@ NPY_NO_EXPORT void
             ((@ftype@ *)op1)[1] = in2i;
         }
     }
-    npy_clear_floatstatus_barrier((char*)dimensions);
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
 

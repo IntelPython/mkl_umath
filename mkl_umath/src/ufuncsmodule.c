@@ -1,24 +1,39 @@
 #include "Python.h"
-#include "numpy/arrayobject.h"
-#include "numpy/ufuncobject.h"
+#include "ufuncsmodule.h"
 
 /* now we initialize the Python module which contains our new object: */
-static PyModuleDef _ufunc_module = {
+static PyModuleDef _ufuncs_module = {
     PyModuleDef_HEAD_INIT,
-    "_ufunc",
+    "_ufuncs",
     "",
     -1,
     NULL, NULL, NULL, NULL, NULL
 };
 
 PyMODINIT_FUNC
-PyInit__ext(void)
+PyInit__ufuncs(void)
 {
     PyObject* m;
+    PyObject* d;
 
-    m = PyModule_Create(&_ufunc_module);
+    m = PyModule_Create(&_ufuncs_module);
     if (m == NULL)
 	return NULL;
+
+    d = PyModule_GetDict(m);
+    if (d == NULL) {
+	Py_XDECREF(m);
+	return NULL;
+    }
+
+    import_array();
+    import_umath();
+
+    if (InitOperators(d) < 0) {
+	Py_XDECREF(d);
+	Py_XDECREF(m);
+	return NULL;
+    }
 
     return m;
 }

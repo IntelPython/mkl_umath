@@ -25,9 +25,28 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
+from os import (getcwd, environ, makedirs)
 from os.path import join, exists, abspath, dirname
-from os import getcwd
-from os import environ
+import importlib.machinery # requires Python >= 3.4
+from distutils.dep_util import newer
+
+def load_module(name, fn):
+    """
+    Credit: numpy.compat.npy_load_module
+    """
+    return importlib.machinery.SourceFileLoader(name, fn).load_module()
+
+
+def separator_join(sep, strs):
+    """
+    Joins non-empty arguments strings with dot.
+
+    Credit: numpy.distutils.misc_util.dot_join
+    """
+    assert isinstance(strs, (list, tuple))
+    assert isinstance(sep, str)
+    return sep.join([si for si in strs if si])
+
 
 def configuration(parent_package='',top_path=None):
     from numpy.distutils.misc_util import Configuration
@@ -52,7 +71,26 @@ def configuration(parent_package='',top_path=None):
     wdir = join(pdir, 'src')
     mkl_info = get_info('mkl')
 
-    sources = []
+    generate_umath_py = join(pdir, 'generate_umath.py')
+    n = separator_join('_', (config.name, 'generate_umath'))
+    generate_umath = load_module(n, generate_umath_py)
+    del n
+
+    def generate_umath_c(ext, build_dir):
+        target_dir = join(build_dir, 'src')
+        target = join(target_dir, '__umath_generated.c')
+        if not exists(target_dir):
+            print("Folder {} was expected to exist, but creating".format(target_dir))
+            makedirs(target_dir)
+        script = generate_umath_py
+        if newer(script, target):
+            with open(target, 'w') as f:
+                f.write(generate_umath.make_code(generate_umath.defdict,
+                                                 generate_umath.__file__))
+        config.add_include_dirs(target_dir)
+        return []
+
+    sources = [generate_umath_c]
 #    try:
 #        from Cython.Build import cythonize
 #        sources = [join(pdir, '_pydfti.pyx')]
@@ -67,18 +105,20 @@ def configuration(parent_package='',top_path=None):
     config.add_extension(
         name = '_ufuncs',
         sources = [
+            join(wdir, 'loops_intel.h.src'),
+            join(wdir, 'loops_intel.c.src'),
             join(wdir, 'ufuncsmodule.c'),
-            join(wdir, 'loops_intel.c.src')
         ] + sources,
         depends = [
-            # join(wdir, 'mklfft.h'),
+            join(wdir, 'blocking_utils.h'),
+            join(wdir, 'fast_loop_macros.h'),
         ],
         include_dirs = [wdir] + mkl_include_dirs,
         libraries = mkl_libraries,
         library_dirs = mkl_library_dirs,
         extra_compile_args = [
-            '-DNDEBUG',
-            # '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
+            # '-DNDEBUG',
+            '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
         ]
     )
 

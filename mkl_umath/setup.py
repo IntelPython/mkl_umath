@@ -30,6 +30,24 @@ from os.path import join, exists, abspath, dirname
 import importlib.machinery # requires Python >= 3.4
 from distutils.dep_util import newer
 
+from numpy.distutils.ccompiler import new_compiler
+from distutils.sysconfig import customize_compiler
+import platform
+from numpy import get_include as get_numpy_include
+from distutils.sysconfig import get_python_inc as get_python_include
+
+def ensure_Intel_compiler():
+    ccompiler = new_compiler()
+    customize_compiler(ccompiler)
+    if hasattr(ccompiler, 'compiler'):
+        compiler_name = ccompiler.compiler[0]
+    else:
+        compiler_name = ccompiler.__class__.__name__
+
+    assert ('icl' in compiler_name or 'icc' in compiler_name), \
+        "Intel(R) C Compiler is required to build mkl_umath, found {}".format(compiler_name)
+    
+
 def load_module(name, fn):
     """
     Credit: numpy.compat.npy_load_module
@@ -63,6 +81,7 @@ def configuration(parent_package='',top_path=None):
     else:
         mkl_info = get_info('mkl')
 
+    print(mkl_info)
     mkl_include_dirs = mkl_info.get('include_dirs', [])
     mkl_library_dirs = mkl_info.get('library_dirs', [])
     mkl_libraries = mkl_info.get('libraries', ['mkl_rt'])
@@ -91,30 +110,45 @@ def configuration(parent_package='',top_path=None):
         return []
 
     sources = [generate_umath_c]
-#    try:
-#        from Cython.Build import cythonize
-#        sources = [join(pdir, '_pydfti.pyx')]
-#        have_cython = True
-#    except ImportError as e:
-#        have_cython = False
-#        sources = [join(pdir, '_pydfti.c')]
-#        if not exists(sources[0]):
-#            raise ValueError(str(e) + '. ' + 
-#                             'Cython is required to build the initial .c file.')
+
+    # ensure_Intel_compiler()
+
+    if platform.system() == "Windows":
+        eca = ['/fp:fast=2', '/Qimf-precision=high', '/Qprec-sqrt', '/Qstd=c99', '/Qprotect-parens']
+    else:
+        eca = ['-fp-model', 'fast=2', '-fimf-precision=high', '-prec-sqrt', '-fprotect-parens']
+
+    numpy_include_dir = get_numpy_include()
+    python_include_dir = get_python_include()
+    config.add_library(
+        'loops_intel',
+        sources = [
+            join(wdir, 'loops_intel.h.src'),
+            join(wdir, 'loops_intel.c.src'),
+        ],
+        include_dirs = [wdir] + mkl_include_dirs + [numpy_include_dir, python_include_dir],
+        depends = [
+            join(wdir, 'blocking_utils.h'),
+            join(wdir, 'fast_loop_macros.h'),
+            join(numpy_include_dir, 'numpy', '*object.h'),
+            join(python_include_dir, "Python.h")
+        ],
+        libraries=mkl_libraries,
+        extra_compiler_args=eca,
+        macros=getattr(config, 'define_macros', getattr(config.get_distribution(), 'define_macros', []))
+    )
 
     config.add_extension(
         name = '_ufuncs',
         sources = [
-            join(wdir, 'loops_intel.h.src'),
-            join(wdir, 'loops_intel.c.src'),
             join(wdir, 'ufuncsmodule.c'),
         ] + sources,
         depends = [
-            join(wdir, 'blocking_utils.h'),
-            join(wdir, 'fast_loop_macros.h'),
+            join(wdir, 'loops_intel.c.src'),
+            join(wdir, 'loops_intel.h.src'),
         ],
         include_dirs = [wdir] + mkl_include_dirs,
-        libraries = mkl_libraries,
+        libraries = mkl_libraries + ['loops_intel'],
         library_dirs = mkl_library_dirs,
         extra_compile_args = [
             # '-DNDEBUG',

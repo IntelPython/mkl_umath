@@ -977,6 +977,15 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec),
           ),
+'frexp' :
+    Ufunc(1, 2, None,
+          docstrings.get('numpy.core.umath.frexp'),
+          None,
+          [
+              TypeDescription('f', None, 'f', 'fi'),
+              TypeDescription('d', None, 'd', 'di'),
+          ],
+          ),
 }
 
 def indent(st, spaces):

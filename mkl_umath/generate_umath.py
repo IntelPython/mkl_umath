@@ -1002,7 +1002,9 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy.core.umath.absolute'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
+          TD('F', out='f'),
+          TD('D', out='d'),
           ),
 '_arg':
     Ufunc(1, 1, None,

@@ -990,12 +990,7 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec),
           ),
-'_ones_like':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy.core.umath._ones_like'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
+# '_ones_like':
 # 'power':
 # 'float_power':
 'absolute':
@@ -1006,12 +1001,7 @@ defdict = {
           TD('F', out='f'),
           TD('D', out='d'),
           ),
-'_arg':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy.core.umath._arg'),
-          None,
-          TD(cmplxvec),
-          ),
+# '_arg':
 'negative':
     Ufunc(1, 1, None,
           docstrings.get('numpy.core.umath.negative'),

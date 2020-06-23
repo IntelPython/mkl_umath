@@ -941,41 +941,410 @@ defdict = {
 }
 
 defdict = {
-'add': # keep
+'add':
     Ufunc(2, 1, Zero,
           docstrings.get('numpy.core.umath.add'),
           None,
           TD(inexactvec + cmplxvec),
           ),
-'subtract': # keep
-    Ufunc(2, 1, None, # Zero is only a unit to the right, not the left
+'subtract':
+    Ufunc(2, 1, None,
           docstrings.get('numpy.core.umath.subtract'),
           None,
           TD(inexactvec + cmplxvec),
           ),
-'multiply': # keep
+'multiply':
     Ufunc(2, 1, One,
           docstrings.get('numpy.core.umath.multiply'),
           None, 
           TD(inexactvec + cmplxvec),
           ),
+'floor_divide':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.floor_divide'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
 'true_divide':
-    Ufunc(2, 1, None, # One is only a unit to the right, not the left
+    Ufunc(2, 1, None,
           docstrings.get('numpy.core.umath.true_divide'),
           None,
           TD(inexactvec + cmplxvec),
           ),
-'square': # keep
+'conjugate':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.conjugate'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'fmod':
+'square':
     Ufunc(1, 1, None,
           docstrings.get('numpy.core.umath.square'),
           None,
           TD(inexactvec + cmplxvec),
           ),
-'reciprocal': # keep
+'reciprocal':
     Ufunc(1, 1, None,
           docstrings.get('numpy.core.umath.reciprocal'),
           None,
           TD(inexactvec + cmplxvec),
+          ),
+'_ones_like':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath._ones_like'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'power':
+# 'float_power':
+'absolute':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.absolute'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'_arg':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath._arg'),
+          None,
+          TD(cmplxvec),
+          ),
+'negative':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.negative'),
+          None,
+          TD(inexactvec),
+          ),
+'positive':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.positive'),
+          None,
+          TD(inexactvec),
+          ),
+'sign':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.sign'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'greater':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.greater'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'greater_equal':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.greater_equal'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'less':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.less'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'less_equal':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.less_equal'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'equal':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.equal'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'not_equal':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.not_equal'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'logical_and':
+    Ufunc(2, 1, True_,
+          docstrings.get('numpy.core.umath.logical_and'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'logical_not':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.logical_not'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'logical_or':
+    Ufunc(2, 1, False_,
+          docstrings.get('numpy.core.umath.logical_or'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'logical_xor':
+    Ufunc(2, 1, False_,
+          docstrings.get('numpy.core.umath.logical_xor'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'maximum':
+    Ufunc(2, 1, ReorderableNone,
+          docstrings.get('numpy.core.umath.maximum'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'minimum':
+    Ufunc(2, 1, ReorderableNone,
+          docstrings.get('numpy.core.umath.minimum'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'clip':
+'fmax':
+    Ufunc(2, 1, ReorderableNone,
+          docstrings.get('numpy.core.umath.fmax'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'fmin':
+    Ufunc(2, 1, ReorderableNone,
+          docstrings.get('numpy.core.umath.fmin'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'logaddexp':
+# 'logaddexp2':
+# 'bitwise_and':
+# 'bitwise_or':
+# 'bitwise_xor':
+# 'invert':
+# 'left_shift':
+# 'right_shift':
+# 'heaviside':
+# 'degrees':
+# 'rad2deg':
+# 'radians':
+# 'deg2rad':
+'arccos':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arccos'),
+          None,
+          TD(inexactvec),
+          ),
+'arccosh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arccosh'),
+          None,
+          TD(inexactvec),
+          ),
+'arcsin':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arcsin'),
+          None,
+          TD(inexactvec),
+          ),
+'arcsinh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arcsinh'),
+          None,
+          TD(inexactvec),
+          ),
+'arctan':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arctan'),
+          None,
+          TD(inexactvec),
+          ),
+'arctanh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.arctanh'),
+          None,
+          TD(inexactvec),
+          ),
+'cos':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.cos'),
+          None,
+          TD(inexactvec),
+          ),
+'sin':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.sin'),
+          None,
+          TD(inexactvec),
+          ),
+'tan':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.tan'),
+          None,
+          TD(inexactvec),
+          ),
+'cosh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.cosh'),
+          None,
+          TD(inexactvec),
+          ),
+'sinh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.sinh'),
+          None,
+          TD(inexactvec),
+          ),
+'tanh':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.tanh'),
+          None,
+          TD(inexactvec),
+          ),
+'exp':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.exp'),
+          None,
+          TD(inexactvec),
+          ),
+'exp2':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.exp2'),
+          None,
+          TD(inexactvec),
+          ),
+'expm1':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.expm1'),
+          None,
+          TD(inexactvec),
+          ),
+'log':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.log'),
+          None,
+          TD(inexactvec),
+          ),
+'log2':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.log2'),
+          None,
+          TD(inexactvec),
+          ),
+'log10':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.log10'),
+          None,
+          TD(inexactvec),
+          ),
+'log1p':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.log1p'),
+          None,
+          TD(inexactvec),
+          ),
+'sqrt':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.sqrt'),
+          None,
+          TD(inexactvec),
+          ),
+'cbrt':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.cbrt'),
+          None,
+          TD(inexactvec),
+          ),
+'ceil':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.ceil'),
+          None,
+          TD(inexactvec),
+          ),
+'trunc':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.trunc'),
+          None,
+          TD(inexactvec),
+          ),
+'fabs':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.fabs'),
+          None,
+          TD(inexactvec),
+       ),
+'floor':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.floor'),
+          None,
+          TD(inexactvec),
+          ),
+'rint':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.rint'),
+          None,
+          TD(inexactvec),
+          ),
+# 'arctan2':
+'remainder':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.remainder'),
+          None,
+          TD(inexactvec),
+          ),
+# 'divmod':
+# 'hypot':
+'isnan':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.isnan'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'isnat':
+'isinf':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.isinf'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+'isfinite':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.isfinite'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
+# 'signbit':
+'copysign':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.copysign'),
+          None,
+          TD(inexactvec),
+          ),
+'nextafter':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.nextafter'),
+          None,
+          TD(inexactvec),
+          ),
+'spacing':
+    Ufunc(1, 1, None,
+          docstrings.get('numpy.core.umath.spacing'),
+          None,
+          TD(inexactvec),
+          ),
+'modf':
+    Ufunc(1, 2, None,
+          docstrings.get('numpy.core.umath.modf'),
+          None,
+          TD(inexactvec),
+          ),
+'ldexp' :
+    Ufunc(2, 1, None,
+          docstrings.get('numpy.core.umath.ldexp'),
+          None,
+          [
+              TypeDescription('f', None, 'fi', 'f'),
+              TypeDescription('f', FuncNameSuffix('long'), 'fl', 'f'),
+              TypeDescription('d', None, 'di', 'd'),
+              TypeDescription('d', FuncNameSuffix('long'), 'dl', 'd'),
+          ],
           ),
 'frexp' :
     Ufunc(1, 2, None,
@@ -986,6 +1355,9 @@ defdict = {
               TypeDescription('d', None, 'd', 'di'),
           ],
           ),
+# 'gcd' :
+# 'lcm' :
+# 'matmul' :
 }
 
 def indent(st, spaces):

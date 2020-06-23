@@ -173,6 +173,9 @@ NPY_NO_EXPORT void
 @TYPE@_sign(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func));
 
 NPY_NO_EXPORT void
+@TYPE@_modf(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func));
+
+NPY_NO_EXPORT void
 @TYPE@_frexp(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func));
 
 NPY_NO_EXPORT void
@@ -254,7 +257,7 @@ NPY_NO_EXPORT void
 
 /**begin repeat1
  * arithmetic
- * #kind = maximum, minumum, fmax, fmin#
+ * #kind = maximum, minimum, fmax, fmin#
  */
 NPY_NO_EXPORT void
 @TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func));

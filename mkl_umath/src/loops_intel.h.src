@@ -3,6 +3,8 @@
 
 #include "numpy/ndarraytypes.h"
 
+#include <string.h>
+
 /**begin repeat
  * Float types
  *  #TYPE = FLOAT, DOUBLE#
@@ -273,5 +275,7 @@ NPY_NO_EXPORT void
 #undef CLT
 #undef CEQ
 #undef CNE
+
+PyUFuncGenericFunction get_func_by_name(char* s);
 
 #endif

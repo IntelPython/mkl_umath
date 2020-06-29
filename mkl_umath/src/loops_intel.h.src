@@ -276,6 +276,4 @@ NPY_NO_EXPORT void
 #undef CEQ
 #undef CNE
 
-PyUFuncGenericFunction get_func_by_name(char* s);
-
 #endif

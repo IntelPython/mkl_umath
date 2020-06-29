@@ -25,98 +25,83 @@ import numpy as np
 
 from libc.stdlib cimport malloc, free
 
-cdef extern from "loops_intel.h":
-     cnp.PyUFuncGenericFunction get_func_by_name(char*)
-
 cnp.import_umath()
 
-def _get_func_name(name, type):
-    if type.startswith('f'):
-        type_str = 'FLOAT'
-    elif type.startswith('d'):
-        type_str = 'DOUBLE'
-    elif type.startswith('F'):
-        type_str = 'CFLOAT'
-    elif type.startswith('D'):
-        type_str = 'CDOUBLE'
-    else:
-        raise ValueError("_get_func_name: Unexpected type specified!")
-    func_name = type_str + '_' + name
-    if type.startswith('fl') or type.startswith('dl'):
-        func_name = func_name + '_long'
-    return func_name
-
-
-cdef void _fill_signature(signature_str, int* signature):
-    for i in range(len(signature_str)):
-        if signature_str[i] == 'f':
-            signature[i] = cnp.NPY_FLOAT
-        elif signature_str[i] == 'd':
-            signature[i] = cnp.NPY_DOUBLE
-        elif signature_str[i] == 'F':
-            signature[i] = cnp.NPY_CFLOAT
-        elif signature_str[i] == 'D':
-            signature[i] = cnp.NPY_CDOUBLE
-        elif signature_str[i] == 'i':
-            signature[i] = cnp.NPY_INT
-        elif signature_str[i] == 'l':
-            signature[i] = cnp.NPY_LONG
-        elif signature_str[i] == '?':
-            signature[i] = cnp.NPY_BOOL
-        else:
-            raise ValueError("_fill_signature: Unexpected type specified!")
-
-
-cdef cnp.PyUFuncGenericFunction fooSaved
-
 funcs_dict = {}
-cdef cnp.PyUFuncGenericFunction* originalFuncs
 
+ctypedef struct function_info:
+    cnp.PyUFuncGenericFunction np_function
+    cnp.PyUFuncGenericFunction mkl_function
+    int* signature
 
-cdef c_do_patch():
-    cdef int res
+cdef function_info* functions
 
-    global originalFuncs
+def fill_functions():
+    global functions
 
     umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
-    func_number = 0
+    funcs_count = 0
     for umath in umaths:
         mkl_umath = getattr(mu, umath)
         types = mkl_umath.types
         for type in types:
+            funcs_count = funcs_count + 1
+
+    functions = <function_info *> malloc(funcs_count * sizeof(function_info))
+
+    func_number = 0
+    for umath in umaths:
+        mkl_umath = getattr(mu, umath)
+        np_umath = getattr(nu, umath)
+        c_mkl_umath = <cnp.ufunc>mkl_umath
+        c_np_umath = <cnp.ufunc>np_umath
+        for type in mkl_umath.types:
+            np_index = np_umath.types.index(type)
+            functions[func_number].np_function = c_np_umath.functions[np_index]
+            mkl_index = mkl_umath.types.index(type)
+            functions[func_number].mkl_function = c_mkl_umath.functions[mkl_index]
+
+            nargs = c_mkl_umath.nargs
+            functions[func_number].signature = <int *> malloc(nargs * sizeof(int))
+            for i in range(nargs):
+                functions[func_number].signature[i] = c_mkl_umath.types[mkl_index*nargs + i]
+
             funcs_dict[(umath, type)] = func_number
             func_number = func_number + 1
-    originalFuncs = <cnp.PyUFuncGenericFunction *> malloc(len(funcs_dict) * sizeof(cnp.PyUFuncGenericFunction))
+
+
+fill_functions()
+
+cdef c_do_patch():
+    cdef int res
+    cdef cnp.PyUFuncGenericFunction temp
+    cdef cnp.PyUFuncGenericFunction function
+    cdef int* signature
+
+    global functions
 
     for func in funcs_dict:
-        umath = func[0]
-        type = func[1]
-        np_umath = getattr(nu, umath)
-        signature_str = type.replace('->', '')
-        signature = <int *> malloc(len(signature_str) * sizeof(int))
-        _fill_signature(signature_str, signature)
-        ufunc_name = _get_func_name(umath, type)
-        ufunc = get_func_by_name(str.encode(ufunc_name))
-        res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, ufunc, signature, &(originalFuncs[funcs_dict[func]]))
-        free(signature)
+        np_umath = getattr(nu, func[0])
+        index = funcs_dict[func]
+        function = functions[index].mkl_function
+        signature = functions[index].signature
+        res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, function, signature, &temp)
 
 
 cdef c_do_unpatch():
     cdef int res
     cdef cnp.PyUFuncGenericFunction temp
+    cdef cnp.PyUFuncGenericFunction function
+    cdef int* signature
 
-    global originalFuncs
+    global functions
 
     for func in funcs_dict:
-        umath = func[0]
-        type = func[1]
-        np_umath = getattr(nu, umath)
-        signature_str = type.replace('->', '')
-        signature = <int *> malloc(len(signature_str) * sizeof(int))
-        _fill_signature(signature_str, signature)
-        res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, originalFuncs[funcs_dict[(umath, type)]], signature, &temp)
-        free(signature)
-    free(originalFuncs)
+        np_umath = getattr(nu, func[0])
+        index = funcs_dict[func]
+        function = functions[index].np_function
+        signature = functions[index].signature
+        res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, function, signature, &temp)
 
 
 def do_patch():

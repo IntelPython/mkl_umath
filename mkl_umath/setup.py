@@ -156,6 +156,23 @@ def configuration(parent_package='',top_path=None):
         ]
     )
 
+    from Cython.Build import cythonize
+    from setuptools import Extension
+    cythonize(Extension('_patch', sources=[join(wdir, 'patch.pyx'),]))
+
+    config.add_extension(
+        name = '_patch',
+        sources = [
+            join(wdir, 'patch.c'),
+        ],
+        libraries = mkl_libraries + ['loops_intel'],
+        library_dirs = mkl_library_dirs,
+        extra_compile_args = [
+            # '-DNDEBUG',
+            '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
+        ]
+    )
+
     config.add_data_dir('tests')
 
 #    if have_cython:

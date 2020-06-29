@@ -122,8 +122,7 @@ static inline npy_float spacingf(npy_float x) {
 }
 
 static inline npy_double divmod(npy_double x1, npy_double x2, npy_double *mod) {
-    fesetround(FE_DOWNWARD);
-    npy_double q = rint(x1 / x2);
+    npy_double q = floor(x1 / x2);
 
     *mod = x1 - q * x2;
 
@@ -131,8 +130,7 @@ static inline npy_double divmod(npy_double x1, npy_double x2, npy_double *mod) {
 }
 
 static inline npy_float divmodf(npy_float x1, npy_float x2, npy_float *mod) {
-    fesetround(FE_DOWNWARD);
-    npy_float q = rintf(x1 / x2);
+    npy_float q = floorf(x1 / x2);
 
     *mod = x1 - q * x2;
 

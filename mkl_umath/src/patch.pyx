@@ -37,11 +37,14 @@ ctypedef struct function_info:
 cdef class patch:
     cdef int functions_count
     cdef function_info* functions
+    cdef bint _is_patched
 
-    functions_dict = {}
+    functions_dict = dict()
 
     def __cinit__(self):
         cdef int pi, oi
+
+        self._is_patched = False
 
         umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
         self.functions_count = 0
@@ -95,7 +98,9 @@ cdef class patch:
             index = self.functions_dict[func]
             function = self.functions[index].patch_function
             signature = self.functions[index].signature
-            res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, function, signature, &temp)
+            res = cnp.PyUFunc_ReplaceLoopBySignature(<cnp.ufunc>np_umath, function, signature, &temp)
+
+        self._is_patched = True
 
     def do_unpatch(self):
         cdef int res
@@ -110,6 +115,10 @@ cdef class patch:
             signature = self.functions[index].signature
             res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, function, signature, &temp)
 
+        self._is_patched = False
+
+    def is_patched(self):
+        return self._is_patched
 
 from threading import local as threading_local
 _tls = threading_local()
@@ -123,14 +132,40 @@ def _initialize_tls():
     _tls.patch = patch()
     _tls.initialized = True
 
-    
-def do_patch():
+
+def use_in_numpy():
+    '''
+    Enables using of mkl_umath in Numpy.
+    '''
     if not _is_tls_initialized():
         _initialize_tls()
     _tls.patch.do_patch()
 
 
-def do_unpatch():
+def restore():
+    '''
+    Disables using of mkl_umath in Numpy.
+    '''
     if not _is_tls_initialized():
         _initialize_tls()
     _tls.patch.do_unpatch()
+
+
+def is_patched():
+    '''
+    Returns whether Numpy has been patched with mkl_umath.
+    '''
+    if not _is_tls_initialized():
+        _initialize_tls()
+    _tls.patch.is_patched()
+
+from contextlib import ContextDecorator
+
+class mkl_umath(ContextDecorator):
+    def __enter__(self):
+        use_in_numpy()
+        return self
+
+    def __exit__(self, *exc):
+        restore()
+        return False

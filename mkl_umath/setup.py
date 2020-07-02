@@ -151,8 +151,8 @@ def configuration(parent_package='',top_path=None):
         libraries = mkl_libraries + ['loops_intel'],
         library_dirs = mkl_library_dirs,
         extra_compile_args = [
-            # '-DNDEBUG',
-            '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
+            '-DNDEBUG',
+            # '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
         ]
     )
 
@@ -168,8 +168,8 @@ def configuration(parent_package='',top_path=None):
         libraries = mkl_libraries + ['loops_intel'],
         library_dirs = mkl_library_dirs,
         extra_compile_args = [
-            # '-DNDEBUG',
-            '-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
+            '-DNDEBUG',
+            #'-ggdb', '-O0', '-Wall', '-Wextra', '-DDEBUG',
         ]
     )
 

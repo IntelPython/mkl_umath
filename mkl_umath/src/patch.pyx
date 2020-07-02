@@ -41,6 +41,8 @@ cdef class patch:
     functions_dict = {}
 
     def __cinit__(self):
+        cdef int pi, oi
+
         umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
         self.functions_count = 0
         for umath in umaths:
@@ -51,23 +53,31 @@ cdef class patch:
 
         func_number = 0
         for umath in umaths:
-            mkl_umath = getattr(mu, umath)
-            np_umath = getattr(nu, umath)
-            c_mkl_umath = <cnp.ufunc>mkl_umath
-            c_np_umath = <cnp.ufunc>np_umath
-            for type in mkl_umath.types:
-                np_index = np_umath.types.index(type)
-                self.functions[func_number].original_function = c_np_umath.functions[np_index]
-                mkl_index = mkl_umath.types.index(type)
-                self.functions[func_number].patch_function = c_mkl_umath.functions[mkl_index]
-
-                nargs = c_mkl_umath.nargs
-                self.functions[func_number].signature = <int *> malloc(nargs * sizeof(int))
-                for i in range(nargs):
-                    self.functions[func_number].signature[i] = c_mkl_umath.types[mkl_index*nargs + i]
-
-                self.functions_dict[(umath, type)] = func_number
-                func_number = func_number + 1
+            patch_umath = getattr(mu, umath)
+            c_patch_umath = <cnp.ufunc>patch_umath
+            c_orig_umath = <cnp.ufunc>getattr(nu, umath)
+            nargs = c_patch_umath.nargs
+            for pi in range(c_patch_umath.ntypes):
+                oi = 0
+                while oi < c_orig_umath.ntypes:
+                    found = True
+                    for i in range(c_patch_umath.nargs):
+                        if c_patch_umath.types[pi * nargs + i] != c_orig_umath.types[oi * nargs + i]:
+                            found = False
+                            break
+                    if found == True:
+                        break
+                    oi = oi + 1
+                if oi < c_orig_umath.ntypes:
+                    self.functions[func_number].original_function = c_orig_umath.functions[oi]
+                    self.functions[func_number].patch_function = c_patch_umath.functions[pi]
+                    self.functions[func_number].signature = <int *> malloc(nargs * sizeof(int))
+                    for i in range(nargs):
+                        self.functions[func_number].signature[i] = c_patch_umath.types[pi * nargs + i]
+                    self.functions_dict[(umath, patch_umath.types[pi])] = func_number
+                    func_number = func_number + 1
+                else:
+                    raise RuntimeError("Unable to find original function for: " + umath + " " + patch_umath.types[pi])
 
     def __dealloc__(self):
         for i in range(self.functions_count):

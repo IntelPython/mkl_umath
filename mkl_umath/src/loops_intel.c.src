@@ -114,28 +114,72 @@
 #include <stdio.h>
 
 static inline npy_double spacing(npy_double x) {
-    return nextafter(x, HUGE_VAL) - x;
+    if (isinf(x))
+	return ((npy_double) NAN);
+    return copysign(nextafter(fabs(x), ((npy_double) INFINITY)), x) - x;
 }
 
 static inline npy_float spacingf(npy_float x) {
-    return nextafterf(x, HUGE_VALF) - x;
+    if (isinff(x))
+	return ((npy_float) NAN);
+
+    return copysignf(nextafterf(fabsf(x), INFINITY), x) - x;
 }
 
-static inline npy_double divmod(npy_double x1, npy_double x2, npy_double *mod) {
-    npy_double q = floor(x1 / x2);
 
-    *mod = x1 - q * x2;
+/**begin repeat
+ * Float types
+ *  #type = npy_float, npy_double#
+ *  #c = f, #
+ */
+/*
+ * Python version of divmod.
+ *
+ * The implementation is mostly copied from cpython 3.5.
+ */
+static inline @type@
+divmod@c@(@type@ a, @type@ b, @type@ *modulus)
+{
+    @type@ div, mod, floordiv;
 
-    return q;
+    mod = fmod@c@(a, b);
+
+    if (!b) {
+        /* If b == 0, return result of fmod. For IEEE is nan */
+        *modulus = mod;
+        return mod;
+    }
+
+    /* a - mod should be very nearly an integer multiple of b */
+    div = (a - mod) / b;
+
+    /* adjust fmod result to conform to Python convention of remainder */
+    if (mod) {
+        if ((b < 0) != (mod < 0)) {
+            mod += b;
+            div -= 1.0@c@;
+        }
+    }
+    else {
+        /* if mod is zero ensure correct sign */
+        mod = copysign@c@(0, b);
+    }
+
+    /* snap quotient to nearest integral value */
+    if (div) {
+        floordiv = floor@c@(div);
+        if (div - floordiv > 0.5@c@)
+            floordiv += 1.0@c@;
+    }
+    else {
+        /* if div is zero ensure correct sign */
+        floordiv = copysign@c@(0, a/b);
+    }
+
+    *modulus = mod;
+    return floordiv;
 }
-
-static inline npy_float divmodf(npy_float x1, npy_float x2, npy_float *mod) {
-    npy_float q = floorf(x1 / x2);
-
-    *mod = x1 - q * x2;
-
-    return q;
-}
+/**end repeat**/
 
 /*
  *****************************************************************************
@@ -1732,7 +1776,7 @@ NPY_NO_EXPORT void
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = (nextafter@c@(in1, HUGE_VAL)) - in1;
+        *((@type@ *)op1) = (spacing@c@(in1));
     }
 }
 

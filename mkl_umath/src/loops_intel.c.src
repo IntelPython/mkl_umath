@@ -5,8 +5,6 @@
 #include "mathimf.h"
 #include "Python.h"
 
-#define _UMATHMODULE
-#define _MULTIARRAYMODULE
 #define NPY_NO_DEPRECATED_API NPY_API_VERSION
 
 #include "numpy/npy_common.h"

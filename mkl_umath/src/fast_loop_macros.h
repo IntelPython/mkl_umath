@@ -41,6 +41,10 @@
 #define NPY_PRAGMA_VECTOR _Pragma("vector")
 #define NPY_PRAGMA_NOVECTOR _Pragma("novector")
 #define NPY_ASSUME_ALIGNED(p, b) __assume_aligned((p), (b));
+#elif defined(__clang__)
+#define NPY_PRAGMA_VECTOR _Pragma("clang loop vectorize(enable)")
+#define NPY_PRAGMA_NOVECTOR _Pragma("clang loop vectorize(disable)")
+#define NPY_ASSUME_ALIGNED(p, b)
 #else
 #define NPY_PRAGMA_VECTOR _Pragma("GCC ivdep")
 #define NPY_PRAGMA_NOVECTOR

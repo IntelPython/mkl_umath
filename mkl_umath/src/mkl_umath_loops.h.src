@@ -1,0 +1,306 @@
+/*
+ * Copyright (c) 2019-2021, Intel Corporation
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright notice,
+ *       this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Intel Corporation nor the names of its contributors
+ *       may be used to endorse or promote products derived from this software
+ *       without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#ifndef _MKL_UMATH_LOOPS_H_
+#define _MKL_UMATH_LOOPS_H_
+
+#include "numpy/ndarraytypes.h"
+
+#include <string.h>
+
+/**begin repeat
+ * Float types
+ *  #TYPE = FLOAT, DOUBLE#
+ */
+
+extern void
+mkl_umath_@TYPE@_sqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_invsqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_exp2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_expm1(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_erf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_log(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_log2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_log10(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_log1p(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_cos(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_sin(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_tan(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arccos(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arcsin(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arctan(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_cosh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_sinh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_tanh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arccosh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arcsinh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_arctanh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_fabs(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_floor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_ceil(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_rint(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_trunc(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_cbrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+/**begin repeat1
+ * Arithmetic
+ * # kind = add, subtract, multiply, divide#
+ */
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+/**begin repeat1
+ * Arithmetic
+ * # kind = equal, not_equal, less, less_equal, greater, greater_equal,
+ *        logical_and, logical_or#
+ */
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+extern void
+mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+/**begin repeat1
+ * #kind = isnan, isinf, isfinite, signbit#
+ **/
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+extern void
+mkl_umath_@TYPE@_spacing(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+
+extern void
+mkl_umath_@TYPE@_copysign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+/**begin repeat1
+ * #kind = maximum, minimum, fmax, fmin#
+ **/
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+extern void
+mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_negative(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_positive(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_frexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
+
+/**end repeat**/
+
+/*
+ *****************************************************************************
+ **                           COMPLEX LOOPS                                 **
+ *****************************************************************************
+ */
+
+#define CGE(xr,xi,yr,yi) (xr > yr || (xr == yr && xi >= yi));
+#define CLE(xr,xi,yr,yi) (xr < yr || (xr == yr && xi <= yi));
+#define CGT(xr,xi,yr,yi) (xr > yr || (xr == yr && xi > yi));
+#define CLT(xr,xi,yr,yi) (xr < yr || (xr == yr && xi < yi));
+#define CEQ(xr,xi,yr,yi) (xr == yr && xi == yi);
+#define CNE(xr,xi,yr,yi) (xr != yr || xi != yi);
+
+/**begin repeat
+ * complex types
+ * #TYPE = CFLOAT, CDOUBLE#
+ */
+
+/**begin repeat1
+ * arithmetic
+ * #kind = add, subtract#
+ */
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+extern void
+mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+extern void
+mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+
+/**begin repeat1
+ * arithmetic
+ * #kind = greater, greater_equal, less, less_equal, equal, 
+           not_equal, logical_and, logical_or, logical_xor, logical_not,
+	   isnan, isinf, isfinite#
+ */
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+extern void
+mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@__arg(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+extern void
+mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
+/**begin repeat1
+ * arithmetic
+ * #kind = maximum, minimum, fmax, fmin#
+ */
+extern void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+/**end repeat1**/
+
+#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
+
+/**end repeat**/
+
+#undef CGE
+#undef CLE
+#undef CGT
+#undef CLT
+#undef CEQ
+#undef CNE
+
+#endif

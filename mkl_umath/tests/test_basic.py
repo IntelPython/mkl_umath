@@ -41,9 +41,9 @@ def get_args(args_str):
         elif s == 'D':
             args.append(np.double(np.random.random_sample()) + np.double(np.random.random_sample()) * 1j)
         elif s == 'i':
-            args.append(np.int(np.random.randint(low=1, high=10)))
+            args.append(np.int_(np.random.randint(low=1, high=10)))
         elif s == 'l':
-            args.append(np.long(np.random.randint(low=1, high=10)))
+            args.append(np.longlong(np.random.randint(low=1, high=10)))
         else:
             raise ValueError("Unexpected type specified!")
     return tuple(args)
@@ -86,7 +86,7 @@ for case in test_cases:
     print("mkl res", mkl_res)
     print("npy res", np_res)
 
-    assert np.array_equal(mkl_res, np_res)
+    assert np.allclose(mkl_res, np_res)
 
 print("Test cases count:", len(test_cases))
 print("All looks good!")

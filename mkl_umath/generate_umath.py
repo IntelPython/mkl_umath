@@ -343,12 +343,6 @@ defdict = {
           None, 
           TD(inexactvec + cmplxvec),
           ),
-'floor_divide':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy.core.umath.floor_divide'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
 'true_divide':
     Ufunc(2, 1, None,
           docstrings.get('numpy.core.umath.true_divide'),
@@ -797,16 +791,16 @@ def make_arrays(funcdict):
                 tname = english_upper(chartoname[t.type])
                 datalist.append('(void *)NULL')
                 funclist.append(
-                        '%s_%s_%s_%s' % (tname, t.in_, t.out, name))
+                        'mkl_umath_%s_%s_%s_%s' % (tname, t.in_, t.out, name))
             elif isinstance(t.func_data, FuncNameSuffix):
                 datalist.append('(void *)NULL')
                 tname = english_upper(chartoname[t.type])
                 funclist.append(
-                        '%s_%s_%s' % (tname, name, t.func_data.suffix))
+                        'mkl_umath_%s_%s_%s' % (tname, name, t.func_data.suffix))
             elif t.func_data is None:
                 datalist.append('(void *)NULL')
                 tname = english_upper(chartoname[t.type])
-                funclist.append('%s_%s' % (tname, name))
+                funclist.append('mkl_umath_%s_%s' % (tname, name))
                 if t.simd is not None:
                     for vt in t.simd:
                         code2list.append(textwrap.dedent("""\
@@ -936,8 +930,10 @@ def make_code(funcdict, filename):
         Please make changes to the code generator program (%s)
     **/
     #include "Python.h"
+    #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+    #include "numpy/arrayobject.h"
     #include "numpy/ufuncobject.h"
-    #include "loops_intel.h"
+    #include "mkl_umath_loops.h"
     %s
 
     static int

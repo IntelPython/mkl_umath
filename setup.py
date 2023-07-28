@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2019-2021, Intel Corporation
+# Copyright (c) 2019-2023, Intel Corporation
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -24,8 +24,24 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import importlib.machinery
 import io
+import os
 import re
+from distutils.dep_util import newer
+from numpy.distutils.conv_template import process_file as process_c_file
+from os import (getcwd, environ, makedirs)
+from os import (getcwd, environ, makedirs)
+from os.path import join, exists, abspath, dirname
+from setuptools import Extension
+
+import skbuild
+import skbuild.setuptools_wrap
+import skbuild.utils
+from skbuild.command.build_py import build_py as _skbuild_build_py
+from skbuild.command.install import install as _skbuild_install
+
+# import versioneer
 
 with io.open('mkl_umath/_version.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
@@ -51,45 +67,92 @@ Operating System :: Unix
 Operating System :: MacOS
 """
 
-def configuration(parent_package='',top_path=None):
-    from numpy.distutils.misc_util import Configuration
 
-    config = Configuration(None, parent_package, top_path)
-    config.set_options(ignore_setup_xxx_py=True,
-                       assume_default_configuration=True,
-                       delegate_options_to_subpackages=True,
-                       quiet=True)
+def load_module(name, fn):
+    """
+    Credit: numpy.compat.npy_load_module
+    """
+    return importlib.machinery.SourceFileLoader(name, fn).load_module()
 
-    config.add_subpackage('mkl_umath')
+def separator_join(sep, strs):
+    """
+    Joins non-empty arguments strings with dot.
 
-    config.version = VERSION
+    Credit: numpy.distutils.misc_util.dot_join
+    """
+    assert isinstance(strs, (list, tuple))
+    assert isinstance(sep, str)
+    return sep.join([si for si in strs if si])
 
-    return config
+pdir = join(dirname(__file__), 'mkl_umath')
+wdir = join(pdir, 'src')
 
+generate_umath_py = join(pdir, 'generate_umath.py')
+n = separator_join('_', ('mkl_umath', 'generate_umath'))
+generate_umath = load_module(n, generate_umath_py)
+del n
 
-def setup_package():
-    from setuptools import setup
-    from numpy.distutils.core import setup
-    metadata = dict(
-        name = 'mkl_umath',
-        maintainer = "Intel Corp.",
-        maintainer_email = "scripting@intel.com",
-        description = "MKL-based universal functions for NumPy arrays",
-        long_description = """Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)""",
-        url = "http://github.com/IntelPython/mkl_umath",
-        author = "Intel Corporation",
-        download_url = "http://github.com/IntelPython/mkl_umath",
-        license = 'BSD',
-        classifiers = [_f for _f in CLASSIFIERS.split('\n') if _f],
-        platforms = ["Windows", "Linux", "Mac OS-X"],
-        test_suite = 'nose.collector',
-        python_requires = '>=3.6',
-        install_requires = ['numpy'],
-        configuration = configuration
-    )
-    setup(**metadata)
+def generate_umath_c(build_dir):
+    target_dir = join(build_dir, 'src')
+    target = join(target_dir, '__umath_generated.c')
+    if not exists(target_dir):
+        print("Folder {} was expected to exist, but creating".format(target_dir))
+        makedirs(target_dir)
+    script = generate_umath_py
+    if newer(script, target):
+        with open(target, 'w') as f:
+            f.write(generate_umath.make_code(generate_umath.defdict,
+                                             generate_umath.__file__))
+    return []
 
-    return None
+generate_umath_c(pdir)
 
-if __name__ == '__main__':
-    setup_package()
+loops_header_templ = join(wdir, "mkl_umath_loops.h.src")
+processed_loops_h_fn = join(wdir, "mkl_umath_loops.h")
+loops_header_processed = process_c_file(loops_header_templ)
+
+with open(processed_loops_h_fn, 'w') as fid:
+    fid.write(loops_header_processed)
+
+loops_src_templ = join(wdir, "mkl_umath_loops.c.src")
+processed_loops_src_fn = join(wdir, "mkl_umath_loops.c")
+loops_src_processed = process_c_file(loops_src_templ)
+
+with open(processed_loops_src_fn, 'w') as fid:
+    fid.write(loops_src_processed)
+
+skbuild.setup(
+    name="mkl_umath",
+    version=VERSION,
+    ## cmdclass=_get_cmdclass(),
+    description = "MKL-based universal functions for NumPy arrays",
+    long_description = """Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)""",
+    long_description_content_type="text/markdown",
+    license = 'BSD',
+    author="Intel Corporation",
+    url="http://github.com/IntelPython/mkl_umath",
+    packages=[
+        "mkl_umath",
+    ],
+    package_data={"mkl_umath": ["tests/*.*", "tests/helper/*.py"]},
+    include_package_data=True,
+    zip_safe=False,
+    setup_requires=["Cython"],
+    install_requires=[
+        "numpy",
+    ],
+    extras_require={
+        "docs": [
+            "Cython",
+            "sphinx",
+            "sphinx_rtd_theme",
+            "pydot",
+            "graphviz",
+            "sphinxcontrib-programoutput",
+        ],
+        "coverage": ["Cython", "pytest", "pytest-cov", "coverage", "tomli"],
+    },
+    keywords="mkl_umath",
+    classifiers=[_f for _f in CLASSIFIERS.split("\n") if _f],
+    platforms=["Linux", "Windows"]
+)

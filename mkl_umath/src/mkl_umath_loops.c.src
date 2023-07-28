@@ -29,7 +29,6 @@
 #include "mkl.h"
 #include <float.h>
 #include <fenv.h>
-#include "mathimf.h"
 #include "Python.h"
 
 #define NPY_NO_DEPRECATED_API NPY_API_VERSION
@@ -40,7 +39,7 @@
 #include "numpy/ufuncobject.h"
 #include "numpy/npy_math.h"
 #include "blocking_utils.h"
-#include "loops_intel.h"
+#include "mkl_umath_loops.h"
 
 /* Adapated from NumPy's source code. 
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
@@ -223,8 +222,8 @@ divmod@c@(@type@ a, @type@ b, @type@ *modulus)
  *  #scalarf = sqrtf, sqrt#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_sqrt(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_sqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -251,8 +250,8 @@ NPY_NO_EXPORT void
  *  #scalarf = (1.0f)/sqrtf, (1.0)/sqrt#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_invsqrt(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_invsqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -280,8 +279,8 @@ NPY_NO_EXPORT void
  *  #scalarf = expf, exp#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_exp(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     int ignore_fpstatus = 0;
 
@@ -318,8 +317,8 @@ NPY_NO_EXPORT void
  */
 
 /* TODO: Use VML */
-NPY_NO_EXPORT void
-@TYPE@_exp2(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_exp2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_DISPATCH(
         DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@))
@@ -339,8 +338,8 @@ NPY_NO_EXPORT void
  *  #scalarf = expm1f, expm1#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_expm1(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_expm1(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -367,8 +366,8 @@ NPY_NO_EXPORT void
  *  #scalarf = erff, erf#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_erf(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_erf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -395,8 +394,8 @@ NPY_NO_EXPORT void
  *  #scalarf = logf, log#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_log(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_log(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -424,8 +423,8 @@ NPY_NO_EXPORT void
  */
 
 /* TODO: Use VML */
-NPY_NO_EXPORT void
-@TYPE@_log2(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_log2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_DISPATCH(
         DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@))
@@ -445,8 +444,8 @@ NPY_NO_EXPORT void
  *  #scalarf = log10f, log10#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_log10(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_log10(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -473,8 +472,8 @@ NPY_NO_EXPORT void
  *  #scalarf = log1pf, log1p#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_log1p(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_log1p(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -501,8 +500,8 @@ NPY_NO_EXPORT void
  *  #scalarf = cosf, cos#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_cos(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_cos(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -529,8 +528,8 @@ NPY_NO_EXPORT void
  *  #scalarf = sinf, sin#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_sin(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_sin(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -557,8 +556,8 @@ NPY_NO_EXPORT void
  *  #scalarf = tanf, tan#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_tan(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_tan(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -585,8 +584,8 @@ NPY_NO_EXPORT void
  *  #scalarf = acosf, acos#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arccos(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arccos(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -613,8 +612,8 @@ NPY_NO_EXPORT void
  *  #scalarf = asinf, asin#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arcsin(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arcsin(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -641,8 +640,8 @@ NPY_NO_EXPORT void
  *  #scalarf = atanf, atan#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arctan(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arctan(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -669,8 +668,8 @@ NPY_NO_EXPORT void
  *  #scalarf = coshf, cosh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_cosh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_cosh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -697,8 +696,8 @@ NPY_NO_EXPORT void
  *  #scalarf = sinhf, sinh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_sinh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_sinh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -725,8 +724,8 @@ NPY_NO_EXPORT void
  *  #scalarf = tanhf, tanh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_tanh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_tanh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -753,8 +752,8 @@ NPY_NO_EXPORT void
  *  #scalarf = acoshf, acosh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arccosh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arccosh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -781,8 +780,8 @@ NPY_NO_EXPORT void
  *  #scalarf = asinhf, asinh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arcsinh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arcsinh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -809,8 +808,8 @@ NPY_NO_EXPORT void
  *  #scalarf = atanhf, atanh#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_arctanh(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_arctanh(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -837,8 +836,8 @@ NPY_NO_EXPORT void
  *  #scalarf = fabsf, fabs#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_fabs(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_fabs(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_DISPATCH(
         DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@))
@@ -858,8 +857,8 @@ NPY_NO_EXPORT void
  *  #scalarf = floorf, floor#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_floor(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_floor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(steps[0] == sizeof(@type@) && steps[1] == sizeof(@type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -886,8 +885,8 @@ NPY_NO_EXPORT void
  *  #scalarf = ceilf, ceil#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_ceil(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_ceil(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -914,8 +913,8 @@ NPY_NO_EXPORT void
  *  #scalarf = rintf, rint#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_rint(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_rint(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(steps[0] == sizeof(@type@) && steps[1] == sizeof(@type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -942,8 +941,8 @@ NPY_NO_EXPORT void
  *  #scalarf = truncf, trunc#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_trunc(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_trunc(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -970,8 +969,8 @@ NPY_NO_EXPORT void
  *  #scalarf = cbrtf, cbrt#
  */
 
-NPY_NO_EXPORT void
-@TYPE@_cbrt(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_cbrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_UNARY_CONT(@type@, @type@) &&
            dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD &&
@@ -1094,8 +1093,8 @@ pairwise_sum_@TYPE@(char *a, npy_intp n, npy_intp stride)
  * # PW = 1#
  * # VML = Add#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_BINARY_CONT(@type@, @type@)) {
 #if @SUPPORTED_BY_VML@
@@ -1262,8 +1261,8 @@ NPY_NO_EXPORT void
  * # PW = 0#
  * # VML = Sub#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_BINARY_CONT(@type@, @type@)) {
 #if @SUPPORTED_BY_VML@
@@ -1430,8 +1429,8 @@ NPY_NO_EXPORT void
  * # PW = 0#
  * # VML = Mul#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_BINARY_CONT(@type@, @type@)) {
 #if @SUPPORTED_BY_VML@
@@ -1598,8 +1597,8 @@ NPY_NO_EXPORT void
  * # PW = 0#
  * # VML = Div#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if(IS_BINARY_CONT(@type@, @type@)) {
 #if @SUPPORTED_BY_VML@
@@ -1750,8 +1749,8 @@ NPY_NO_EXPORT void
  *        logical_and, logical_or#
  * #OP = ==, !=, <, <=, >, >=, &&, ||#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     {
         BINARY_LOOP {
@@ -1763,8 +1762,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_logical_xor(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const int t1 = !!*(@type@ *)ip1;
@@ -1773,8 +1772,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_logical_not(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1786,8 +1785,8 @@ NPY_NO_EXPORT void
  * #kind = isnan, isinf, isfinite, signbit#
  * #func = isnan, isinf, isfinite, signbit#
  **/
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     {
         UNARY_LOOP {
@@ -1799,8 +1798,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_spacing(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_spacing(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1808,8 +1807,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_copysign(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_copysign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1818,8 +1817,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_nextafter(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1832,8 +1831,8 @@ NPY_NO_EXPORT void
  * #kind = maximum, minimum#
  * #OP =  >=, <=#
  **/
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     /*  */
     if (IS_BINARY_REDUCE) {
@@ -1863,8 +1862,8 @@ NPY_NO_EXPORT void
  * #kind = fmax, fmin#
  * #OP =  >=, <=#
  **/
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     /*  */
     if (IS_BINARY_REDUCE) {
@@ -1887,19 +1886,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_floor_divide(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        const @type@ in2 = *(@type@ *)ip2;
-        @type@ mod;
-        *((@type@ *)op1) = divmod@c@(in1, in2, &mod);
-    }
-}
-
-NPY_NO_EXPORT void
-@TYPE@_remainder(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1908,8 +1896,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_divmod(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1918,8 +1906,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_square(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
 #if @SUPPORTED_BY_VML@
     if(IS_UNARY_CONT(@type@, @type@) &&
@@ -1937,8 +1925,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_reciprocal(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
 #if @SUPPORTED_BY_VML@
     if(IS_UNARY_CONT(@type@, @type@) &&
@@ -1956,16 +1944,16 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@__ones_like(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
     OUTPUT_LOOP {
         *((@type@ *)op1) = 1;
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_conjugate(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -1973,8 +1961,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_absolute(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
 #if @SUPPORTED_BY_VML@
     if(IS_UNARY_CONT(@type@, @type@) &&
@@ -1995,8 +1983,8 @@ NPY_NO_EXPORT void
     feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 
-NPY_NO_EXPORT void
-@TYPE@_negative(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_negative(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     {
         UNARY_LOOP {
@@ -2006,8 +1994,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_positive(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_positive(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -2015,8 +2003,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_sign(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     /* Sign of nan is nan */
     UNARY_LOOP {
@@ -2025,8 +2013,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_modf(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
@@ -2034,8 +2022,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_frexp(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_frexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
@@ -2043,8 +2031,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_ldexp(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
@@ -2053,8 +2041,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_ldexp_long(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     /*
      * Additional loop to handle npy_long integer inputs (cf. #866, #1633).
@@ -2083,7 +2071,7 @@ NPY_NO_EXPORT void
     }
 }
 
-#define @TYPE@_true_divide @TYPE@_divide
+#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
 
 /**end repeat**/
 
@@ -2200,8 +2188,8 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n,
  * #OP = +, -#
  * #PW = 1, 0#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     if (IS_BINARY_REDUCE && @PW@) {
         npy_intp n = dimensions[0];
@@ -2227,8 +2215,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_multiply(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2240,8 +2228,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_divide(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2272,33 +2260,12 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_floor_divide(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if (fabs@c@(in2r) >= fabs@c@(in2i)) {
-            const @ftype@ rat = in2i/in2r;
-            ((@ftype@ *)op1)[0] = floor@c@((in1r + in1i*rat)/(in2r + in2i*rat));
-            ((@ftype@ *)op1)[1] = 0;
-        }
-        else {
-            const @ftype@ rat = in2r/in2i;
-            ((@ftype@ *)op1)[0] = floor@c@((in1r*rat + in1i)/(in2i + in2r*rat));
-            ((@ftype@ *)op1)[1] = 0;
-        }
-    }
-}
-
 /**begin repeat1
  * #kind= greater, greater_equal, less, less_equal, equal, not_equal#
  * #OP = CGT, CGE, CLT, CLE, CEQ, CNE#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2315,8 +2282,8 @@ NPY_NO_EXPORT void
    #OP1 = ||, ||#
    #OP2 = &&, ||#
 */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2328,8 +2295,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_logical_xor(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2342,8 +2309,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_logical_not(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2357,8 +2324,8 @@ NPY_NO_EXPORT void
  * #func = isnan, isinf, isfinite#
  * #OP = ||, ||, &&#
  **/
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2369,8 +2336,8 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-NPY_NO_EXPORT void
-@TYPE@_square(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2380,8 +2347,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_reciprocal(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2400,8 +2367,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@__ones_like(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(data))
+void
+mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
 {
     OUTPUT_LOOP {
         ((@ftype@ *)op1)[0] = 1;
@@ -2409,8 +2376,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_conjugate(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func)) {
+void
+mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func)) {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
         const @ftype@ in1i = ((@ftype@ *)ip1)[1];
@@ -2419,8 +2386,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_absolute(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     int ignore_fpstatus = 0;
 
@@ -2449,8 +2416,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@__arg(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@__arg(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2459,8 +2426,8 @@ NPY_NO_EXPORT void
     }
 }
 
-NPY_NO_EXPORT void
-@TYPE@_sign(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     /* fixme: sign of nan is currently 0 */
     UNARY_LOOP {
@@ -2478,8 +2445,8 @@ NPY_NO_EXPORT void
  * #kind = maximum, minimum#
  * #OP = CGE, CLE#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2501,8 +2468,8 @@ NPY_NO_EXPORT void
  * #kind = fmax, fmin#
  * #OP = CGE, CLE#
  */
-NPY_NO_EXPORT void
-@TYPE@_@kind@(char **args, npy_intp *dimensions, npy_intp *steps, void *NPY_UNUSED(func))
+void
+mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {
         const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -2522,7 +2489,7 @@ NPY_NO_EXPORT void
 }
 /**end repeat1**/
 
-#define @TYPE@_true_divide @TYPE@_divide
+#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
 
 /**end repeat**/
 

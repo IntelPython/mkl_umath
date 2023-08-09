@@ -30,10 +30,13 @@ import re
 with io.open('mkl_umath/_version.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
+with open("README.md", "r", encoding="utf-8") as file:
+    long_description = file.read()
+
 VERSION = version
 
 CLASSIFIERS = """\
-Development Status :: 0 - Alpha
+Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved
@@ -75,7 +78,8 @@ def setup_package():
         maintainer = "Intel Corp.",
         maintainer_email = "scripting@intel.com",
         description = "MKL-based universal functions for NumPy arrays",
-        long_description = """Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)""",
+        long_description = long_description,
+        long_description_content_type="text/markdown",
         url = "http://github.com/IntelPython/mkl_umath",
         author = "Intel Corporation",
         download_url = "http://github.com/IntelPython/mkl_umath",

@@ -40,6 +40,7 @@ if(WIN32)
      "-Wmissing-declarations "
      "-Wstrict-prototypes "
      "-Wno-unused-parameter "
+     "-Wno-implicit-function-declaration "
    )
    string(CONCAT SDL_FLAGS
      "/GS "
@@ -88,6 +89,10 @@ else()
   message(FATAL_ERROR "Unsupported system.")
 endif()
 
+if (WIN32)
+   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 # set_property(GLOBAL PROPERTY GLOBAL_DEPENDS_DEBUG_MODE 1)
@@ -96,8 +101,11 @@ set(_linker_options "LINKER:${MKL_UMATH_LDFLAGS}")
 set(_trgt mkl_umath_loops)
 add_library(${_trgt} SHARED "mkl_umath/src/mkl_umath_loops.c")
 set_target_properties(${_trgt} PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE ON)
-target_include_directories(${_trgt} PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} ${MKL_INCLUDE_DIR})
+target_include_directories(${_trgt} PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} "C:/Users/aguzmanb/Development/mambaforge/envs/mkl_umath_prefix/Library/include")
 target_link_libraries(${_trgt} PRIVATE mkl_rt)
+if (WIN32)
+   target_link_directories(${_trgt} PRIVATE "C:/Users/aguzmanb/Development/mambaforge/envs/mkl_umath_prefix/Libs")
+endif()
 target_link_options(${_trgt} PRIVATE ${_linker_options})
 install(TARGETS ${_trgt} LIBRARY DESTINATION mkl_umath)
 

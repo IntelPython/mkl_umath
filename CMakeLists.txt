@@ -50,7 +50,7 @@ if(WIN32)
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} -O0 -g1 -DDEBUG"
    )
-  set(MKL_UMATH_LDFLAGS "/NXCompat;/DynamicBase;/FORCE:UNRESOLVED")
+  set(MKL_UMATH_LINKER_OPTIONS "LINKER:/NXCompat;LINKER:/DynamicBase;LINKER:/FORCE:UNRESOLVED")
 elseif(UNIX)
    string(CONCAT WARNING_FLAGS
      "-Wall "
@@ -84,7 +84,7 @@ elseif(UNIX)
      "${CMAKE_C_FLAGS_DEBUG} ${CFLAGS} -O0 -g1 -DDEBUG"
    )
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-incompatible-function-pointer-types ${CFLAGS}")
-  set(MKL_UMATH_LDFLAGS "-z,noexecstack,-z,relro,-z,now")
+  set(MKL_UMATH_LINKER_OPTIONS "LINKER:-z,noexecstack,-z,relro,-z,now")
 else()
   message(FATAL_ERROR "Unsupported system.")
 endif()
@@ -96,7 +96,7 @@ endif()
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 # set_property(GLOBAL PROPERTY GLOBAL_DEPENDS_DEBUG_MODE 1)
-set(_linker_options "LINKER:${MKL_UMATH_LDFLAGS}")
+set(_linker_options ${MKL_UMATH_LINKER_OPTIONS})
 
 set(_trgt mkl_umath_loops)
 add_library(${_trgt} SHARED "mkl_umath/src/mkl_umath_loops.c")

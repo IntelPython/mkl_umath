@@ -50,7 +50,7 @@ if(WIN32)
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} -O0 -g1 -DDEBUG"
    )
-  set(MKL_UMATH_LINKER_OPTIONS "LINKER:/NXCompat;LINKER:/DynamicBase;LINKER:/FORCE:UNRESOLVED")
+  set(MKL_UMATH_LINKER_OPTIONS "LINKER:/NXCompat;LINKER:/DynamicBase")
 elseif(UNIX)
    string(CONCAT WARNING_FLAGS
      "-Wall "
@@ -102,7 +102,7 @@ set(_trgt mkl_umath_loops)
 add_library(${_trgt} SHARED "mkl_umath/src/mkl_umath_loops.c")
 set_target_properties(${_trgt} PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE ON)
 target_include_directories(${_trgt} PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} "C:/Users/aguzmanb/Development/mambaforge/envs/mkl_umath_prefix/Library/include")
-target_link_libraries(${_trgt} PRIVATE mkl_rt)
+target_link_libraries(${_trgt} PRIVATE mkl_rt ${Python_LIBRARIES})
 if (WIN32)
    target_link_directories(${_trgt} PRIVATE "C:/Users/aguzmanb/Development/mambaforge/envs/mkl_umath_prefix/Libs")
 endif()

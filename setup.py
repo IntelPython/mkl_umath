@@ -46,10 +46,13 @@ from skbuild.command.install import install as _skbuild_install
 with io.open('mkl_umath/_version.py', 'rt', encoding='utf8') as f:
     version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
 
+with open("README.md", "r", encoding="utf-8") as file:
+    long_description = file.read()
+
 VERSION = version
 
 CLASSIFIERS = """\
-Development Status :: 0 - Alpha
+Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved
@@ -92,6 +95,7 @@ n = separator_join('_', ('mkl_umath', 'generate_umath'))
 generate_umath = load_module(n, generate_umath_py)
 del n
 
+
 def generate_umath_c(build_dir):
     target_dir = join(build_dir, 'src')
     target = join(target_dir, '__umath_generated.c')
@@ -104,6 +108,7 @@ def generate_umath_c(build_dir):
             f.write(generate_umath.make_code(generate_umath.defdict,
                                              generate_umath.__file__))
     return []
+
 
 generate_umath_c(pdir)
 
@@ -121,37 +126,29 @@ loops_src_processed = process_c_file(loops_src_templ)
 with open(processed_loops_src_fn, 'w') as fid:
     fid.write(loops_src_processed)
 
+
 skbuild.setup(
     name="mkl_umath",
     version=VERSION,
-    ## cmdclass=_get_cmdclass(),
+    maintainer = "Intel Corp.",
+    maintainer_email = "scripting@intel.com",
     description = "MKL-based universal functions for NumPy arrays",
-    long_description = """Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)""",
+    long_description = long_description,
     long_description_content_type="text/markdown",
     license = 'BSD',
     author="Intel Corporation",
     url="http://github.com/IntelPython/mkl_umath",
+    download_url="http://github.com/IntelPython/mkl_umath",
     packages=[
         "mkl_umath",
     ],
-    package_data={"mkl_umath": ["tests/*.*", "tests/helper/*.py"]},
+    package_data={"mkl_umath": ["tests/*.*"]},
     include_package_data=True,
     zip_safe=False,
     setup_requires=["Cython"],
     install_requires=[
         "numpy",
     ],
-    extras_require={
-        "docs": [
-            "Cython",
-            "sphinx",
-            "sphinx_rtd_theme",
-            "pydot",
-            "graphviz",
-            "sphinxcontrib-programoutput",
-        ],
-        "coverage": ["Cython", "pytest", "pytest-cov", "coverage", "tomli"],
-    },
     keywords="mkl_umath",
     classifiers=[_f for _f in CLASSIFIERS.split("\n") if _f],
     platforms=["Linux", "Windows"]

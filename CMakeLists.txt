@@ -50,7 +50,7 @@ if(WIN32)
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} -O0 -g1 -DDEBUG"
    )
-  set(MKL_UMATH_LDFLAGS "/NXCompat;/DynamicBase")
+  set(MKL_UMATH_LDFLAGS "/NXCompat;/DynamicBase;/FORCE:UNRESOLVED")
 elseif(UNIX)
    string(CONCAT WARNING_FLAGS
      "-Wall "

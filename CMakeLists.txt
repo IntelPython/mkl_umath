@@ -100,7 +100,11 @@ set_target_properties(${_trgt} PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE ON)
 target_include_directories(${_trgt} PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR} "C:/Users/aguzmanb/Development/mambaforge/envs/mkl_umath_prefix/Library/include")
 target_link_libraries(${_trgt} PRIVATE mkl_rt ${Python_LIBRARIES})
 target_link_options(${_trgt} PRIVATE ${_linker_options})
-install(TARGETS ${_trgt} LIBRARY DESTINATION mkl_umath)
+install(TARGETS ${_trgt}
+  LIBRARY DESTINATION mkl_umath
+  ARCHIVE DESTINATION mkl_umath
+  RUNTIME DESTINATION mkl_umath
+)
 
 add_library(_ufuncs MODULE "mkl_umath/src/ufuncsmodule.c" "mkl_umath/src/__umath_generated.c")
 target_include_directories(_ufuncs PRIVATE "mkl_umath/src" ${NumPy_INCLUDE_DIR} ${MKL_INCLUDE_DIR})

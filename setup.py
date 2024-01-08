@@ -31,7 +31,6 @@ import re
 from distutils.dep_util import newer
 from _vendored.conv_template import process_file as process_c_file
 from os import (getcwd, environ, makedirs)
-from os import (getcwd, environ, makedirs)
 from os.path import join, exists, abspath, dirname
 from setuptools import Extension
 

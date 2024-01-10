@@ -7,6 +7,11 @@ project(mkl_umath
   DESCRIPTION "mkl_umath module"
 )
 
+option(OPTIMIZATION_REPORT
+  "Whether to generate optimization vectorization report"
+  OFF
+)
+
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 find_package(NumPy REQUIRED)
 
@@ -91,6 +96,9 @@ target_link_libraries(${_trgt} PRIVATE mkl_rt ${Python_LIBRARIES})
 target_link_options(${_trgt} PRIVATE ${_linker_options})
 target_compile_options(${_trgt} PRIVATE -fveclib=SVML)
 target_compile_options(${_trgt} PRIVATE -fvectorize)
+if(OPTIMIZATION_REPORT)
+  target_compile_options(${_trgt} PRIVATE -qopt-report=3)
+endif()
 install(TARGETS ${_trgt}
   LIBRARY DESTINATION mkl_umath
   ARCHIVE DESTINATION mkl_umath

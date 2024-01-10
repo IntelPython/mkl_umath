@@ -74,19 +74,19 @@
     npy_intp is1 = steps[0], os1 = steps[1];\
     npy_intp n = dimensions[0];\
     npy_intp i;\
-    for(i = 0; i < n; i++, ip1 += is1, op1 += os1)
+    for(i = 0; i < n; ++i, ip1 += is1, op1 += os1)
 
-#define UNARY_LOOP_VECTORIZED\
-    char *ip1 = args[0], *op1 = args[1];\
-    npy_intp is1 = steps[0], os1 = steps[1];\
+#define UNARY_LOOP_VECTORIZED(tin, tout)\
+    tin *ip1 = (tin *) args[0];\
+    tout *op1 = (tout *) args[1];		\
     npy_intp n = dimensions[0];\
     npy_intp i;\
     NPY_PRAGMA_VECTOR\
-    for(i = 0; i < n; i++, ip1 += is1, op1 += os1)
+    for(i = 0; i < n; ++i, ++ip1, ++op1)
 
-#define UNARY_LOOP_DISPATCH(cond, body)\
+#define UNARY_LOOP_DISPATCH(tin, tout, cond, body)\
     if (cond) {\
-        UNARY_LOOP_VECTORIZED { body; }\
+        UNARY_LOOP_VECTORIZED(tin, tout) { body; }\
     } else {\
         UNARY_LOOP { body; }\
     }
@@ -97,7 +97,7 @@
     npy_intp is1 = steps[0], os1 = steps[1], os2 = steps[2];\
     npy_intp n = dimensions[0];\
     npy_intp i;\
-    for(i = 0; i < n; i++, ip1 += is1, op1 += os1, op2 += os2)
+    for(i = 0; i < n; ++i, ip1 += is1, op1 += os1, op2 += os2)
 
 /** (ip1, ip2) -> (op1) */
 #define BINARY_LOOP\
@@ -105,7 +105,7 @@
     npy_intp is1 = steps[0], is2 = steps[1], os1 = steps[2];\
     npy_intp n = dimensions[0];\
     npy_intp i;\
-    for(i = 0; i < n; i++, ip1 += is1, ip2 += is2, op1 += os1)
+    for(i = 0; i < n; ++i, ip1 += is1, ip2 += is2, op1 += os1)
 
 /** (ip1, ip2) -> (op1, op2) */
 #define BINARY_LOOP_TWO_OUT\
@@ -113,7 +113,7 @@
     npy_intp is1 = steps[0], is2 = steps[1], os1 = steps[2], os2 = steps[3];\
     npy_intp n = dimensions[0];\
     npy_intp i;\
-    for(i = 0; i < n; i++, ip1 += is1, ip2 += is2, op1 += os1, op2 += os2)
+    for(i = 0; i < n; ++i, ip1 += is1, ip2 += is2, op1 += os1, op2 += os2)
 
 /** (ip1, ip2, ip3) -> (op1) */
 #define TERNARY_LOOP\
@@ -121,7 +121,7 @@
     npy_intp is1 = steps[0], is2 = steps[1], is3 = steps[2], os1 = steps[3];\
     npy_intp n = dimensions[0];\
     npy_intp i;\
-    for(i = 0; i < n; i++, ip1 += is1, ip2 += is2, ip3 += is3, op1 += os1)
+    for(i = 0; i < n; ++i, ip1 += is1, ip2 += is2, ip3 += is3, op1 += os1)
 
 /** @} */
 

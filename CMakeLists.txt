@@ -40,7 +40,13 @@ if(WIN32)
      "/GS "
      "/DynamicBase "
    )
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Ox ${WARNING_FLAGS} ${SDL_FLAGS}")
+   string(CONCAT PRECISION_FLAGS
+     "/fp:fast=2 "
+     "/Qimf-precision=high "
+     "/Qprec-sqrt "
+     "/Qprotect-parens "
+   )
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Ox ${WARNING_FLAGS} ${SDL_FLAGS} ${PRECISION_FLAGS}")
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} -O0 -g1 -DDEBUG"
    )
@@ -73,7 +79,13 @@ elseif(UNIX)
      "${WARNING_FLAGS}"
      "${SDL_FLAGS}"
    )
-   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 ${CFLAGS}")
+   string(CONCAT PRECISION_FLAGS
+     "-prec-sqrt "
+     "-fprotect-parens "
+     "-fimf-precision=high "
+     "-fp-model fast=2 "
+   )
+   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 ${CFLAGS} ${PRECISION_FLAGS}")
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${CFLAGS} -O0 -g1 -DDEBUG"
    )
@@ -90,7 +102,10 @@ set(_linker_options ${MKL_UMATH_LINKER_OPTIONS})
 
 set(_trgt mkl_umath_loops)
 add_library(${_trgt} SHARED "mkl_umath/src/mkl_umath_loops.c")
-set_target_properties(${_trgt} PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE ON)
+set_target_properties(${_trgt} PROPERTIES
+    CMAKE_POSITION_INDEPENDENT_CODE ON
+    C_STANDARD 99
+)
 target_include_directories(${_trgt} PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR})
 target_link_libraries(${_trgt} PRIVATE mkl_rt ${Python_LIBRARIES})
 target_link_options(${_trgt} PRIVATE ${_linker_options})

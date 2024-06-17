@@ -37,10 +37,12 @@ requirements:
       - {{ pin_compatible('numpy') }}
 
 test:
+    requires:
+      - pytest
     source_files:
       - mkl_umath/tests/test_basic.py
     commands:
-      - python mkl_umath/tests/test_basic.py
+      - pytest mkl_umath/tests/test_basic.py
     imports:
       - mkl_umath
       - mkl_umath._ufuncs

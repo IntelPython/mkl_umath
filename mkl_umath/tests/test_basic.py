@@ -44,7 +44,7 @@ def get_args(args_str):
         elif s == 'i':
             args.append(np.int_(np.random.randint(low=1, high=10)))
         elif s == 'l':
-            args.append(np.longlong(np.random.randint(low=1, high=10)))
+            args.append(np.dtype('long').type(np.random.randint(low=1, high=10)))
         else:
             raise ValueError("Unexpected type specified!")
     return tuple(args)

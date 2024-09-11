@@ -32,6 +32,7 @@
 #include "Python.h"
 
 #define NPY_NO_DEPRECATED_API NPY_API_VERSION
+#define NP_IMPORT_ARRAY
 
 #include "numpy/npy_common.h"
 #include "numpy/ndarraytypes.h"

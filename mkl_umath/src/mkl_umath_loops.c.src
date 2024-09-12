@@ -154,6 +154,11 @@ static inline npy_float spacingf(npy_float x) {
     return copysignf(nextafterf(fabsf(x), INFINITY), x) - x;
 }
 
+#if defined(_MSC_VER) && defined(__INTEL_COMPILER)
+extern __inline float __cdecl ldexpf( float _X, int _Y) { 
+    return (float)ldexp(_X, _Y); 
+}
+#endif
 
 /**begin repeat
  * Float types

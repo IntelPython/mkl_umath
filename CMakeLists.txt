@@ -12,13 +12,17 @@ option(OPTIMIZATION_REPORT
   OFF
 )
 
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
-find_package(NumPy REQUIRED)
+find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
+
+# Print out the discovered paths
+include(CMakePrintHelpers)
+cmake_print_variables(Python_INCLUDE_DIRS)
+cmake_print_variables(Python_LIBRARIES)
+cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
 
 set(CYTHON_FLAGS "-t -w \"${CMAKE_SOURCE_DIR}\"")
 find_package(Cython REQUIRED)
 
-set(MKL_ARCH intel64)
 set(MKL_LINK sdl)
 find_package(MKL REQUIRED)
 
@@ -104,7 +108,7 @@ set_target_properties(${_trgt} PROPERTIES
     CMAKE_POSITION_INDEPENDENT_CODE ON
     C_STANDARD 99
 )
-target_include_directories(${_trgt} PUBLIC mkl_umath/src/ ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR})
+target_include_directories(${_trgt} PUBLIC mkl_umath/src/ ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
 target_link_libraries(${_trgt} PUBLIC MKL::MKL ${Python_LIBRARIES})
 target_link_options(${_trgt} PUBLIC ${_linker_options})
 target_compile_options(${_trgt} PUBLIC -fveclib=SVML)
@@ -119,7 +123,7 @@ install(TARGETS ${_trgt}
 )
 
 python_add_library(_ufuncs MODULE WITH_SOABI "mkl_umath/src/ufuncsmodule.c" "mkl_umath/src/__umath_generated.c")
-target_include_directories(_ufuncs PRIVATE "mkl_umath/src" ${NumPy_INCLUDE_DIR} ${MKL_INCLUDE_DIR})
+target_include_directories(_ufuncs PRIVATE "mkl_umath/src" ${Python_NumPy_INCLUDE_DIRS} ${MKL_INCLUDE_DIR})
 target_compile_definitions(_ufuncs PUBLIC NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 target_link_options(_ufuncs PRIVATE ${_linker_options})
 target_link_libraries(_ufuncs PRIVATE mkl_umath_loops)
@@ -131,7 +135,7 @@ install(TARGETS _ufuncs LIBRARY DESTINATION mkl_umath)
 
 add_cython_target(_patch "mkl_umath/src/_patch.pyx" C OUTPUT_VAR _generated_src)
 Python_add_library(_patch MODULE WITH_SOABI ${_generated_src})
-target_include_directories(_patch PRIVATE "mkl_umath/src/" ${NumPy_INCLUDE_DIR} ${PYTHON_INCLUDE_DIR})
+target_include_directories(_patch PRIVATE "mkl_umath/src/" ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
 target_compile_definitions(_patch PUBLIC NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 target_link_libraries(_patch PRIVATE mkl_umath_loops)
 set_target_properties(_patch PROPERTIES C_STANDARD 99)

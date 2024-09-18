@@ -125,7 +125,7 @@ jobs:
           python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
 
   build_windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     strategy:
       matrix:
@@ -189,7 +189,7 @@ jobs:
       matrix:
         python: ['3.10', '3.11', '3.12']
         experimental: [false]
-        runner: [windows-latest]
+        runner: [windows-2019]
     continue-on-error: ${{ matrix.experimental }}
     env:
       workdir: '${{ github.workspace }}'

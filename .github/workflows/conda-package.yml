@@ -20,6 +20,7 @@ jobs:
       - name: Set pkgs_dirs
         run: |
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
+
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
@@ -34,24 +35,28 @@ jobs:
 
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
+
       - name: Install conda-build
         run: conda install conda-build
+
       - name: Build conda package
         run: |
           CHANNELS="-c conda-forge -c https://software.repos.intel.com/python/conda --override-channels"
           VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
+          echo "CONDA_BLD=${CONDA}/conda-bld/linux-64" >> $GITHUB_ENV
 
           conda build \
             $TEST \
             $VERSIONS \
             $CHANNELS \
             conda-recipe-cf
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: /usr/share/miniconda/conda-bld/linux-64/${{ env.PACKAGE_NAME }}-*.tar.bz2
+          path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   test:
     needs: build
@@ -89,9 +94,11 @@ jobs:
           conda create -n test_mkl_umath $PACKAGE_NAME python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
       - name: Display lockfile
         run: cat lockfile
+
       - name: Set pkgs_dirs
         run: |
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
+
       - name: Cache conda packages
         uses: actions/cache@v3
         env:
@@ -110,6 +117,7 @@ jobs:
           conda create -n test_mkl_umath python=${{ matrix.python }} $PACKAGE_NAME pytest $CHANNELS
           # Test installed packages
           conda list -n test_mkl_umath
+
       - name: Run tests
         run: |
           source $CONDA/etc/profile.d/conda.sh
@@ -128,11 +136,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - uses: conda-incubator/setup-miniconda@v2
+
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-activate-base: true
-          conda-build-version: "*"
-          activate-environment: true
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          activate-environment: build
+          channels: conda-forge
           python-version: ${{ matrix.python }}
 
       - name: Cache conda packages
@@ -146,8 +156,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
+      - name: Store conda paths as envs
+        shell: bash -l {0}
+        run: |
+          echo "CONDA_BLD=$CONDA/conda-bld/win-64/" | tr "\\\\" '/' >> $GITHUB_ENV
+
+      - name: Install conda build
+        run: |
+          conda activate
+          conda install -y conda-build
+          conda list -n base
+
       - name: Build conda package
-        run: conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
+        run: |
+          conda activate
+          conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -175,13 +200,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-update-conda: true
-          conda-build-version: '*'
-          miniconda-version: 'latest'
-          activate-environment: mkl_umath_test
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          activate-environment: build
+          channels: conda-forge
           python-version: ${{ matrix.python }}
+
       - name: Create conda channel with the artifact bit
         shell: cmd /C CALL {0}
         run: |
@@ -189,13 +215,17 @@ jobs:
           mkdir ${{ env.workdir }}\channel\win-64
           move ${{ env.PACKAGE_NAME }}-*.tar.bz2 ${{ env.workdir }}\channel\win-64
           dir ${{ env.workdir }}\channel\win-64
+
       - name: Index the channel
         shell: cmd /C CALL {0}
-        run: conda index ${{ env.workdir }}\channel
+        run: |
+          conda activate
+          conda index ${{ env.workdir }}\channel
 
       - name: Dump mkl_umath version info from created channel into ver.json
         shell: cmd /C CALL {0}
         run: |
+          conda activate
           conda search ${{ env.PACKAGE_NAME }} -c ${{ env.workdir }}/channel --override-channels --info --json > ${{ env.workdir }}\ver.json
       - name: Output content of produced ver.json
         shell: pwsh
@@ -210,6 +240,7 @@ jobs:
           FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "%SCRIPT%"`) DO (
              SET PACKAGE_VERSION=%%F
           )
+          conda activate
           conda install -n mkl_umath_test ${{ env.PACKAGE_NAME }}=%PACKAGE_VERSION% python=${{ matrix.python }} -c ${{ env.workdir }}/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Display lockfile content
         shell: pwsh
@@ -241,6 +272,7 @@ jobs:
       - name: Report content of test environment
         shell: cmd /C CALL {0}
         run: |
+          conda activate
           echo "Value of CONDA enviroment variable was: " %CONDA%
           echo "Value of CONDA_PREFIX enviroment variable was: " %CONDA_PREFIX%
           conda info && conda list -n mkl_umath_test

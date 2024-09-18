@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.10']
+        python: ['3.10', '3.11', '3.12']
     steps:
       - uses: actions/checkout@v3
         with:
@@ -38,7 +38,7 @@ jobs:
         run: conda install conda-build
       - name: Build conda package
         run: |
-          CHANNELS="-c conda-forge -c intel --override-channels"
+          CHANNELS="-c conda-forge -c https://software.repos.intel.com/python/conda --override-channels"
           VERSIONS="--python ${{ matrix.python }}"
           TEST="--no-test"
 
@@ -46,7 +46,7 @@ jobs:
             $TEST \
             $VERSIONS \
             $CHANNELS \
-            conda-recipe
+            conda-recipe-cf
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -59,12 +59,12 @@ jobs:
 
     strategy:
       matrix:
-        python: ['3.10']
+        python: ['3.10', '3.11', '3.12']
         experimental: [false]
         runner: [ubuntu-latest]
     continue-on-error: ${{ matrix.experimental }}
     env:
-      CHANNELS: -c intel -c main --override-channels
+      CHANNELS: -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels
 
     steps:
       - name: Download artifact
@@ -121,7 +121,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ['3.10']
+        python: ['3.10', '3.11', '3.12']
     env:
       conda-bld: C:\Miniconda\conda-bld\win-64\
     steps:
@@ -147,7 +147,7 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
       - name: Build conda package
-        run: conda build --no-test --python ${{ matrix.python }} -c intel -c conda-forge --override-channels conda-recipe
+        run: conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
@@ -162,13 +162,13 @@ jobs:
         shell: cmd /C CALL {0}
     strategy:
       matrix:
-        python: ['3.10']
+        python: ['3.10', '3.11', '3.12']
         experimental: [false]
         runner: [windows-latest]
     continue-on-error: ${{ matrix.experimental }}
     env:
       workdir: '${{ github.workspace }}'
-      CHANNELS: -c intel -c conda-forge --override-channels
+      CHANNELS: -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels
 
     steps:
       - name: Download artifact

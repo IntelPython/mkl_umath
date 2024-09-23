@@ -177,7 +177,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: ${{ env.conda-bld }}${{ env.PACKAGE_NAME }}-*.tar.bz2
+          path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   test_windows:
     needs: build_windows

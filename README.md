@@ -10,7 +10,7 @@ Patches were factored out per community feedback ([NEP-36](https://numpy.org/nep
 as a stand-alone package. It can be installed into conda environment using 
 
 ```
-   conda install -c intel mkl_umath
+   conda install -c https://software.repos.intel.com/python/conda mkl_umath
 ```
 
 ---
@@ -18,16 +18,8 @@ as a stand-alone package. It can be installed into conda environment using
 To install mkl_umath Pypi package please use following command:
 
 ```
-   python -m pip install --i https://pypi.anaconda.org/intel/simple -extra-index-url https://pypi.org/simple mkl_umath
+   python -m pip install mkl_umath
 ```
-
-If command above installs NumPy package from the Pypi, please use following command to install Intel optimized NumPy wheel package from Anaconda Cloud:
-
-```
-   python -m pip install --i https://pypi.anaconda.org/intel/simple -extra-index-url https://pypi.org/simple mkl_umath numpy==<numpy_version>
-```
-
-Where `<numpy_version>` should be the latest version from https://anaconda.org/intel/numpy
 
 ---
 

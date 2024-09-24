@@ -177,7 +177,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: ${{ env.conda-bld }}${{ env.PACKAGE_NAME }}-*.tar.bz2
+          path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
 
   test_windows:
     needs: build_windows
@@ -200,11 +200,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
+
       - uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
+          conda-build-version: '*'
           miniforge-variant: Miniforge3
           miniforge-version: latest
-          activate-environment: build
+          activate-environment: mkl_umath_test
           channels: conda-forge
           python-version: ${{ matrix.python }}
 
@@ -219,14 +222,19 @@ jobs:
       - name: Index the channel
         shell: cmd /C CALL {0}
         run: |
-          conda activate
           conda index ${{ env.workdir }}\channel
 
+      - name: Dump mkl_umath version info from created channel to STDOUT
+        shell: cmd /C CALL {0}
+        run: |
+          conda search ${{ env.PACKAGE_NAME }} -c ${{ env.workdir }}/channel --override-channels --info --json
       - name: Dump mkl_umath version info from created channel into ver.json
         shell: cmd /C CALL {0}
         run: |
-          conda activate
           conda search ${{ env.PACKAGE_NAME }} -c ${{ env.workdir }}/channel --override-channels --info --json > ${{ env.workdir }}\ver.json
+      - name: Output content of workdir
+        shell: pwsh
+        run: Get-ChildItem -Path ${{ env.workdir }}
       - name: Output content of produced ver.json
         shell: pwsh
         run: Get-Content -Path ${{ env.workdir }}\ver.json
@@ -240,7 +248,6 @@ jobs:
           FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "%SCRIPT%"`) DO (
              SET PACKAGE_VERSION=%%F
           )
-          conda activate
           conda install -n mkl_umath_test ${{ env.PACKAGE_NAME }}=%PACKAGE_VERSION% python=${{ matrix.python }} -c ${{ env.workdir }}/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
       - name: Display lockfile content
         shell: pwsh

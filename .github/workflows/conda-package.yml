@@ -13,7 +13,7 @@ jobs:
       matrix:
         python: ['3.10', '3.11', '3.12']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.7
         with:
           fetch-depth: 0
 
@@ -22,7 +22,7 @@ jobs:
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
 
       - name: Cache conda packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
@@ -53,7 +53,7 @@ jobs:
             conda-recipe-cf
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
       - name: Add conda to system path
@@ -100,7 +100,7 @@ jobs:
           echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
 
       - name: Cache conda packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
@@ -133,7 +133,7 @@ jobs:
     env:
       conda-bld: C:\Miniconda\conda-bld\win-64\
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1.7
         with:
           fetch-depth: 0
 
@@ -146,7 +146,7 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Cache conda packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 3  # Increase to reset cache
         with:
@@ -174,7 +174,7 @@ jobs:
           conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.4.0
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -197,7 +197,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
 
@@ -253,7 +253,7 @@ jobs:
         shell: pwsh
         run: Get-Content -Path .\lockfile
       - name: Cache conda packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:

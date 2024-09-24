@@ -10,11 +10,7 @@ SKBUILD_ARGS="-- -DCMAKE_C_COMPILER:PATH=icx -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then
     # Install packages and assemble wheel package from built bits
-    if [ "$CONDA_PY" == "36" ]; then
-        WHEELS_BUILD_ARGS="-p manylinux1_x86_64"
-    else
-        WHEELS_BUILD_ARGS="-p manylinux2014_x86_64"
-    fi
+    WHEELS_BUILD_ARGS="-p manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64"
     ${PYTHON} setup.py install bdist_wheel ${WHEELS_BUILD_ARGS} ${SKBUILD_ARGS}
     cp dist/mkl_umath*.whl ${WHEELS_OUTPUT_FOLDER}
 else

@@ -24,7 +24,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # distutils: language = c
-# cython: language_level=2
+# cython: language_level=3
 
 import mkl_umath._ufuncs as mu
 import numpy.core.umath as nu

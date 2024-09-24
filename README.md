@@ -28,7 +28,7 @@ To install mkl_umath Pypi package please use following command:
 Intel(R) C compiler and Intel(R) Math Kernel Library are required to build `mkl_umath` from source:
 
 ```sh
-# ensure that MKL is installed, icc is activated
+# ensure that MKL is installed into Python prefix, Intel LLVM compiler is activated
 export MKLROOT=$CONDA_PREFIX
-python setup.py config_cc --compiler=intelem build_ext --inplace
+CC=icx pip install --no-build-isolation --no-deps -e .
 ```

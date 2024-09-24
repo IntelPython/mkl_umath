@@ -25,6 +25,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "Python.h"
+#define PY_ARRAY_UNIQUE_SYMBOL mkl_umath_ufunc_ext
 #include "numpy/arrayobject.h"
 #include "numpy/ndarraytypes.h"
 #include "numpy/ufuncobject.h"

@@ -5,6 +5,9 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BUILD_PREFIX}/lib"
 echo "--gcc-toolchain=${BUILD_PREFIX} --sysroot=${BUILD_PREFIX}/${HOST}/sysroot -target ${HOST}" > icx_for_conda.cfg
 export ICXCFG="$(pwd)/icx_for_conda.cfg"
 
+read -r GLIBC_MAJOR GLIBC_MINOR <<< "$(conda list '^sysroot_linux-64$' \
+    | tail -n 1 | awk '{print $2}' | grep -oP '\d+' | head -n 2 | tr '\n' ' ')"
+
 export CMAKE_GENERATOR="Ninja"
 SKBUILD_ARGS="-- -DCMAKE_C_COMPILER:PATH=icx -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 

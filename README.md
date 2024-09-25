@@ -1,5 +1,4 @@
 [![Conda package](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml)
-
 [![Scorecard supply-chain security](https://github.com/IntelPython/mkl_umath/actions/workflows/openssf-scorecard.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/openssf-scorecard.yml)
 
 # `mkl_umath`

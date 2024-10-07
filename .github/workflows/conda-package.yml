@@ -55,7 +55,7 @@ jobs:
             conda-recipe-cf
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.4.1
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.tar.bz2
@@ -176,7 +176,7 @@ jobs:
           conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4.4.0
+        uses: actions/upload-artifact@v4.4.1
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2

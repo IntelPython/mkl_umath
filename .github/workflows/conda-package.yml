@@ -9,7 +9,7 @@ env:
   MODULE_NAME: mkl_umath
 
 jobs:
-  build:
+  build_linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -60,8 +60,8 @@ jobs:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
           path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.tar.bz2
 
-  test:
-    needs: build
+  test_linux:
+    needs: build_linux
     runs-on:  ${{ matrix.runner }}
 
     strategy:
@@ -205,18 +205,24 @@ jobs:
 
       - uses: conda-incubator/setup-miniconda@v3
         with:
-          auto-update-conda: true
-          conda-build-version: '*'
           miniforge-variant: Miniforge3
           miniforge-version: latest
           activate-environment: mkl_umath_test
-          channels: conda-forge
+          channels: conda-forge,nodefaults
           python-version: ${{ matrix.python }}
+
+      - name: Remove defaults channel
+        run: conda config --remove channels defaults
+
+      - name: Install conda-index
+        run: |
+          conda install -n base conda-index
 
       - name: Create conda channel with the artifact bit
         shell: cmd /C CALL {0}
         run: |
           echo ${{ env.workdir }}
+          mkdir ${{ env.workdir }}\channel
           mkdir ${{ env.workdir }}\channel\win-64
           move ${{ env.PACKAGE_NAME }}-*.tar.bz2 ${{ env.workdir }}\channel\win-64
           dir ${{ env.workdir }}\channel\win-64
@@ -230,16 +236,20 @@ jobs:
         shell: cmd /C CALL {0}
         run: |
           conda search ${{ env.PACKAGE_NAME }} -c ${{ env.workdir }}/channel --override-channels --info --json
+
       - name: Dump mkl_umath version info from created channel into ver.json
         shell: cmd /C CALL {0}
         run: |
           conda search ${{ env.PACKAGE_NAME }} -c ${{ env.workdir }}/channel --override-channels --info --json > ${{ env.workdir }}\ver.json
+
       - name: Output content of workdir
         shell: pwsh
         run: Get-ChildItem -Path ${{ env.workdir }}
+
       - name: Output content of produced ver.json
         shell: pwsh
         run: Get-Content -Path ${{ env.workdir }}\ver.json
+
       - name: Collect dependencies
         shell: cmd /C CALL {0}
         run: |
@@ -251,9 +261,11 @@ jobs:
              SET PACKAGE_VERSION=%%F
           )
           conda install -n mkl_umath_test ${{ env.PACKAGE_NAME }}=%PACKAGE_VERSION% python=${{ matrix.python }} -c ${{ env.workdir }}/channel ${{ env.CHANNELS }} --only-deps --dry-run > lockfile
+
       - name: Display lockfile content
         shell: pwsh
         run: Get-Content -Path .\lockfile
+
       - name: Cache conda packages
         uses: actions/cache@v4
         env:
@@ -265,6 +277,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
+
       - name: Install mkl_umath
         shell: cmd /C CALL {0}
         run: |
@@ -278,6 +291,7 @@ jobs:
           )
           SET "TEST_DEPENDENCIES=pytest pytest-cov"
           conda install -n mkl_umath_test ${{ env.PACKAGE_NAME }}=%PACKAGE_VERSION% %TEST_DEPENDENCIES% python=${{ matrix.python }} -c ${{ env.workdir }}/channel ${{ env.CHANNELS }}
+
       - name: Report content of test environment
         shell: cmd /C CALL {0}
         run: |
@@ -285,8 +299,8 @@ jobs:
           echo "Value of CONDA enviroment variable was: " %CONDA%
           echo "Value of CONDA_PREFIX enviroment variable was: " %CONDA_PREFIX%
           conda info && conda list -n mkl_umath_test
+
       - name: Run tests
         shell: cmd /C CALL {0}
         run: >-
           conda activate mkl_umath_test && python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));" 
-

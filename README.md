@@ -21,8 +21,16 @@ as a stand-alone package. It can be installed into conda environment using
 To install mkl_umath Pypi package please use following command:
 
 ```
-   python -m pip install mkl_umath
+   python -m pip install --i https://software.repos.intel.com/python/pypi -extra-index-url https://pypi.org/simple mkl_umath
 ```
+
+If command above installs NumPy package from the Pypi, please use following command to install Intel optimized NumPy wheel package from Intel Pypi Cloud:
+
+```
+   python -m pip install --i https://software.repos.intel.com/python/pypi -extra-index-url https://pypi.org/simple mkl_umath numpy==<numpy_version>
+```
+
+Where `<numpy_version>` should be the latest version from https://software.repos.intel.com/python/conda/
 
 ---
 

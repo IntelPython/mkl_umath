@@ -211,9 +211,6 @@ jobs:
           channels: conda-forge,nodefaults
           python-version: ${{ matrix.python }}
 
-      - name: Remove defaults channel
-        run: conda config --remove channels defaults
-
       - name: Install conda-index
         run: |
           conda install -n base conda-index

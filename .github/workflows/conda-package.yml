@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v4.4.3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.tar.bz2
+          path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.conda
 
   test_linux:
     needs: build_linux
@@ -85,7 +85,7 @@ jobs:
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
-          mv ${PACKAGE_NAME}-*.tar.bz2 $GITHUB_WORKSPACE/channel/linux-64
+          mv ${PACKAGE_NAME}-*.conda $GITHUB_WORKSPACE/channel/linux-64
           conda index $GITHUB_WORKSPACE/channel
           # Test channel
           conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
@@ -179,7 +179,7 @@ jobs:
         uses: actions/upload-artifact@v4.4.3
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
-          path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.tar.bz2
+          path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.conda
 
   test_windows:
     needs: build_windows
@@ -221,7 +221,7 @@ jobs:
           echo ${{ env.workdir }}
           mkdir ${{ env.workdir }}\channel
           mkdir ${{ env.workdir }}\channel\win-64
-          move ${{ env.PACKAGE_NAME }}-*.tar.bz2 ${{ env.workdir }}\channel\win-64
+          move ${{ env.PACKAGE_NAME }}-*.conda ${{ env.workdir }}\channel\win-64
           dir ${{ env.workdir }}\channel\win-64
 
       - name: Index the channel

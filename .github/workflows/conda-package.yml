@@ -52,7 +52,7 @@ jobs:
             $TEST \
             $VERSIONS \
             $CHANNELS \
-            conda-recipe-cf
+            conda-recipe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.4.3
@@ -174,7 +174,7 @@ jobs:
       - name: Build conda package
         run: |
           conda activate
-          conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe-cf
+          conda build --no-test --python ${{ matrix.python }} -c conda-forge -c https://software.repos.intel.com/python/conda --override-channels conda-recipe
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4.4.3

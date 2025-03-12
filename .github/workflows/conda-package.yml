@@ -7,6 +7,8 @@ permissions: read-all
 env:
   PACKAGE_NAME: mkl_umath
   MODULE_NAME: mkl_umath
+  VER_SCRIPT1: "import json; f = open('ver.json', 'r'); j = json.load(f); f.close(); d = j['mkl_umath'][0];"
+  VER_SCRIPT2: "print('='.join((d[s] for s in ('version', 'build'))))"
 
 jobs:
   build_linux:
@@ -252,6 +254,7 @@ jobs:
       - name: Collect dependencies
         shell: cmd /C CALL {0}
         run: |
+          @ECHO ON
           IF NOT EXIST ver.json (
               copy /Y ${{ env.workdir }}\ver.json .
           )

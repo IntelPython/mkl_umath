@@ -34,3 +34,5 @@ from ._version import __version__
 from ._ufuncs import *
 
 from ._patch import mkl_umath, use_in_numpy, restore, is_patched
+
+del _init_helper

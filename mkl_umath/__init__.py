@@ -27,6 +27,8 @@
 Implementation of Numpy universal math functions using Intel(R) MKL and Intel(R) C compiler runtime.
 '''
 
+from . import _init_helper
+
 from ._version import __version__
 
 from ._ufuncs import *

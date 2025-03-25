@@ -1,4 +1,4 @@
-{% set version = "0.1.2" %}
+{% set version = "0.1.4" %}
 {% set buildnumber = 0 %}
 
 package:
@@ -27,11 +27,11 @@ requirements:
       - cython
       - scikit-build
       - python
-      - mkl-devel
+      - mkl-devel >=2024.2,<2025.0
       - numpy
     run:
       - python
-      - mkl
+      - mkl >=2024.2,<2025.0
       - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
 

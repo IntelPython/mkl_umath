@@ -27,11 +27,11 @@ requirements:
       - cython
       - scikit-build
       - python
-      - mkl-devel >=2024.2,<2025.0
+      - mkl-devel
       - numpy
     run:
       - python
-      - mkl >=2024.2,<2025.0
+      - mkl
       - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
 

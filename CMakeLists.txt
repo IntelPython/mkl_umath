@@ -129,7 +129,7 @@ target_link_options(_ufuncs PRIVATE ${_linker_options})
 target_link_libraries(_ufuncs PRIVATE mkl_umath_loops)
 set_target_properties(_ufuncs PROPERTIES C_STANDARD 99)
 if (UNIX)
-  set_target_properties(_ufuncs PROPERTIES INSTALL_RPATH "$ORIGIN")
+  set_target_properties(_ufuncs PROPERTIES INSTALL_RPATH "$ORIGIN/../..;$ORIGIN/../../..;$ORIGIN")
 endif()
 install(TARGETS _ufuncs LIBRARY DESTINATION mkl_umath)
 

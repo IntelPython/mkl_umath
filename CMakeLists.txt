@@ -140,6 +140,6 @@ target_compile_definitions(_patch PUBLIC NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSI
 target_link_libraries(_patch PRIVATE mkl_umath_loops)
 set_target_properties(_patch PROPERTIES C_STANDARD 99)
 if (UNIX)
-  set_target_properties(_patch PROPERTIES INSTALL_RPATH "$ORIGIN")
+  set_target_properties(_patch PROPERTIES INSTALL_RPATH "$ORIGIN/../..;$ORIGIN/../../..;$ORIGIN")
 endif()
 install(TARGETS _patch LIBRARY DESTINATION mkl_umath)

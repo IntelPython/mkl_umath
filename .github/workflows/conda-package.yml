@@ -152,7 +152,7 @@ jobs:
           miniforge-version: latest
           activate-environment: build
           channels: conda-forge
-          conda-remove-defaults: true
+          conda-remove-defaults: "true"
           python-version: ${{ matrix.python }}
 
       - name: Cache conda packages
@@ -217,7 +217,7 @@ jobs:
           miniforge-version: latest
           activate-environment: mkl_umath_test
           channels: conda-forge
-          conda-remove-defaults: true
+          conda-remove-defaults: "true"
           python-version: ${{ matrix.python }}
 
       - name: Install conda-index

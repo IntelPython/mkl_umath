@@ -6,7 +6,6 @@ permissions: read-all
 
 env:
   PACKAGE_NAME: mkl_umath
-  MODULE_NAME: mkl_umath
   VER_SCRIPT1: "import json; f = open('ver.json', 'r'); j = json.load(f); f.close(); d = j['mkl_umath'][0];"
   VER_SCRIPT2: "print('='.join((d[s] for s in ('version', 'build'))))"
 
@@ -15,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ["3.9", "3.10", "3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4.2.2
         with:
@@ -68,7 +67,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ["3.9", "3.10", "3.11", "3.12"]
         experimental: [false]
         runner: [ubuntu-latest]
     continue-on-error: ${{ matrix.experimental }}
@@ -122,18 +121,24 @@ jobs:
           # Test installed packages
           conda list -n test_mkl_umath
 
-      - name: Run tests
+      - name: Smoke test
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate test_mkl_umath
           python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
+
+      - name: Smoke test
+        run: |
+          source $CONDA/etc/profile.d/conda.sh
+          conda activate test_mkl_umath
+          pytest -v --pyargs ${{ env.PACKAGE_NAME }}
 
   build_windows:
     runs-on: windows-2019
 
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ["3.9", "3.10", "3.11", "3.12"]
     env:
       conda-bld: C:\Miniconda\conda-bld\win-64\
     steps:
@@ -192,7 +197,7 @@ jobs:
         shell: cmd /C CALL {0}
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
+        python: ["3.9", "3.10", "3.11", "3.12"]
         experimental: [false]
         runner: [windows-2019]
     continue-on-error: ${{ matrix.experimental }}
@@ -306,7 +311,12 @@ jobs:
           echo "Value of CONDA_PREFIX enviroment variable was: " %CONDA_PREFIX%
           conda info && conda list -n mkl_umath_test
 
-      - name: Run tests
+      - name: Smoke test
         shell: cmd /C CALL {0}
         run: >-
-          conda activate mkl_umath_test && python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));" 
+          conda activate mkl_umath_test && python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
+
+      - name: Smoke test
+        shell: cmd /C CALL {0}
+        run: |
+          conda activate mkl_umath_test && python -m pytest -v -s --pyargs ${{ env.PACKAGE_NAME }}

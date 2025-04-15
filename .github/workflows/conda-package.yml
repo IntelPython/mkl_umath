@@ -127,7 +127,7 @@ jobs:
           conda activate test_mkl_umath
           python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
 
-      - name: Smoke test
+      - name: Run tests
         run: |
           source $CONDA/etc/profile.d/conda.sh
           conda activate test_mkl_umath
@@ -316,7 +316,7 @@ jobs:
         run: >-
           conda activate mkl_umath_test && python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
 
-      - name: Smoke test
+      - name: Run tests
         shell: cmd /C CALL {0}
         run: |
           conda activate mkl_umath_test && python -m pytest -v -s --pyargs ${{ env.PACKAGE_NAME }}

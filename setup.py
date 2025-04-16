@@ -26,7 +26,7 @@
 import importlib.machinery
 import os
 import sys
-from distutils.dep_util import newer
+from setuptools.modified import newer
 from os import makedirs
 from os.path import join, exists, dirname
 

@@ -36,10 +36,15 @@ Where `<numpy_version>` should be the latest version from https://software.repos
 
 ## Building
 
-Intel(R) C compiler and Intel(R) Math Kernel Library are required to build `mkl_umath` from source:
+Intel(R) C compiler and Intel(R) Math Kernel Library are required to build `mkl_umath` from source
 
+If MKL is installed via Conda, `MKLROOT` environment variable must be set
 ```sh
-# ensure that MKL is installed into Python prefix, Intel LLVM compiler is activated
 export MKLROOT=$CONDA_PREFIX
-CC=icx pip install --no-build-isolation --no-deps -e .
+CC=icx pip install --no-build-isolation --no-deps .
+```
+
+To develop,
+```sh
+python setup.py develop --no-deps -G Ninja -DCMAKE_C_COMPILER:PATH=icx
 ```

@@ -24,7 +24,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import importlib.machinery
-import os
 import sys
 from setuptools.modified import newer
 from os import makedirs
@@ -34,7 +33,7 @@ import skbuild
 import skbuild.setuptools_wrap
 import skbuild.utils
 
-sys.path.insert(0, os.path.dirname(__file__))  # Ensures local imports work
+sys.path.insert(0, dirname(__file__))  # Ensures local imports work
 from _vendored.conv_template import process_file as process_c_file
 
 

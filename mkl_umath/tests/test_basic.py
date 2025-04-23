@@ -26,7 +26,6 @@
 import pytest
 import numpy as np
 import mkl_umath._ufuncs as mu
-import numpy.core.umath as nu
 
 np.random.seed(42)
 
@@ -56,10 +55,10 @@ generated_cases = {}
 for umath in umaths:
     mkl_umath = getattr(mu, umath)
     types = mkl_umath.types
-    for type in types:
-        args_str = type[:type.find('->')]
+    for type_ in types:
+        args_str = type_[:type_.find('->')]
         args = get_args(args_str)
-        generated_cases[(umath, type)] = args
+        generated_cases[(umath, type_)] = args
 
 additional_cases = {
     ('arccosh', 'f->f'): (np.single(np.random.random_sample() + 1),),
@@ -68,23 +67,20 @@ additional_cases = {
 
 test_cases = {**generated_cases, **additional_cases}
 
-@pytest.mark.parametrize("case", list(test_cases.keys()))
+def get_id(val):
+    return val.__str__()
+
+@pytest.mark.parametrize("case", test_cases, ids=get_id)
 def test_umath(case):
-    umath, type = case
+    umath, type_str = case
     args = test_cases[case]
     mkl_umath = getattr(mu, umath)
-    np_umath = getattr(nu, umath)
-    print('*'*80)
-    print(f"Testing {umath} with type {type}")
-    print("args:", args)
+    np_umath = getattr(np, umath)
     
     mkl_res = mkl_umath(*args)
     np_res = np_umath(*args)
-    
-    print("mkl res:", mkl_res)
-    print("npy res:", np_res)
-    
-    assert np.allclose(mkl_res, np_res), f"Results for {umath} do not match"
+       
+    assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"
 
 def test_cases_count():
     print("Test cases count:", len(test_cases))

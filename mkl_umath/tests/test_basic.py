@@ -72,7 +72,7 @@ def get_id(val):
 
 @pytest.mark.parametrize("case", test_cases, ids=get_id)
 def test_umath(case):
-    umath, type_str = case
+    umath, _ = case
     args = test_cases[case]
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)

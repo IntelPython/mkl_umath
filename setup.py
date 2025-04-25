@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# Copyright (c) 2019-2023, Intel Corporation
+# Copyright (c) 2019-2025, Intel Corporation
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -25,51 +24,19 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import importlib.machinery
-import io
-import os
-import re
-from distutils.dep_util import newer
-from _vendored.conv_template import process_file as process_c_file
-from os import (getcwd, environ, makedirs)
-from os.path import join, exists, abspath, dirname
-from setuptools import Extension
+import sys
+from setuptools.modified import newer
+from os import makedirs
+from os.path import join, exists, dirname
 
 import skbuild
-import skbuild.setuptools_wrap
-import skbuild.utils
-from skbuild.command.build_py import build_py as _skbuild_build_py
-from skbuild.command.install import install as _skbuild_install
 
-# import versioneer
-
-with io.open('mkl_umath/_version.py', 'rt', encoding='utf8') as f:
-    version = re.search(r'__version__ = \'(.*?)\'', f.read()).group(1)
-
-with open("README.md", "r", encoding="utf-8") as file:
-    long_description = file.read()
-
-VERSION = version
-
-CLASSIFIERS = """\
-Development Status :: 5 - Production/Stable
-Intended Audience :: Science/Research
-Intended Audience :: Developers
-License :: OSI Approved
-Programming Language :: C
-Programming Language :: Python
-Programming Language :: Python :: 3.6
-Programming Language :: Python :: 3.7
-Programming Language :: Python :: 3.8
-Programming Language :: Python :: Implementation :: CPython
-Topic :: Software Development
-Topic :: Scientific/Engineering
-Operating System :: Microsoft :: Windows
-Operating System :: POSIX
-Operating System :: Unix
-Operating System :: MacOS
-"""
+sys.path.insert(0, dirname(__file__))  # Ensures local imports work
+from _vendored.conv_template import process_file as process_c_file
 
 
+# TODO: rewrite generation in CMake, see NumPy meson implementation
+# https://github.com/numpy/numpy/blob/c6fb3357541fd8cf6e4faeaeda3b1a9065da0520/numpy/_core/meson.build#L623
 def load_module(name, fn):
     """
     Credit: numpy.compat.npy_load_module
@@ -127,28 +94,9 @@ with open(processed_loops_src_fn, 'w') as fid:
 
 
 skbuild.setup(
-    name="mkl_umath",
-    version=VERSION,
-    maintainer = "Intel Corp.",
-    maintainer_email = "scripting@intel.com",
-    description = "MKL-based universal functions for NumPy arrays",
-    long_description = long_description,
-    long_description_content_type="text/markdown",
-    license = 'BSD',
-    author="Intel Corporation",
-    url="http://github.com/IntelPython/mkl_umath",
-    download_url="http://github.com/IntelPython/mkl_umath",
     packages=[
         "mkl_umath",
     ],
     package_data={"mkl_umath": ["tests/*.*"]},
     include_package_data=True,
-    zip_safe=False,
-    setup_requires=["Cython"],
-    install_requires=[
-        "numpy",
-    ],
-    keywords="mkl_umath",
-    classifiers=[_f for _f in CLASSIFIERS.split("\n") if _f],
-    platforms=["Linux", "Windows"]
 )

@@ -36,10 +36,50 @@ Where `<numpy_version>` should be the latest version from https://software.repos
 
 ## Building
 
-Intel(R) C compiler and Intel(R) Math Kernel Library are required to build `mkl_umath` from source:
+Intel(R) C compiler and Intel(R) OneAPI Math Kernel Library (OneMKL) are required to build `mkl_umath` from source.
 
+If these are installed as part of a `oneAPI` installation, the following packages must also be installed into the environment
+- `cmake`
+- `ninja`
+- `cython`
+- `scikit-build`
+- `numpy`
+
+If build dependencies are to be installed with Conda, the following packages must be installed from the Intel(R) channel
+- `mkl-devel`
+- `dpcpp_linux-64` (or `dpcpp_win-64` for Windows)
+- `numpy-base`
+
+then the remaining dependencies
+- `cmake`
+- `ninja`
+- `cython`
+- `scikit-build`
+
+and for `mkl-devel` and `dpcpp_linux-64` in a Conda environment, `MKLROOT` environment variable must be set
+On Linux
 ```sh
-# ensure that MKL is installed into Python prefix, Intel LLVM compiler is activated
 export MKLROOT=$CONDA_PREFIX
-CC=icx pip install --no-build-isolation --no-deps -e .
+```
+
+On Windows
+```sh
+set MKLROOT=%CONDA_PREFIX%
+```
+
+If using `oneAPI`, it must be activated in the environment
+
+On Linux
+```
+source ${ONEAPI_ROOT}/setvars.sh
+```
+
+On Windows
+```
+call "%ONEAPI_ROOT%\setvars.bat"
+```
+
+finally, execute
+```
+CC=icx pip install --no-build-isolation --no-deps .
 ```

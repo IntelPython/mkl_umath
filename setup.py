@@ -30,8 +30,6 @@ from os import makedirs
 from os.path import join, exists, dirname
 
 import skbuild
-import skbuild.setuptools_wrap
-import skbuild.utils
 
 sys.path.insert(0, dirname(__file__))  # Ensures local imports work
 from _vendored.conv_template import process_file as process_c_file

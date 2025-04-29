@@ -27,12 +27,9 @@
 
 import os
 import re
-import struct
-import sys
 import textwrap
-import numpy
 
-# identity objectsv
+# identity objects
 Zero = "PyLong_FromLong(0)"
 One = "PyLong_FromLong(1)"
 True_ = "(Py_INCREF(Py_True), Py_True)"
@@ -123,6 +120,9 @@ def build_func_data(types, f):
     return func_data
 
 def TD(types, f=None, astype=None, in_=None, out=None, simd=None):
+    """
+    Generate a TypeDescription instance for each item in types
+    """    
     if f is not None:
         if isinstance(f, str):
             func_data = build_func_data(types, f)
@@ -161,7 +161,7 @@ class Ufunc:
     ----------
     nin : number of input arguments
     nout : number of output arguments
-    identity : identity element for a two-argument function
+    identity : identity element for a two-argument function (like Zero)
     docstring : docstring for the ufunc
     type_descriptions : list of TypeDescription objects
     """
@@ -241,7 +241,7 @@ chartoname = {
     # We sometimes need int64, but we have no obvious char for it, use k and
     # define it as `int64` below.
     'k': 'int64',
-    'K': 'uint64',     
+    'K': 'uint64',
     'q': 'longlong',
     'Q': 'ulonglong',
     'e': 'half',

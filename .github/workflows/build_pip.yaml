@@ -1,4 +1,4 @@
-name: Build using pip
+name: Build using pip and pre-release NumPy
 
 on:
   push:
@@ -17,8 +17,8 @@ jobs:
 
     strategy:
       matrix:
-        python: ['3.10', '3.11', '3.12']
-        numpy_ver: ['1.26.4', '2.2.5']
+        python: ['3.9', '3.10', '3.11', '3.12']
+        use_pre: ["", "--pre"]
 
     steps:
       - name: Install jq
@@ -26,11 +26,12 @@ jobs:
         run: |
           sudo apt-get install jq
 
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - uses: conda-incubator/setup-miniconda@v3.1.1
         with:
           use-mamba: true
           miniforge-version: latest
@@ -49,11 +50,11 @@ jobs:
       - name: Build conda package
         run: |
           pip install --no-cache-dir scikit-build cmake ninja cython
-          pip install --no-cache-dir numpy==${{ matrix.numpy_ver }}
+          pip install --no-cache-dir numpy ${{ matrix.use_pre }}
           echo "CONDA_PREFFIX is '${CONDA_PREFIX}'"
           export MKLROOT=${CONDA_PREFIX}
           pip install . --no-build-isolation --no-deps --verbose
-          pip install --no-cache-dir pytest 
+          pip install --no-cache-dir pytest
           pip list
-          cd ../..
-          python -m pytest -v mkl_umath/mkl_umath/mkl_umath/tests
+          cd ..
+          python -m pytest -v mkl_umath/mkl_umath/tests

@@ -23,11 +23,22 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Adapted from numpy/_core/code_generators/generate_umath.py
+# Adapted with modifications from
+# https://github.com/numpy/numpy/blob/maintenance/2.2.x/numpy/_core/code_generators/generate_umath.py
+# The differences with numpy file are:
+# 1) defdict dictionary is completely different
+# 2) in function make_arrays, cfunc_fname = f"{tname}_* is changed to cfunc_fname = f"mkl_umath_{tname}_*
+# 3) line-988: {doc} is changed to "{doc}"
 
+"""
+Generate the code to build all the internal ufuncs. At the base is the defdict:
+a dictionary of Ufunc classes. This is fed to make_code to generate
+__umath_generated.c
+"""
 import os
 import re
 import textwrap
+import argparse
 
 # identity objects
 Zero = "PyLong_FromLong(0)"
@@ -48,7 +59,6 @@ class docstrings:
         in a separate C header.
         """
         return 'DOC_' + place.upper().replace('.', '_')
-
 
 # Sentinel value to specify using the full type description in the
 # function name
@@ -78,11 +88,17 @@ class TypeDescription:
     astype : dict or None, optional
         If astype['x'] is 'y', uses PyUFunc_x_x_As_y_y/PyUFunc_xx_x_As_yy_y
         instead of PyUFunc_x_x/PyUFunc_xx_x.
-    simd: list
-        Available SIMD ufunc loops, dispatched at runtime in specified order
-        Currently only supported for simples types (see make_arrays)
+    cfunc_alias : str or none, optional
+        Appended to inner loop C function name, e.g., FLOAT_{cfunc_alias}. See make_arrays.
+        NOTE: it doesn't support 'astype'
+    dispatch : str or None, optional
+        Dispatch-able source name without its extension '.dispatch.c' that
+        contains the definition of ufunc, dispatched at runtime depending on the
+        specified targets of the dispatch-able source.
+        NOTE: it doesn't support 'astype'
     """
-    def __init__(self, type, f=None, in_=None, out=None, astype=None, simd=None):
+    def __init__(self, type, f=None, in_=None, out=None, astype=None, cfunc_alias=None,
+                 dispatch=None):
         self.type = type
         self.func_data = f
         if astype is None:
@@ -94,7 +110,8 @@ class TypeDescription:
         if out is not None:
             out = out.replace('P', type)
         self.out = out
-        self.simd = simd
+        self.cfunc_alias = cfunc_alias
+        self.dispatch = dispatch
 
     def finish_signature(self, nin, nout):
         if self.in_ is None:
@@ -105,24 +122,71 @@ class TypeDescription:
         assert len(self.out) == nout
         self.astype = self.astype_dict.get(self.type, None)
 
-_floatformat_map = {
-    "e": 'npy_%sf',
-    "f": 'npy_%sf',
-    "d": 'npy_%s',
-    "g": 'npy_%sl',
-    "F": 'nc_%sf',
-    "D": 'nc_%s',
-    "G": 'nc_%sl'
-}
+
+def _check_order(types1, types2):
+    """
+    Helper to check that the loop types are ordered. The legacy type resolver
+    (and potentially downstream) may pick use the first loop to which operands
+    can be cast safely.
+    """
+    # Insert kK (int64) after all other ints (assumes long long isn't larger)
+    dtype_order = bints + 'kK' + times + flts + cmplxP + "O"
+    for t1, t2 in zip(types1, types2):
+        # We have no opinion on object or time ordering for now:
+        if t1 in "OP" or t2 in "OP":
+            return True
+        if t1 in "mM" or t2 in "mM":
+            return True
+
+        t1i = dtype_order.index(t1)
+        t2i = dtype_order.index(t2)
+        if t1i < t2i:
+            return
+        if t2i > t1i:
+            break
+
+    if types1 == "QQ?" and types2 == "qQ?":
+        # Explicitly allow this mixed case, rather than figure out what order
+        # is nicer or how to encode it.
+        return
+
+    raise TypeError(
+            f"Input dtypes are unsorted or duplicate: {types1} and {types2}")
+
+
+def check_td_order(tds):
+    # A quick check for whether the signatures make sense, it happened too
+    # often that SIMD additions added loops that do not even make some sense.
+    # TODO: This should likely be a test and it would be nice if it rejected
+    #       duplicate entries as well (but we have many as of writing this).
+    signatures = [t.in_+t.out for t in tds]
+
+    for prev_i, sign in enumerate(signatures[1:]):
+        if sign in signatures[:prev_i+1]:
+            continue  # allow duplicates...
+
+        _check_order(signatures[prev_i], sign)
+
+
+_floatformat_map = dict(
+    e='npy_%sf',
+    f='npy_%sf',
+    d='npy_%s',
+    g='npy_%sl',
+    F='nc_%sf',
+    D='nc_%s',
+    G='nc_%sl'
+)
 
 def build_func_data(types, f):
     func_data = [_floatformat_map.get(t, '%s') % (f,) for t in types]
     return func_data
 
-def TD(types, f=None, astype=None, in_=None, out=None, simd=None):
+def TD(types, f=None, astype=None, in_=None, out=None, cfunc_alias=None,
+       dispatch=None):
     """
     Generate a TypeDescription instance for each item in types
-    """    
+    """
     if f is not None:
         if isinstance(f, str):
             func_data = build_func_data(types, f)
@@ -146,12 +210,15 @@ def TD(types, f=None, astype=None, in_=None, out=None, simd=None):
         raise ValueError("Number of types and outputs do not match")
     tds = []
     for t, fd, i, o in zip(types, func_data, in_, out):
-        # [(simd-name, list of types)]
-        if simd is not None:
-            simdt = [k for k, v in simd if t in v]
+        # [(dispatch file name without extension '.dispatch.c*', list of types)]
+        if dispatch:
+            dispt = ([k for k, v in dispatch if t in v]+[None])[0]
         else:
-            simdt = []
-        tds.append(TypeDescription(t, f=fd, in_=i, out=o, astype=astype, simd=simdt))
+            dispt = None
+        tds.append(TypeDescription(
+            t, f=fd, in_=i, out=o, astype=astype, cfunc_alias=cfunc_alias,
+            dispatch=dispt
+        ))
     return tds
 
 class Ufunc:
@@ -163,10 +230,13 @@ class Ufunc:
     nout : number of output arguments
     identity : identity element for a two-argument function (like Zero)
     docstring : docstring for the ufunc
-    type_descriptions : list of TypeDescription objects
+    typereso: type resolver function of type PyUFunc_TypeResolutionFunc
+    type_descriptions : TypeDescription objects
+    signature: a generalized ufunc signature (like for matmul)
+    indexed: add indexed loops (ufunc.at) for these type characters
     """
     def __init__(self, nin, nout, identity, docstring, typereso,
-                 *type_descriptions, signature=None):
+                 *type_descriptions, signature=None, indexed=''):
         self.nin = nin
         self.nout = nout
         if identity is None:
@@ -176,10 +246,14 @@ class Ufunc:
         self.typereso = typereso
         self.type_descriptions = []
         self.signature = signature
+        self.indexed = indexed
         for td in type_descriptions:
             self.type_descriptions.extend(td)
         for td in self.type_descriptions:
             td.finish_signature(self.nin, self.nout)
+
+        check_td_order(self.type_descriptions)
+
 
 # String-handling utilities to avoid locale-dependence.
 
@@ -282,16 +356,16 @@ cmplxO = cmplx + O
 cmplxP = cmplx + P
 inexact = flts + cmplx
 inexactvec = 'fd'
-noint = inexact + O
-nointP = inexact + P
-allP = bints + times + flts + cmplxP
+noint = inexact+O
+nointP = inexact+P
+allP = bints+times+flts+cmplxP
 nobool_or_obj = noobj[1:]
-nobool_or_datetime = noobj[1:-1] + O  # includes m - timedelta64
-intflt = ints + flts
-intfltcmplx = ints + flts + cmplx
-nocmplx = bints + times + flts
-nocmplxO = nocmplx + O
-nocmplxP = nocmplx + P
+nobool_or_datetime = noobj[1:-1] + O # includes m - timedelta64
+intflt = ints+flts
+intfltcmplx = ints+flts+cmplx
+nocmplx = bints+times+flts
+nocmplxO = nocmplx+O
+nocmplxP = nocmplx+P
 notimes_or_obj = bints + inexact
 nodatetime_or_obj = bints + inexact
 no_bool_times_obj = ints + inexact
@@ -752,12 +826,11 @@ defdict = {
 }
 
 def indent(st, spaces):
-    indentation = ' ' * spaces
-    indented = indentation + st.replace('\n', '\n' + indentation)
+    indentation = ' '*spaces
+    indented = indentation + st.replace('\n', '\n'+indentation)
     # trim off any trailing spaces
     indented = re.sub(r' +$', r'', indented)
     return indented
-
 
 # maps [nin, nout][type] to a suffix
 arity_lookup = {
@@ -799,51 +872,44 @@ def make_arrays(funcdict):
     # later
     code1list = []
     code2list = []
+    dispdict  = {}
     names = sorted(funcdict.keys())
     for name in names:
         uf = funcdict[name]
         funclist = []
         datalist = []
         siglist = []
-        k = 0
         sub = 0
 
-        for t in uf.type_descriptions:
+        for k, t in enumerate(uf.type_descriptions):
+            cfunc_alias = t.cfunc_alias if t.cfunc_alias else name
+            cfunc_fname = None
             if t.func_data is FullTypeDescr:
                 tname = english_upper(chartoname[t.type])
                 datalist.append('(void *)NULL')
-                funclist.append(
-                        'mkl_umath_%s_%s_%s_%s' % (tname, t.in_, t.out, name))
+                if t.out == "?":
+                    cfunc_fname = f"mkl_umath_{tname}_{t.in_}_bool_{cfunc_alias}"
+                else:
+                    cfunc_fname = f"mkl_umath_{tname}_{t.in_}_{t.out}_{cfunc_alias}"
             elif isinstance(t.func_data, FuncNameSuffix):
                 datalist.append('(void *)NULL')
                 tname = english_upper(chartoname[t.type])
-                funclist.append(
-                        'mkl_umath_%s_%s_%s' % (tname, name, t.func_data.suffix))
+                cfunc_fname = f"mkl_umath_{tname}_{cfunc_alias}_{t.func_data.suffix}"
             elif t.func_data is None:
                 datalist.append('(void *)NULL')
                 tname = english_upper(chartoname[t.type])
-                funclist.append('mkl_umath_%s_%s' % (tname, name))
-                if t.simd is not None:
-                    for vt in t.simd:
-                        code2list.append(textwrap.dedent("""\
-                        #ifdef HAVE_ATTRIBUTE_TARGET_{ISA}
-                        if (NPY_CPU_HAVE({ISA})) {{
-                            {fname}_functions[{idx}] = {type}_{fname}_{isa};
-                        }}
-                        #endif
-                        """).format(
-                            ISA=vt.upper(), isa=vt,
-                            fname=name, type=tname, idx=k
-                        ))
+                cfunc_fname = f"mkl_umath_{tname}_{cfunc_alias}"
             else:
-                funclist.append('NULL')
                 try:
                     thedict = arity_lookup[uf.nin, uf.nout]
-                except KeyError:
-                    raise ValueError("Could not handle {}[{}]".format(name, t.type))
+                except KeyError as e:
+                    raise ValueError(
+                        f"Could not handle {name}[{t.type}] "
+                        f"with nin={uf.nin}, nout={uf.nout}"
+                    ) from None
 
                 astype = ''
-                if not t.astype is None:
+                if t.astype is not None:
                     astype = '_As_%s' % thedict[t.astype]
                 astr = ('%s_functions[%d] = PyUFunc_%s%s;' %
                            (name, k, thedict[t.type], astype))
@@ -863,20 +929,44 @@ def make_arrays(funcdict):
                     #datalist.append('(void *)%s' % t.func_data)
                 sub += 1
 
+            if cfunc_fname:
+                funclist.append(cfunc_fname)
+                if t.dispatch:
+                    dispdict.setdefault(t.dispatch, []).append(
+                        (name, k, cfunc_fname, t.in_ + t.out)
+                    )
+            else:
+                funclist.append('NULL')
+
             for x in t.in_ + t.out:
                 siglist.append('NPY_%s' % (english_upper(chartoname[x]),))
 
-            k += 1
+        if funclist or siglist or datalist:
+            funcnames = ', '.join(funclist)
+            signames = ', '.join(siglist)
+            datanames = ', '.join(datalist)
+            code1list.append(
+                "static PyUFuncGenericFunction %s_functions[] = {%s};"
+                % (name, funcnames))
+            code1list.append("static void * %s_data[] = {%s};"
+                            % (name, datanames))
+            code1list.append("static const char %s_signatures[] = {%s};"
+                            % (name, signames))
+            uf.empty = False
+        else:
+            uf.empty = True
 
-        funcnames = ', '.join(funclist)
-        signames = ', '.join(siglist)
-        datanames = ', '.join(datalist)
-        code1list.append("static PyUFuncGenericFunction %s_functions[] = {%s};"
-                         % (name, funcnames))
-        code1list.append("static void * %s_data[] = {%s};"
-                         % (name, datanames))
-        code1list.append("static char %s_signatures[] = {%s};"
-                         % (name, signames))
+    for dname, funcs in dispdict.items():
+        code2list.append(textwrap.dedent(f"""
+            #ifndef NPY_DISABLE_OPTIMIZATION
+            #include "{dname}.dispatch.h"
+            #endif
+        """))
+        for (ufunc_name, func_idx, cfunc_name, inout) in funcs:
+            code2list.append(textwrap.dedent(f"""\
+                NPY_CPU_DISPATCH_TRACE("{ufunc_name}", "{''.join(inout)}");
+                NPY_CPU_DISPATCH_CALL_XB({ufunc_name}_functions[{func_idx}] = {cfunc_name});
+            """))
     return "\n".join(code1list), "\n".join(code2list)
 
 def make_ufuncs(funcdict):
@@ -885,14 +975,6 @@ def make_ufuncs(funcdict):
     for name in names:
         uf = funcdict[name]
         mlist = []
-        docstring = textwrap.dedent(uf.docstring).strip()
-        docstring = docstring.encode('unicode-escape').decode('ascii')
-        docstring = docstring.replace(r'"', r'\"')
-        docstring = docstring.replace(r"'", r"\'")
-        # Split the docstring because some compilers (like MS) do not like big
-        # string literal in C code. We split at endlines because textwrap.wrap
-        # do not play well with \n
-        docstring = '\\n\"\"'.join(docstring.split(r"\n"))
         if uf.signature is None:
             sig = "NULL"
         else:
@@ -903,7 +985,7 @@ def make_ufuncs(funcdict):
                 return -1;
             }}
             f = PyUFunc_FromFuncAndDataAndSignatureAndIdentity(
-                {name}_functions, {name}_data, {name}_signatures, {nloops},
+                {funcs}, {data}, {signatures}, {nloops},
                 {nin}, {nout}, {identity}, "{name}",
                 "{doc}", 0, {sig}, identity
             );
@@ -915,12 +997,16 @@ def make_ufuncs(funcdict):
             }}
         """)
         args = dict(
-            name=name, nloops=len(uf.type_descriptions),
+            name=name,
+            funcs=f"{name}_functions" if not uf.empty else "NULL",
+            data=f"{name}_data" if not uf.empty else "NULL",
+            signatures=f"{name}_signatures" if not uf.empty else "NULL",
+            nloops=len(uf.type_descriptions),
             nin=uf.nin, nout=uf.nout,
             has_identity='0' if uf.identity is None_ else '1',
             identity='PyUFunc_IdentityValue',
             identity_expr=uf.identity,
-            doc=docstring,
+            doc=uf.docstring,
             sig=sig,
         )
 
@@ -934,11 +1020,44 @@ def make_ufuncs(funcdict):
         if uf.typereso is not None:
             mlist.append(
                 r"((PyUFuncObject *)f)->type_resolver = &%s;" % uf.typereso)
+        for c in uf.indexed:
+            # Handle indexed loops by getting the underlying ArrayMethodObject
+            # from the list in f._loops and setting its field appropriately
+            fmt = textwrap.dedent("""
+            {{
+                PyArray_DTypeMeta *dtype = PyArray_DTypeFromTypeNum({typenum});
+                PyObject *info = get_info_no_cast((PyUFuncObject *)f,
+                                                   dtype, {count});
+                if (info == NULL) {{
+                    return -1;
+                }}
+                if (info == Py_None) {{
+                    PyErr_SetString(PyExc_RuntimeError,
+                        "cannot add indexed loop to ufunc "
+                        "{name} with {typenum}");
+                    return -1;
+                }}
+                if (!PyObject_TypeCheck(info, &PyArrayMethod_Type)) {{
+                    PyErr_SetString(PyExc_RuntimeError,
+                        "Not a PyArrayMethodObject in ufunc "
+                        "{name} with {typenum}");
+                }}
+                ((PyArrayMethodObject*)info)->contiguous_indexed_loop =
+                                                                 {funcname};
+                /* info is borrowed, no need to decref*/
+            }}
+            """)
+            mlist.append(fmt.format(
+                typenum=f"NPY_{english_upper(chartoname[c])}",
+                count=uf.nin+uf.nout,
+                name=name,
+                funcname = f"{english_upper(chartoname[c])}_{name}_indexed",
+            ))
+
         mlist.append(r"""PyDict_SetItemString(dictionary, "%s", f);""" % name)
         mlist.append(r"""Py_DECREF(f);""")
         code3list.append('\n'.join(mlist))
     return '\n'.join(code3list)
-
 
 def make_code(funcdict, filename):
     code1, code2 = make_arrays(funcdict)
@@ -967,12 +1086,33 @@ def make_code(funcdict, filename):
 
         return 0;
     }
-    """) % (filename, code1, code2, code3)
+    """) % (os.path.basename(filename), code1, code2, code3)
     return code
 
 
-if __name__ == "__main__":
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-o",
+        "--outfile",
+        type=str,
+        help="Path to the output directory"
+    )
+    args = parser.parse_args()
+
+    # used to insert the name of this file into the generated file
     filename = __file__
     code = make_code(defdict, filename)
-    with open('__umath_generated.c', 'w') as fid:
-        fid.write(code)
+
+    if not args.outfile:
+        # This is the distutils-based build
+        outfile = '__umath_generated.c'
+    else:
+        outfile = os.path.join(os.getcwd(), args.outfile)
+
+    with open(outfile, 'w') as f:
+        f.write(code)
+
+
+if __name__ == "__main__":
+    main()

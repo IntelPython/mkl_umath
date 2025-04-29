@@ -44,13 +44,13 @@ jobs:
           sudo apt-get install intel-oneapi-mkl-devel
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.6.0
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
 
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
@@ -74,5 +74,7 @@ jobs:
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
+          # mkl_umath cannot be installed in editable mode, we need 
+          # to change directory before importing it and running tests
           cd ..
           python -m pytest -sv --pyargs mkl_umath/mkl_umath/tests

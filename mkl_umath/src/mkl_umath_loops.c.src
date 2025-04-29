@@ -74,10 +74,11 @@
         type *in1p = (type *) (in1);                     \
         type *op1p = (type *) (op1);                     \
         while (_n_ > _chunk_size) {                      \
-            vml_func((MKL_INT) _chunk_size, in1p, op1p); \
-            _n_ -= _chunk_size;                          \
-            in1p += _chunk_size;                         \
-            op1p += _chunk_size;                         \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
+            vml_func((MKL_INT) _current_chunk, in1p, op1p); \
+            _n_ -= _current_chunk;                          \
+            in1p += _current_chunk;                         \
+            op1p += _current_chunk;                         \
         }                                                \
         if (_n_) {                                       \
             vml_func((MKL_INT) _n_, in1p, op1p);         \
@@ -92,11 +93,12 @@
         type *in2p = (type *) (in2);                            \
         type *op1p = (type *) (op1);                            \
         while (_n_ > _chunk_size) {                             \
-            vml_func((MKL_INT) _chunk_size, in1p, in2p, op1p);  \
-            _n_ -= _chunk_size;                                 \
-            in1p += _chunk_size;                                \
-            in2p += _chunk_size;                                \
-            op1p += _chunk_size;                                \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
+            vml_func((MKL_INT) _current_chunk, in1p, in2p, op1p);  \
+            _n_ -= _current_chunk;                                 \
+            in1p += _current_chunk;                                \
+            in2p += _current_chunk;                                \
+            op1p += _current_chunk;                                \
         }                                                       \
         if (_n_) {                                              \
             vml_func((MKL_INT)_n_, in1p, in2p, op1p);           \
@@ -115,10 +117,11 @@
         const type _scaleB = (scaleB);                                                           \
         const type _shiftB = (shiftB);                                                           \
         while (_n_ > _chunk_size) {                                                              \
-            vml_func(_chunk_size, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);         \
-            _n_ -= _chunk_size;                                                                  \
-            in1p += _chunk_size;                                                                 \
-            op1p += _chunk_size;                                                                 \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
+            vml_func(_current_chunk, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);         \
+            _n_ -= _current_chunk;                                                                  \
+            in1p += _current_chunk;                                                                 \
+            op1p += _current_chunk;                                                                 \
         }                                                                                        \
         if (_n_) {                                                                               \
             vml_func((MKL_INT)_n_, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);        \

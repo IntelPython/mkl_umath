@@ -25,10 +25,11 @@
 
 # Adapted with modifications from
 # https://github.com/numpy/numpy/blob/maintenance/2.2.x/numpy/_core/code_generators/generate_umath.py
-# The differences with numpy file are:
-# 1) defdict dictionary is completely different
-# 2) in function make_arrays, cfunc_fname = f"{tname}_* is changed to cfunc_fname = f"mkl_umath_{tname}_*
-# 3) line-988: {doc} is changed to "{doc}"
+# Differences with the NumPy file:
+# 1) The `defdict` dictionary is completely different.
+# 2) In the `make_arrays` function, `cfunc_fname = f"{tname}_*"` is changed to `cfunc_fname = f"mkl_umath_{tname}_*"`
+# 3) In the `make_ufuncs` function, line 988: `{doc}` is changed to `"{doc}"`
+# 4) In the `make_code` function, the string used there is different.
 
 """
 Generate the code to build all the internal ufuncs. At the base is the defdict:

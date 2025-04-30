@@ -67,42 +67,36 @@
 
 #define MKL_INT_MAX ((npy_intp) ((~((MKL_UINT) 0)) >> 1))
 
-#define CHUNKED_VML_CALL2(vml_func, n, type, in1, op1)   \
-    do {                                                 \
-        npy_intp _n_ = (n);                              \
-        const npy_intp _chunk_size = MKL_INT_MAX;        \
-        type *in1p = (type *) (in1);                     \
-        type *op1p = (type *) (op1);                     \
-        while (_n_ > _chunk_size) {                      \
-            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
-            vml_func((MKL_INT) _current_chunk, in1p, op1p); \
-            _n_ -= _current_chunk;                          \
-            in1p += _current_chunk;                         \
-            op1p += _current_chunk;                         \
-        }                                                \
-        if (_n_) {                                       \
-            vml_func((MKL_INT) _n_, in1p, op1p);         \
-        }                                                \
+#define CHUNKED_VML_CALL2(vml_func, n, type, in1, op1)                          \
+    do {                                                                        \
+        npy_intp _n_ = (n);                                                     \
+        const npy_intp _chunk_size = MKL_INT_MAX;                               \
+        type *in1p = (type *) (in1);                                            \
+        type *op1p = (type *) (op1);                                            \
+        while (_n_ > 0) {                                                       \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
+            vml_func((MKL_INT) _current_chunk, in1p, op1p);                     \
+            _n_ -= _current_chunk;                                              \
+            in1p += _current_chunk;                                             \
+            op1p += _current_chunk;                                             \
+        }                                                                       \
     } while (0)
 
-#define CHUNKED_VML_CALL3(vml_func, n, type, in1, in2, op1)     \
-    do  {                                                       \
-        npy_intp _n_ = (n);                                     \
-        const npy_intp _chunk_size = MKL_INT_MAX;               \
-        type *in1p = (type *) (in1);                            \
-        type *in2p = (type *) (in2);                            \
-        type *op1p = (type *) (op1);                            \
-        while (_n_ > _chunk_size) {                             \
-            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
-            vml_func((MKL_INT) _current_chunk, in1p, in2p, op1p);  \
-            _n_ -= _current_chunk;                                 \
-            in1p += _current_chunk;                                \
-            in2p += _current_chunk;                                \
-            op1p += _current_chunk;                                \
-        }                                                       \
-        if (_n_) {                                              \
-            vml_func((MKL_INT)_n_, in1p, in2p, op1p);           \
-        }                                                       \
+#define CHUNKED_VML_CALL3(vml_func, n, type, in1, in2, op1)                     \
+    do  {                                                                       \
+        npy_intp _n_ = (n);                                                     \
+        const npy_intp _chunk_size = MKL_INT_MAX;                               \
+        type *in1p = (type *) (in1);                                            \
+        type *in2p = (type *) (in2);                                            \
+        type *op1p = (type *) (op1);                                            \
+        while (_n_ > 0) {                                                       \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
+            vml_func((MKL_INT) _current_chunk, in1p, in2p, op1p);               \
+            _n_ -= _current_chunk;                                              \
+            in1p += _current_chunk;                                             \
+            in2p += _current_chunk;                                             \
+            op1p += _current_chunk;                                             \
+        }                                                                       \
     } while(0)
 
 
@@ -116,15 +110,12 @@
         const type _shiftA = (shiftA);                                                           \
         const type _scaleB = (scaleB);                                                           \
         const type _shiftB = (shiftB);                                                           \
-        while (_n_ > _chunk_size) {                                                              \
-            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_; \
-            vml_func(_current_chunk, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);         \
-            _n_ -= _current_chunk;                                                                  \
-            in1p += _current_chunk;                                                                 \
-            op1p += _current_chunk;                                                                 \
-        }                                                                                        \
-        if (_n_) {                                                                               \
-            vml_func((MKL_INT)_n_, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);        \
+        while (_n_ > 0) {                                                                        \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;                   \
+            vml_func(_current_chunk, in1p, in1p, _scaleA, _shiftA, _scaleB, _shiftB, op1p);      \
+            _n_ -= _current_chunk;                                                               \
+            in1p += _current_chunk;                                                              \
+            op1p += _current_chunk;                                                              \
         }                                                                                        \
     } while(0)
 

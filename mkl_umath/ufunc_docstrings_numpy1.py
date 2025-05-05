@@ -23,40 +23,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Adapted from numpy/core/code_generators/ufunc_docstrings.py
-
-# Content of https://github.com/numpy/numpy/commit/62b82961e12cc13379fb67f03c71062f94285cd1
-#
-# Copyright (c) 2005-2021, NumPy Developers.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are
-# met:
-#
-#    * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#
-#    * Redistributions in binary form must reproduce the above
-#       copyright notice, this list of conditions and the following
-#       disclaimer in the documentation and/or other materials provided
-#       with the distribution.
-#
-#    * Neither the name of the NumPy Developers nor the names of any
-#       contributors may be used to endorse or promote products derived
-#       from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Adapted with minor modifications (numpy.core.* is change to numpy._core.*) from 
+# https://github.com/numpy/numpy/blob/maintenance/1.26.x/numpy/core/code_generators/ufunc_docstrings.py
 
 """
 Docstrings for generated ufuncs
@@ -64,17 +32,14 @@ Docstrings for generated ufuncs
 The syntax is designed to look like the function add_newdoc is being
 called from numpy.lib, but in this file  add_newdoc puts the docstrings
 in a dictionary. This dictionary is used in
-numpy/core/code_generators/generate_umath.py to generate the docstrings
-for the ufuncs in numpy.core at the C level when the ufuncs are created
-at compile time.
+numpy/core/code_generators/generate_umath_doc.py to generate the docstrings
+as a C #definitions for the ufuncs in numpy.core at the C level when the
+ufuncs are created at compile time.
 
 """
 import textwrap
 
 docdict = {}
-
-def get(name):
-    return docdict.get(name)
 
 # common parameter text to all ufuncs
 subst = {
@@ -125,7 +90,7 @@ def add_newdoc(place, name, doc):
     docdict['.'.join((place, name))] = doc
 
 
-add_newdoc('numpy.core.umath', 'absolute',
+add_newdoc('numpy._core.umath', 'absolute',
     """
     Calculate the absolute value element-wise.
 
@@ -167,9 +132,16 @@ add_newdoc('numpy.core.umath', 'absolute',
     >>> plt.imshow(np.abs(xx), extent=[-10, 10, -10, 10], cmap='gray')
     >>> plt.show()
 
+    The `abs` function can be used as a shorthand for ``np.absolute`` on
+    ndarrays.
+
+    >>> x = np.array([-1.2, 1.2])
+    >>> abs(x)
+    array([1.2, 1.2])
+
     """)
 
-add_newdoc('numpy.core.umath', 'add',
+add_newdoc('numpy._core.umath', 'add',
     """
     Add arguments element-wise.
 
@@ -201,9 +173,17 @@ add_newdoc('numpy.core.umath', 'add',
            [  3.,   5.,   7.],
            [  6.,   8.,  10.]])
 
+    The ``+`` operator can be used as a shorthand for ``np.add`` on ndarrays.
+
+    >>> x1 = np.arange(9.0).reshape((3, 3))
+    >>> x2 = np.arange(3.0)
+    >>> x1 + x2
+    array([[ 0.,  2.,  4.],
+           [ 3.,  5.,  7.],
+           [ 6.,  8., 10.]])
     """)
 
-add_newdoc('numpy.core.umath', 'arccos',
+add_newdoc('numpy._core.umath', 'arccos',
     """
     Trigonometric inverse cosine, element-wise.
 
@@ -230,7 +210,7 @@ add_newdoc('numpy.core.umath', 'arccos',
     Notes
     -----
     `arccos` is a multivalued function: for each `x` there are infinitely
-    many numbers `z` such that `cos(z) = x`. The convention is to return
+    many numbers `z` such that ``cos(z) = x``. The convention is to return
     the angle `z` whose real part lies in `[0, pi]`.
 
     For real-valued input data types, `arccos` always returns real output.
@@ -238,7 +218,7 @@ add_newdoc('numpy.core.umath', 'arccos',
     it yields ``nan`` and sets the `invalid` floating point error flag.
 
     For complex-valued input, `arccos` is a complex analytic function that
-    has branch cuts `[-inf, -1]` and `[1, inf]` and is continuous from
+    has branch cuts ``[-inf, -1]`` and `[1, inf]` and is continuous from
     above on the former and from below on the latter.
 
     The inverse `cos` is also known as `acos` or cos^-1.
@@ -246,7 +226,8 @@ add_newdoc('numpy.core.umath', 'arccos',
     References
     ----------
     M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-    10th printing, 1964, pp. 79. http://www.math.sfu.ca/~cbm/aands/
+    10th printing, 1964, pp. 79.
+    https://personal.math.ubc.ca/~cbm/aands/page_79.htm
 
     Examples
     --------
@@ -265,7 +246,7 @@ add_newdoc('numpy.core.umath', 'arccos',
 
     """)
 
-add_newdoc('numpy.core.umath', 'arccosh',
+add_newdoc('numpy._core.umath', 'arccosh',
     """
     Inverse hyperbolic cosine, element-wise.
 
@@ -290,7 +271,7 @@ add_newdoc('numpy.core.umath', 'arccosh',
     -----
     `arccosh` is a multivalued function: for each `x` there are infinitely
     many numbers `z` such that `cosh(z) = x`. The convention is to return the
-    `z` whose imaginary part lies in `[-pi, pi]` and the real part in
+    `z` whose imaginary part lies in ``[-pi, pi]`` and the real part in
     ``[0, inf]``.
 
     For real-valued input data types, `arccosh` always returns real output.
@@ -303,7 +284,8 @@ add_newdoc('numpy.core.umath', 'arccosh',
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 86. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 86.
+           https://personal.math.ubc.ca/~cbm/aands/page_86.htm
     .. [2] Wikipedia, "Inverse hyperbolic function",
            https://en.wikipedia.org/wiki/Arccosh
 
@@ -316,7 +298,7 @@ add_newdoc('numpy.core.umath', 'arccosh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'arcsin',
+add_newdoc('numpy._core.umath', 'arcsin',
     """
     Inverse sine, element-wise.
 
@@ -357,7 +339,7 @@ add_newdoc('numpy.core.umath', 'arcsin',
     ----------
     Abramowitz, M. and Stegun, I. A., *Handbook of Mathematical Functions*,
     10th printing, New York: Dover, 1964, pp. 79ff.
-    http://www.math.sfu.ca/~cbm/aands/
+    https://personal.math.ubc.ca/~cbm/aands/page_79.htm
 
     Examples
     --------
@@ -370,7 +352,7 @@ add_newdoc('numpy.core.umath', 'arcsin',
 
     """)
 
-add_newdoc('numpy.core.umath', 'arcsinh',
+add_newdoc('numpy._core.umath', 'arcsinh',
     """
     Inverse hyperbolic sine element-wise.
 
@@ -405,7 +387,8 @@ add_newdoc('numpy.core.umath', 'arcsinh',
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 86. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 86.
+           https://personal.math.ubc.ca/~cbm/aands/page_86.htm
     .. [2] Wikipedia, "Inverse hyperbolic function",
            https://en.wikipedia.org/wiki/Arcsinh
 
@@ -416,7 +399,7 @@ add_newdoc('numpy.core.umath', 'arcsinh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'arctan',
+add_newdoc('numpy._core.umath', 'arctan',
     """
     Trigonometric inverse tangent, element-wise.
 
@@ -451,7 +434,7 @@ add_newdoc('numpy.core.umath', 'arctan',
     it yields ``nan`` and sets the `invalid` floating point error flag.
 
     For complex-valued input, `arctan` is a complex analytic function that
-    has [`1j, infj`] and [`-1j, -infj`] as branch cuts, and is continuous
+    has [``1j, infj``] and [``-1j, -infj``] as branch cuts, and is continuous
     from the left on the former and from the right on the latter.
 
     The inverse tangent is also known as `atan` or tan^{-1}.
@@ -460,7 +443,7 @@ add_newdoc('numpy.core.umath', 'arctan',
     ----------
     Abramowitz, M. and Stegun, I. A., *Handbook of Mathematical Functions*,
     10th printing, New York: Dover, 1964, pp. 79.
-    http://www.math.sfu.ca/~cbm/aands/
+    https://personal.math.ubc.ca/~cbm/aands/page_79.htm
 
     Examples
     --------
@@ -482,7 +465,7 @@ add_newdoc('numpy.core.umath', 'arctan',
 
     """)
 
-add_newdoc('numpy.core.umath', 'arctan2',
+add_newdoc('numpy._core.umath', 'arctan2',
     """
     Element-wise arc tangent of ``x1/x2`` choosing the quadrant correctly.
 
@@ -557,16 +540,16 @@ add_newdoc('numpy.core.umath', 'arctan2',
     >>> np.arctan2([1., -1.], [0., 0.])
     array([ 1.57079633, -1.57079633])
     >>> np.arctan2([0., 0., np.inf], [+0., -0., np.inf])
-    array([ 0.        ,  3.14159265,  0.78539816])
+    array([0.        , 3.14159265, 0.78539816])
 
     """)
 
-add_newdoc('numpy.core.umath', '_arg',
+add_newdoc('numpy._core.umath', '_arg',
     """
     DO NOT USE, ONLY FOR TESTING
     """)
 
-add_newdoc('numpy.core.umath', 'arctanh',
+add_newdoc('numpy._core.umath', 'arctanh',
     """
     Inverse hyperbolic tangent element-wise.
 
@@ -589,7 +572,7 @@ add_newdoc('numpy.core.umath', 'arctanh',
     Notes
     -----
     `arctanh` is a multivalued function: for each `x` there are infinitely
-    many numbers `z` such that `tanh(z) = x`. The convention is to return
+    many numbers `z` such that ``tanh(z) = x``. The convention is to return
     the `z` whose imaginary part lies in `[-pi/2, pi/2]`.
 
     For real-valued input data types, `arctanh` always returns real output.
@@ -605,7 +588,8 @@ add_newdoc('numpy.core.umath', 'arctanh',
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 86. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 86.
+           https://personal.math.ubc.ca/~cbm/aands/page_86.htm
     .. [2] Wikipedia, "Inverse hyperbolic function",
            https://en.wikipedia.org/wiki/Arctanh
 
@@ -616,7 +600,7 @@ add_newdoc('numpy.core.umath', 'arctanh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'bitwise_and',
+add_newdoc('numpy._core.umath', 'bitwise_and',
     """
     Compute the bit-wise AND of two arrays element-wise.
 
@@ -668,9 +652,17 @@ add_newdoc('numpy.core.umath', 'bitwise_and',
     >>> np.bitwise_and([True, True], [False, True])
     array([False,  True])
 
+    The ``&`` operator can be used as a shorthand for ``np.bitwise_and`` on
+    ndarrays.
+
+    >>> x1 = np.array([2, 5, 255])
+    >>> x2 = np.array([3, 14, 16])
+    >>> x1 & x2
+    array([ 2,  4, 16])
+
     """)
 
-add_newdoc('numpy.core.umath', 'bitwise_or',
+add_newdoc('numpy._core.umath', 'bitwise_or',
     """
     Compute the bit-wise OR of two arrays element-wise.
 
@@ -701,9 +693,9 @@ add_newdoc('numpy.core.umath', 'bitwise_or',
 
     Examples
     --------
-    The number 13 has the binaray representation ``00001101``. Likewise,
+    The number 13 has the binary representation ``00001101``. Likewise,
     16 is represented by ``00010000``.  The bit-wise OR of 13 and 16 is
-    then ``000111011``, or 29:
+    then ``00011101``, or 29:
 
     >>> np.bitwise_or(13, 16)
     29
@@ -727,9 +719,17 @@ add_newdoc('numpy.core.umath', 'bitwise_or',
     >>> np.bitwise_or([True, True], [False, True])
     array([ True,  True])
 
+    The ``|`` operator can be used as a shorthand for ``np.bitwise_or`` on
+    ndarrays.
+
+    >>> x1 = np.array([2, 5, 255])
+    >>> x2 = np.array([4, 4, 4])
+    >>> x1 | x2
+    array([  6,   5, 255])
+
     """)
 
-add_newdoc('numpy.core.umath', 'bitwise_xor',
+add_newdoc('numpy._core.umath', 'bitwise_xor',
     """
     Compute the bit-wise XOR of two arrays element-wise.
 
@@ -779,14 +779,22 @@ add_newdoc('numpy.core.umath', 'bitwise_xor',
     >>> np.bitwise_xor([True, True], [False, True])
     array([ True, False])
 
+    The ``^`` operator can be used as a shorthand for ``np.bitwise_xor`` on
+    ndarrays.
+
+    >>> x1 = np.array([True, True])
+    >>> x2 = np.array([False, True])
+    >>> x1 ^ x2
+    array([ True, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'ceil',
+add_newdoc('numpy._core.umath', 'ceil',
     """
     Return the ceiling of the input, element-wise.
 
     The ceil of the scalar `x` is the smallest integer `i`, such that
-    `i >= x`.  It is often denoted as :math:`\\lceil x \\rceil`.
+    ``i >= x``.  It is often denoted as :math:`\\lceil x \\rceil`.
 
     Parameters
     ----------
@@ -802,7 +810,7 @@ add_newdoc('numpy.core.umath', 'ceil',
 
     See Also
     --------
-    floor, trunc, rint
+    floor, trunc, rint, fix
 
     Examples
     --------
@@ -812,7 +820,7 @@ add_newdoc('numpy.core.umath', 'ceil',
 
     """)
 
-add_newdoc('numpy.core.umath', 'trunc',
+add_newdoc('numpy._core.umath', 'trunc',
     """
     Return the truncated value of the input, element-wise.
 
@@ -834,7 +842,7 @@ add_newdoc('numpy.core.umath', 'trunc',
 
     See Also
     --------
-    ceil, floor, rint
+    ceil, floor, rint, fix
 
     Notes
     -----
@@ -848,7 +856,7 @@ add_newdoc('numpy.core.umath', 'trunc',
 
     """)
 
-add_newdoc('numpy.core.umath', 'conjugate',
+add_newdoc('numpy._core.umath', 'conjugate',
     """
     Return the complex conjugate, element-wise.
 
@@ -886,7 +894,7 @@ add_newdoc('numpy.core.umath', 'conjugate',
 
     """)
 
-add_newdoc('numpy.core.umath', 'cos',
+add_newdoc('numpy._core.umath', 'cos',
     """
     Cosine element-wise.
 
@@ -931,7 +939,7 @@ add_newdoc('numpy.core.umath', 'cos',
 
     """)
 
-add_newdoc('numpy.core.umath', 'cosh',
+add_newdoc('numpy._core.umath', 'cosh',
     """
     Hyperbolic cosine, element-wise.
 
@@ -963,7 +971,7 @@ add_newdoc('numpy.core.umath', 'cosh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'degrees',
+add_newdoc('numpy._core.umath', 'degrees',
     """
     Convert angles from radians to degrees.
 
@@ -1000,7 +1008,7 @@ add_newdoc('numpy.core.umath', 'degrees',
 
     """)
 
-add_newdoc('numpy.core.umath', 'rad2deg',
+add_newdoc('numpy._core.umath', 'rad2deg',
     """
     Convert angles from radians to degrees.
 
@@ -1034,7 +1042,7 @@ add_newdoc('numpy.core.umath', 'rad2deg',
 
     """)
 
-add_newdoc('numpy.core.umath', 'heaviside',
+add_newdoc('numpy._core.umath', 'heaviside',
     """
     Compute the Heaviside step function.
 
@@ -1078,7 +1086,7 @@ add_newdoc('numpy.core.umath', 'heaviside',
     array([ 0.,  1.,  1.])
     """)
 
-add_newdoc('numpy.core.umath', 'divide',
+add_newdoc('numpy._core.umath', 'divide',
     """
     Divide arguments element-wise.
 
@@ -1106,11 +1114,8 @@ add_newdoc('numpy.core.umath', 'divide',
     -----
     Equivalent to ``x1`` / ``x2`` in terms of array-broadcasting.
 
-    Behavior on division by zero can be changed using ``seterr``.
-
-    In Python 2, when both ``x1`` and ``x2`` are of an integer type,
-    ``divide`` will behave like ``floor_divide``. In Python 3, it behaves
-    like ``true_divide``.
+    The ``true_divide(x1, x2)`` function is an alias for
+    ``divide(x1, x2)``.
 
     Examples
     --------
@@ -1119,38 +1124,23 @@ add_newdoc('numpy.core.umath', 'divide',
     >>> x1 = np.arange(9.0).reshape((3, 3))
     >>> x2 = np.arange(3.0)
     >>> np.divide(x1, x2)
-    array([[ NaN,  1. ,  1. ],
-           [ Inf,  4. ,  2.5],
-           [ Inf,  7. ,  4. ]])
+    array([[nan, 1. , 1. ],
+           [inf, 4. , 2.5],
+           [inf, 7. , 4. ]])
 
-    Note the behavior with integer types (Python 2 only):
+    The ``/`` operator can be used as a shorthand for ``np.divide`` on
+    ndarrays.
 
-    >>> np.divide(2, 4)
-    0
-    >>> np.divide(2, 4.)
-    0.5
-
-    Division by zero always yields zero in integer arithmetic (again,
-    Python 2 only), and does not raise an exception or a warning:
-
-    >>> np.divide(np.array([0, 1], dtype=int), np.array([0, 0], dtype=int))
-    array([0, 0])
-
-    Division by zero can, however, be caught using ``seterr``:
-
-    >>> old_err_state = np.seterr(divide='raise')
-    >>> np.divide(1, 0)
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-    FloatingPointError: divide by zero encountered in divide
-
-    >>> ignored_states = np.seterr(**old_err_state)
-    >>> np.divide(1, 0)
-    0
+    >>> x1 = np.arange(9.0).reshape((3, 3))
+    >>> x2 = 2 * np.ones(3)
+    >>> x1 / x2
+    array([[0. , 0.5, 1. ],
+           [1.5, 2. , 2.5],
+           [3. , 3.5, 4. ]])
 
     """)
 
-add_newdoc('numpy.core.umath', 'equal',
+add_newdoc('numpy._core.umath', 'equal',
     """
     Return (x1 == x2) element-wise.
 
@@ -1183,9 +1173,17 @@ add_newdoc('numpy.core.umath', 'equal',
     >>> np.equal(1, np.ones(1))
     array([ True])
 
+    The ``==`` operator can be used as a shorthand for ``np.equal`` on
+    ndarrays.
+
+    >>> a = np.array([2, 4, 6])
+    >>> b = np.array([2, 4, 2])
+    >>> a == b
+    array([ True,  True, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'exp',
+add_newdoc('numpy._core.umath', 'exp',
     """
     Calculate the exponential of all elements in the input array.
 
@@ -1225,7 +1223,7 @@ add_newdoc('numpy.core.umath', 'exp',
            https://en.wikipedia.org/wiki/Exponential_function
     .. [2] M. Abramovitz and I. A. Stegun, "Handbook of Mathematical Functions
            with Formulas, Graphs, and Mathematical Tables," Dover, 1964, p. 69,
-           http://www.math.sfu.ca/~cbm/aands/page_69.htm
+           https://personal.math.ubc.ca/~cbm/aands/page_69.htm
 
     Examples
     --------
@@ -1250,7 +1248,7 @@ add_newdoc('numpy.core.umath', 'exp',
 
     """)
 
-add_newdoc('numpy.core.umath', 'exp2',
+add_newdoc('numpy._core.umath', 'exp2',
     """
     Calculate `2**p` for all `p` in the input array.
 
@@ -1283,7 +1281,7 @@ add_newdoc('numpy.core.umath', 'exp2',
 
     """)
 
-add_newdoc('numpy.core.umath', 'expm1',
+add_newdoc('numpy._core.umath', 'expm1',
     """
     Calculate ``exp(x) - 1`` for all elements in the array.
 
@@ -1322,7 +1320,7 @@ add_newdoc('numpy.core.umath', 'expm1',
 
     """)
 
-add_newdoc('numpy.core.umath', 'fabs',
+add_newdoc('numpy._core.umath', 'fabs',
     """
     Compute the absolute values element-wise.
 
@@ -1356,7 +1354,7 @@ add_newdoc('numpy.core.umath', 'fabs',
 
     """)
 
-add_newdoc('numpy.core.umath', 'floor',
+add_newdoc('numpy._core.umath', 'floor',
     """
     Return the floor of the input, element-wise.
 
@@ -1377,13 +1375,14 @@ add_newdoc('numpy.core.umath', 'floor',
 
     See Also
     --------
-    ceil, trunc, rint
+    ceil, trunc, rint, fix
 
     Notes
     -----
-    Some spreadsheet programs calculate the "floor-towards-zero", in other
-    words ``floor(-2.5) == -2``.  NumPy instead uses the definition of
-    `floor` where `floor(-2.5) == -3`.
+    Some spreadsheet programs calculate the "floor-towards-zero", where
+    ``floor(-2.5) == -2``.  NumPy instead uses the definition of
+    `floor` where `floor(-2.5) == -3`. The "floor-towards-zero"
+    function is called ``fix`` in NumPy.
 
     Examples
     --------
@@ -1393,7 +1392,7 @@ add_newdoc('numpy.core.umath', 'floor',
 
     """)
 
-add_newdoc('numpy.core.umath', 'floor_divide',
+add_newdoc('numpy._core.umath', 'floor_divide',
     """
     Return the largest integer smaller or equal to the division of the inputs.
     It is equivalent to the Python ``//`` operator and pairs with the
@@ -1430,11 +1429,18 @@ add_newdoc('numpy.core.umath', 'floor_divide',
     >>> np.floor_divide([1., 2., 3., 4.], 2.5)
     array([ 0.,  0.,  1.,  1.])
 
+    The ``//`` operator can be used as a shorthand for ``np.floor_divide``
+    on ndarrays.
+
+    >>> x1 = np.array([1., 2., 3., 4.])
+    >>> x1 // 2.5
+    array([0., 0., 1., 1.])
+
     """)
 
-add_newdoc('numpy.core.umath', 'fmod',
+add_newdoc('numpy._core.umath', 'fmod',
     """
-    Return the element-wise remainder of division.
+    Returns the element-wise remainder of division.
 
     This is the NumPy implementation of the C library function fmod, the
     remainder has the same sign as the dividend `x1`. It is equivalent to
@@ -1490,7 +1496,7 @@ add_newdoc('numpy.core.umath', 'fmod',
 
     """)
 
-add_newdoc('numpy.core.umath', 'greater',
+add_newdoc('numpy._core.umath', 'greater',
     """
     Return the truth value of (x1 > x2) element-wise.
 
@@ -1518,16 +1524,17 @@ add_newdoc('numpy.core.umath', 'greater',
     >>> np.greater([4,2],[2,2])
     array([ True, False])
 
-    If the inputs are ndarrays, then np.greater is equivalent to '>'.
+    The ``>`` operator can be used as a shorthand for ``np.greater`` on
+    ndarrays.
 
-    >>> a = np.array([4,2])
-    >>> b = np.array([2,2])
+    >>> a = np.array([4, 2])
+    >>> b = np.array([2, 2])
     >>> a > b
     array([ True, False])
 
     """)
 
-add_newdoc('numpy.core.umath', 'greater_equal',
+add_newdoc('numpy._core.umath', 'greater_equal',
     """
     Return the truth value of (x1 >= x2) element-wise.
 
@@ -1554,9 +1561,17 @@ add_newdoc('numpy.core.umath', 'greater_equal',
     >>> np.greater_equal([4, 2, 1], [2, 2, 2])
     array([ True, True, False])
 
+    The ``>=`` operator can be used as a shorthand for ``np.greater_equal``
+    on ndarrays.
+
+    >>> a = np.array([4, 2, 1])
+    >>> b = np.array([2, 2, 2])
+    >>> a >= b
+    array([ True,  True, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'hypot',
+add_newdoc('numpy._core.umath', 'hypot',
     """
     Given the "legs" of a right triangle, return its hypotenuse.
 
@@ -1594,7 +1609,7 @@ add_newdoc('numpy.core.umath', 'hypot',
 
     """)
 
-add_newdoc('numpy.core.umath', 'invert',
+add_newdoc('numpy._core.umath', 'invert',
     """
     Compute bit-wise inversion, or bit-wise NOT, element-wise.
 
@@ -1672,11 +1687,18 @@ add_newdoc('numpy.core.umath', 'invert',
     >>> np.invert(np.array([True, False]))
     array([False,  True])
 
+    The ``~`` operator can be used as a shorthand for ``np.invert`` on
+    ndarrays.
+
+    >>> x1 = np.array([True, False])
+    >>> ~x1
+    array([False,  True])
+
     """)
 
-add_newdoc('numpy.core.umath', 'isfinite',
+add_newdoc('numpy._core.umath', 'isfinite',
     """
-    Test element-wise for finiteness (not infinity or not Not a Number).
+    Test element-wise for finiteness (not infinity and not Not a Number).
 
     The result is returned as a boolean array.
 
@@ -1733,7 +1755,7 @@ add_newdoc('numpy.core.umath', 'isfinite',
 
     """)
 
-add_newdoc('numpy.core.umath', 'isinf',
+add_newdoc('numpy._core.umath', 'isinf',
     """
     Test element-wise for positive or negative infinity.
 
@@ -1785,7 +1807,7 @@ add_newdoc('numpy.core.umath', 'isinf',
 
     """)
 
-add_newdoc('numpy.core.umath', 'isnan',
+add_newdoc('numpy._core.umath', 'isnan',
     """
     Test element-wise for NaN and return result as a boolean array.
 
@@ -1821,7 +1843,7 @@ add_newdoc('numpy.core.umath', 'isnan',
 
     """)
 
-add_newdoc('numpy.core.umath', 'isnat',
+add_newdoc('numpy._core.umath', 'isnat',
     """
     Test element-wise for NaT (not a time) and return result as a boolean array.
 
@@ -1854,7 +1876,7 @@ add_newdoc('numpy.core.umath', 'isnat',
 
     """)
 
-add_newdoc('numpy.core.umath', 'left_shift',
+add_newdoc('numpy._core.umath', 'left_shift',
     """
     Shift the bits of an integer to the left.
 
@@ -1895,9 +1917,28 @@ add_newdoc('numpy.core.umath', 'left_shift',
     >>> np.left_shift(5, [1,2,3])
     array([10, 20, 40])
 
+    Note that the dtype of the second argument may change the dtype of the
+    result and can lead to unexpected results in some cases (see
+    :ref:`Casting Rules <ufuncs.casting>`):
+
+    >>> a = np.left_shift(np.uint8(255), 1) # Expect 254
+    >>> print(a, type(a)) # Unexpected result due to upcasting
+    510 <class 'numpy.int64'>
+    >>> b = np.left_shift(np.uint8(255), np.uint8(1))
+    >>> print(b, type(b))
+    254 <class 'numpy.uint8'>
+
+    The ``<<`` operator can be used as a shorthand for ``np.left_shift`` on
+    ndarrays.
+
+    >>> x1 = 5
+    >>> x2 = np.array([1, 2, 3])
+    >>> x1 << x2
+    array([10, 20, 40])
+
     """)
 
-add_newdoc('numpy.core.umath', 'less',
+add_newdoc('numpy._core.umath', 'less',
     """
     Return the truth value of (x1 < x2) element-wise.
 
@@ -1924,11 +1965,18 @@ add_newdoc('numpy.core.umath', 'less',
     >>> np.less([1, 2], [2, 2])
     array([ True, False])
 
+    The ``<`` operator can be used as a shorthand for ``np.less`` on ndarrays.
+
+    >>> a = np.array([1, 2])
+    >>> b = np.array([2, 2])
+    >>> a < b
+    array([ True, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'less_equal',
+add_newdoc('numpy._core.umath', 'less_equal',
     """
-    Return the truth value of (x1 =< x2) element-wise.
+    Return the truth value of (x1 <= x2) element-wise.
 
     Parameters
     ----------
@@ -1953,9 +2001,17 @@ add_newdoc('numpy.core.umath', 'less_equal',
     >>> np.less_equal([4, 2, 1], [2, 2, 2])
     array([False,  True,  True])
 
+    The ``<=`` operator can be used as a shorthand for ``np.less_equal`` on
+    ndarrays.
+
+    >>> a = np.array([4, 2, 1])
+    >>> b = np.array([2, 2, 2])
+    >>> a <= b
+    array([False,  True,  True])
+
     """)
 
-add_newdoc('numpy.core.umath', 'log',
+add_newdoc('numpy._core.umath', 'log',
     """
     Natural logarithm, element-wise.
 
@@ -1983,7 +2039,7 @@ add_newdoc('numpy.core.umath', 'log',
     -----
     Logarithm is a multivalued function: for each `x` there is an infinite
     number of `z` such that `exp(z) = x`. The convention is to return the
-    `z` whose imaginary part lies in `[-pi, pi]`.
+    `z` whose imaginary part lies in `(-pi, pi]`.
 
     For real-valued input data types, `log` always returns real output. For
     each value that cannot be expressed as a real number or infinity, it
@@ -1994,10 +2050,15 @@ add_newdoc('numpy.core.umath', 'log',
     handles the floating-point negative zero as an infinitesimal negative
     number, conforming to the C99 standard.
 
+    In the cases where the input has a negative real part and a very small
+    negative complex part (approaching 0), the result is so close to `-pi`
+    that it evaluates to exactly `-pi`.
+
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 67. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 67.
+           https://personal.math.ubc.ca/~cbm/aands/page_67.htm
     .. [2] Wikipedia, "Logarithm". https://en.wikipedia.org/wiki/Logarithm
 
     Examples
@@ -2007,7 +2068,7 @@ add_newdoc('numpy.core.umath', 'log',
 
     """)
 
-add_newdoc('numpy.core.umath', 'log10',
+add_newdoc('numpy._core.umath', 'log10',
     """
     Return the base 10 logarithm of the input array, element-wise.
 
@@ -2032,7 +2093,7 @@ add_newdoc('numpy.core.umath', 'log10',
     -----
     Logarithm is a multivalued function: for each `x` there is an infinite
     number of `z` such that `10**z = x`. The convention is to return the
-    `z` whose imaginary part lies in `[-pi, pi]`.
+    `z` whose imaginary part lies in `(-pi, pi]`.
 
     For real-valued input data types, `log10` always returns real output.
     For each value that cannot be expressed as a real number or infinity,
@@ -2043,10 +2104,15 @@ add_newdoc('numpy.core.umath', 'log10',
     `log10` handles the floating-point negative zero as an infinitesimal
     negative number, conforming to the C99 standard.
 
+    In the cases where the input has a negative real part and a very small
+    negative complex part (approaching 0), the result is so close to `-pi`
+    that it evaluates to exactly `-pi`.
+
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 67. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 67.
+           https://personal.math.ubc.ca/~cbm/aands/page_67.htm
     .. [2] Wikipedia, "Logarithm". https://en.wikipedia.org/wiki/Logarithm
 
     Examples
@@ -2056,7 +2122,7 @@ add_newdoc('numpy.core.umath', 'log10',
 
     """)
 
-add_newdoc('numpy.core.umath', 'log2',
+add_newdoc('numpy._core.umath', 'log2',
     """
     Base-2 logarithm of `x`.
 
@@ -2082,7 +2148,7 @@ add_newdoc('numpy.core.umath', 'log2',
 
     Logarithm is a multivalued function: for each `x` there is an infinite
     number of `z` such that `2**z = x`. The convention is to return the `z`
-    whose imaginary part lies in `[-pi, pi]`.
+    whose imaginary part lies in `(-pi, pi]`.
 
     For real-valued input data types, `log2` always returns real output.
     For each value that cannot be expressed as a real number or infinity,
@@ -2092,6 +2158,10 @@ add_newdoc('numpy.core.umath', 'log2',
     has a branch cut `[-inf, 0]` and is continuous from above on it. `log2`
     handles the floating-point negative zero as an infinitesimal negative
     number, conforming to the C99 standard.
+
+    In the cases where the input has a negative real part and a very small
+    negative complex part (approaching 0), the result is so close to `-pi`
+    that it evaluates to exactly `-pi`.
 
     Examples
     --------
@@ -2105,7 +2175,7 @@ add_newdoc('numpy.core.umath', 'log2',
 
     """)
 
-add_newdoc('numpy.core.umath', 'logaddexp',
+add_newdoc('numpy._core.umath', 'logaddexp',
     """
     Logarithm of the sum of exponentiations of the inputs.
 
@@ -2148,7 +2218,7 @@ add_newdoc('numpy.core.umath', 'logaddexp',
 
     """)
 
-add_newdoc('numpy.core.umath', 'logaddexp2',
+add_newdoc('numpy._core.umath', 'logaddexp2',
     """
     Logarithm of the sum of exponentiations of the inputs in base-2.
 
@@ -2191,7 +2261,7 @@ add_newdoc('numpy.core.umath', 'logaddexp2',
 
     """)
 
-add_newdoc('numpy.core.umath', 'log1p',
+add_newdoc('numpy._core.umath', 'log1p',
     """
     Return the natural logarithm of one plus the input array, element-wise.
 
@@ -2234,7 +2304,8 @@ add_newdoc('numpy.core.umath', 'log1p',
     References
     ----------
     .. [1] M. Abramowitz and I.A. Stegun, "Handbook of Mathematical Functions",
-           10th printing, 1964, pp. 67. http://www.math.sfu.ca/~cbm/aands/
+           10th printing, 1964, pp. 67.
+           https://personal.math.ubc.ca/~cbm/aands/page_67.htm
     .. [2] Wikipedia, "Logarithm". https://en.wikipedia.org/wiki/Logarithm
 
     Examples
@@ -2246,7 +2317,7 @@ add_newdoc('numpy.core.umath', 'log1p',
 
     """)
 
-add_newdoc('numpy.core.umath', 'logical_and',
+add_newdoc('numpy._core.umath', 'logical_and',
     """
     Compute the truth value of x1 AND x2 element-wise.
 
@@ -2280,9 +2351,18 @@ add_newdoc('numpy.core.umath', 'logical_and',
     >>> np.logical_and(x>1, x<4)
     array([False, False,  True,  True, False])
 
+
+    The ``&`` operator can be used as a shorthand for ``np.logical_and`` on
+    boolean ndarrays.
+
+    >>> a = np.array([True, False])
+    >>> b = np.array([False, False])
+    >>> a & b
+    array([False, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'logical_not',
+add_newdoc('numpy._core.umath', 'logical_not',
     """
     Compute the truth value of NOT x element-wise.
 
@@ -2316,7 +2396,7 @@ add_newdoc('numpy.core.umath', 'logical_not',
 
     """)
 
-add_newdoc('numpy.core.umath', 'logical_or',
+add_newdoc('numpy._core.umath', 'logical_or',
     """
     Compute the truth value of x1 OR x2 element-wise.
 
@@ -2350,9 +2430,17 @@ add_newdoc('numpy.core.umath', 'logical_or',
     >>> np.logical_or(x < 1, x > 3)
     array([ True, False, False, False,  True])
 
+    The ``|`` operator can be used as a shorthand for ``np.logical_or`` on
+    boolean ndarrays.
+
+    >>> a = np.array([True, False])
+    >>> b = np.array([False, False])
+    >>> a | b
+    array([ True, False])
+
     """)
 
-add_newdoc('numpy.core.umath', 'logical_xor',
+add_newdoc('numpy._core.umath', 'logical_xor',
     """
     Compute the truth value of x1 XOR x2, element-wise.
 
@@ -2393,11 +2481,11 @@ add_newdoc('numpy.core.umath', 'logical_xor',
 
     """)
 
-add_newdoc('numpy.core.umath', 'maximum',
+add_newdoc('numpy._core.umath', 'maximum',
     """
     Element-wise maximum of array elements.
 
-    Compare two arrays and returns a new array containing the element-wise
+    Compare two arrays and return a new array containing the element-wise
     maxima. If one of the elements being compared is a NaN, then that
     element is returned. If both elements are NaNs then the first is
     returned. The latter distinction is important for complex NaNs, which
@@ -2452,11 +2540,11 @@ add_newdoc('numpy.core.umath', 'maximum',
 
     """)
 
-add_newdoc('numpy.core.umath', 'minimum',
+add_newdoc('numpy._core.umath', 'minimum',
     """
     Element-wise minimum of array elements.
 
-    Compare two arrays and returns a new array containing the element-wise
+    Compare two arrays and return a new array containing the element-wise
     minima. If one of the elements being compared is a NaN, then that
     element is returned. If both elements are NaNs then the first is
     returned. The latter distinction is important for complex NaNs, which
@@ -2511,11 +2599,11 @@ add_newdoc('numpy.core.umath', 'minimum',
 
     """)
 
-add_newdoc('numpy.core.umath', 'fmax',
+add_newdoc('numpy._core.umath', 'fmax',
     """
     Element-wise maximum of array elements.
 
-    Compare two arrays and returns a new array containing the element-wise
+    Compare two arrays and return a new array containing the element-wise
     maxima. If one of the elements being compared is a NaN, then the
     non-nan element is returned. If both elements are NaNs then the first
     is returned.  The latter distinction is important for complex NaNs,
@@ -2569,11 +2657,11 @@ add_newdoc('numpy.core.umath', 'fmax',
 
     """)
 
-add_newdoc('numpy.core.umath', 'fmin',
+add_newdoc('numpy._core.umath', 'fmin',
     """
     Element-wise minimum of array elements.
 
-    Compare two arrays and returns a new array containing the element-wise
+    Compare two arrays and return a new array containing the element-wise
     minima. If one of the elements being compared is a NaN, then the
     non-nan element is returned. If both elements are NaNs then the first
     is returned.  The latter distinction is important for complex NaNs,
@@ -2627,7 +2715,7 @@ add_newdoc('numpy.core.umath', 'fmin',
 
     """)
 
-add_newdoc('numpy.core.umath', 'clip',
+add_newdoc('numpy._core.umath', 'clip',
     """
     Clip (limit) the values in an array.
 
@@ -2656,8 +2744,8 @@ add_newdoc('numpy.core.umath', 'clip',
     --------
     numpy.clip :
         Wrapper that makes the ``a_min`` and ``a_max`` arguments optional,
-        dispatching to one of `~numpy.core.umath.clip`,
-        `~numpy.core.umath.minimum`, and `~numpy.core.umath.maximum`.
+        dispatching to one of `~numpy._core.umath.clip`,
+        `~numpy._core.umath.minimum`, and `~numpy._core.umath.maximum`.
 
     Returns
     -------
@@ -2667,7 +2755,7 @@ add_newdoc('numpy.core.umath', 'clip',
         with `a_max`.
     """)
 
-add_newdoc('numpy.core.umath', 'matmul',
+add_newdoc('numpy._core.umath', 'matmul',
     """
     Matrix product of two arrays.
 
@@ -2695,8 +2783,8 @@ add_newdoc('numpy.core.umath', 'matmul',
     Raises
     ------
     ValueError
-        If the last dimension of `a` is not the same size as
-        the second-to-last dimension of `b`.
+        If the last dimension of `x1` is not the same size as
+        the second-to-last dimension of `x2`.
 
         If a scalar value is passed in.
 
@@ -2737,8 +2825,10 @@ add_newdoc('numpy.core.umath', 'matmul',
       (9, 5, 7, 3)
       >>> # n is 7, k is 4, m is 3
 
-    The matmul function implements the semantics of the `@` operator introduced
-    in Python 3.5 following PEP465.
+    The matmul function implements the semantics of the ``@`` operator
+    introduced in Python 3.5 following :pep:`465`.
+
+    It uses an optimized BLAS library when possible (see `numpy.linalg`).
 
     Examples
     --------
@@ -2787,10 +2877,18 @@ add_newdoc('numpy.core.umath', 'matmul',
     ...
     ValueError: matmul: Input operand 1 does not have enough dimensions ...
 
+    The ``@`` operator can be used as a shorthand for ``np.matmul`` on
+    ndarrays.
+
+    >>> x1 = np.array([2j, 3j])
+    >>> x2 = np.array([2j, 3j])
+    >>> x1 @ x2
+    (-13+0j)
+
     .. versionadded:: 1.10.0
     """)
 
-add_newdoc('numpy.core.umath', 'modf',
+add_newdoc('numpy._core.umath', 'modf',
     """
     Return the fractional and integral parts of an array, element-wise.
 
@@ -2830,7 +2928,7 @@ add_newdoc('numpy.core.umath', 'modf',
 
     """)
 
-add_newdoc('numpy.core.umath', 'multiply',
+add_newdoc('numpy._core.umath', 'multiply',
     """
     Multiply arguments element-wise.
 
@@ -2863,9 +2961,19 @@ add_newdoc('numpy.core.umath', 'multiply',
            [  0.,   4.,  10.],
            [  0.,   7.,  16.]])
 
+    The ``*`` operator can be used as a shorthand for ``np.multiply`` on
+    ndarrays.
+
+    >>> x1 = np.arange(9.0).reshape((3, 3))
+    >>> x2 = np.arange(3.0)
+    >>> x1 * x2
+    array([[  0.,   1.,   4.],
+           [  0.,   4.,  10.],
+           [  0.,   7.,  16.]])
+
     """)
 
-add_newdoc('numpy.core.umath', 'negative',
+add_newdoc('numpy._core.umath', 'negative',
     """
     Numerical negative, element-wise.
 
@@ -2886,9 +2994,16 @@ add_newdoc('numpy.core.umath', 'negative',
     >>> np.negative([1.,-1.])
     array([-1.,  1.])
 
+    The unary ``-`` operator can be used as a shorthand for ``np.negative`` on
+    ndarrays.
+
+    >>> x1 = np.array(([1., -1.]))
+    >>> -x1
+    array([-1.,  1.])
+
     """)
 
-add_newdoc('numpy.core.umath', 'positive',
+add_newdoc('numpy._core.umath', 'positive',
     """
     Numerical positive, element-wise.
 
@@ -2910,9 +3025,23 @@ add_newdoc('numpy.core.umath', 'positive',
     Equivalent to `x.copy()`, but only defined for types that support
     arithmetic.
 
+    Examples
+    --------
+
+    >>> x1 = np.array(([1., -1.]))
+    >>> np.positive(x1)
+    array([ 1., -1.])
+
+    The unary ``+`` operator can be used as a shorthand for ``np.positive`` on
+    ndarrays.
+
+    >>> x1 = np.array(([1., -1.]))
+    >>> +x1
+    array([ 1., -1.])
+
     """)
 
-add_newdoc('numpy.core.umath', 'not_equal',
+add_newdoc('numpy._core.umath', 'not_equal',
     """
     Return (x1 != x2) element-wise.
 
@@ -2942,9 +3071,18 @@ add_newdoc('numpy.core.umath', 'not_equal',
     array([[False,  True],
            [False,  True]])
 
+    The ``!=`` operator can be used as a shorthand for ``np.not_equal`` on
+    ndarrays.
+
+    >>> a = np.array([1., 2.])
+    >>> b = np.array([1., 3.])
+    >>> a != b
+    array([False,  True])
+
+
     """)
 
-add_newdoc('numpy.core.umath', '_ones_like',
+add_newdoc('numpy._core.umath', '_ones_like',
     """
     This function used to be the numpy.ones_like, but now a specific
     function for that has been written for consistency with the other
@@ -2956,13 +3094,19 @@ add_newdoc('numpy.core.umath', '_ones_like',
 
     """)
 
-add_newdoc('numpy.core.umath', 'power',
+add_newdoc('numpy._core.umath', 'power',
     """
     First array elements raised to powers from second array, element-wise.
 
     Raise each base in `x1` to the positionally-corresponding power in
-    `x2`.  `x1` and `x2` must be broadcastable to the same shape. Note that an
-    integer type raised to a negative integer power will raise a ValueError.
+    `x2`.  `x1` and `x2` must be broadcastable to the same shape.
+
+    An integer type raised to a negative integer power will raise a
+    ``ValueError``.
+
+    Negative values raised to a non-integral value will return ``nan``.
+    To get complex results, cast the input to complex, or specify the
+    ``dtype`` to be ``complex`` (see the example below).
 
     Parameters
     ----------
@@ -2985,9 +3129,9 @@ add_newdoc('numpy.core.umath', 'power',
 
     Examples
     --------
-    Cube each element in a list.
+    Cube each element in an array.
 
-    >>> x1 = range(6)
+    >>> x1 = np.arange(6)
     >>> x1
     [0, 1, 2, 3, 4, 5]
     >>> np.power(x1, 3)
@@ -3009,9 +3153,32 @@ add_newdoc('numpy.core.umath', 'power',
     array([[ 0,  1,  8, 27, 16,  5],
            [ 0,  1,  8, 27, 16,  5]])
 
+    The ``**`` operator can be used as a shorthand for ``np.power`` on
+    ndarrays.
+
+    >>> x2 = np.array([1, 2, 3, 3, 2, 1])
+    >>> x1 = np.arange(6)
+    >>> x1 ** x2
+    array([ 0,  1,  8, 27, 16,  5])
+
+    Negative values raised to a non-integral value will result in ``nan``
+    (and a warning will be generated).
+
+    >>> x3 = np.array([-1.0, -4.0])
+    >>> with np.errstate(invalid='ignore'):
+    ...     p = np.power(x3, 1.5)
+    ...
+    >>> p
+    array([nan, nan])
+
+    To get complex results, give the argument ``dtype=complex``.
+
+    >>> np.power(x3, 1.5, dtype=complex)
+    array([-1.83697020e-16-1.j, -1.46957616e-15-8.j])
+
     """)
 
-add_newdoc('numpy.core.umath', 'float_power',
+add_newdoc('numpy._core.umath', 'float_power',
     """
     First array elements raised to powers from second array, element-wise.
 
@@ -3021,6 +3188,10 @@ add_newdoc('numpy.core.umath', 'float_power',
     floats with a minimum precision of float64 so that the result is always
     inexact.  The intent is that the function will return a usable result for
     negative powers and seldom overflow for positive powers.
+
+    Negative values raised to a non-integral value will return ``nan``.
+    To get complex results, cast the input to complex, or specify the
+    ``dtype`` to be ``complex`` (see the example below).
 
     .. versionadded:: 1.12.0
 
@@ -3069,9 +3240,24 @@ add_newdoc('numpy.core.umath', 'float_power',
     array([[  0.,   1.,   8.,  27.,  16.,   5.],
            [  0.,   1.,   8.,  27.,  16.,   5.]])
 
+    Negative values raised to a non-integral value will result in ``nan``
+    (and a warning will be generated).
+
+    >>> x3 = np.array([-1, -4])
+    >>> with np.errstate(invalid='ignore'):
+    ...     p = np.float_power(x3, 1.5)
+    ...
+    >>> p
+    array([nan, nan])
+
+    To get complex results, give the argument ``dtype=complex``.
+
+    >>> np.float_power(x3, 1.5, dtype=complex)
+    array([-1.83697020e-16-1.j, -1.46957616e-15-8.j])
+
     """)
 
-add_newdoc('numpy.core.umath', 'radians',
+add_newdoc('numpy._core.umath', 'radians',
     """
     Convert angles from degrees to radians.
 
@@ -3108,7 +3294,7 @@ add_newdoc('numpy.core.umath', 'radians',
 
     """)
 
-add_newdoc('numpy.core.umath', 'deg2rad',
+add_newdoc('numpy._core.umath', 'deg2rad',
     """
     Convert angles from degrees to radians.
 
@@ -3142,7 +3328,7 @@ add_newdoc('numpy.core.umath', 'deg2rad',
 
     """)
 
-add_newdoc('numpy.core.umath', 'reciprocal',
+add_newdoc('numpy._core.umath', 'reciprocal',
     """
     Return the reciprocal of the argument, element-wise.
 
@@ -3178,9 +3364,9 @@ add_newdoc('numpy.core.umath', 'reciprocal',
 
     """)
 
-add_newdoc('numpy.core.umath', 'remainder',
+add_newdoc('numpy._core.umath', 'remainder',
     """
-    Return element-wise remainder of division.
+    Returns the element-wise remainder of division.
 
     Computes the remainder complementary to the `floor_divide` function.  It is
     equivalent to the Python modulus operator``x1 % x2`` and has the same sign
@@ -3232,9 +3418,16 @@ add_newdoc('numpy.core.umath', 'remainder',
     >>> np.remainder(np.arange(7), 5)
     array([0, 1, 2, 3, 4, 0, 1])
 
+    The ``%`` operator can be used as a shorthand for ``np.remainder`` on
+    ndarrays.
+
+    >>> x1 = np.arange(7)
+    >>> x1 % 5
+    array([0, 1, 2, 3, 4, 0, 1])
+
     """)
 
-add_newdoc('numpy.core.umath', 'divmod',
+add_newdoc('numpy._core.umath', 'divmod',
     """
     Return element-wise quotient and remainder simultaneously.
 
@@ -3274,9 +3467,16 @@ add_newdoc('numpy.core.umath', 'divmod',
     >>> np.divmod(np.arange(5), 3)
     (array([0, 0, 0, 1, 1]), array([0, 1, 2, 0, 1]))
 
+    The `divmod` function can be used as a shorthand for ``np.divmod`` on
+    ndarrays.
+
+    >>> x = np.arange(5)
+    >>> divmod(x, 3)
+    (array([0, 0, 0, 1, 1]), array([0, 1, 2, 0, 1]))
+
     """)
 
-add_newdoc('numpy.core.umath', 'right_shift',
+add_newdoc('numpy._core.umath', 'right_shift',
     """
     Shift the bits of an integer to the right.
 
@@ -3317,9 +3517,17 @@ add_newdoc('numpy.core.umath', 'right_shift',
     >>> np.right_shift(10, [1,2,3])
     array([5, 2, 1])
 
+    The ``>>`` operator can be used as a shorthand for ``np.right_shift`` on
+    ndarrays.
+
+    >>> x1 = 10
+    >>> x2 = np.array([1,2,3])
+    >>> x1 >> x2
+    array([5, 2, 1])
+
     """)
 
-add_newdoc('numpy.core.umath', 'rint',
+add_newdoc('numpy._core.umath', 'rint',
     """
     Round elements of the array to the nearest integer.
 
@@ -3337,7 +3545,13 @@ add_newdoc('numpy.core.umath', 'rint',
 
     See Also
     --------
-    ceil, floor, trunc
+    fix, ceil, floor, trunc
+
+    Notes
+    -----
+    For values exactly halfway between rounded decimal values, NumPy
+    rounds to the nearest even value. Thus 1.5 and 2.5 round to 2.0,
+    -0.5 and 0.5 round to 0.0, etc.
 
     Examples
     --------
@@ -3347,7 +3561,7 @@ add_newdoc('numpy.core.umath', 'rint',
 
     """)
 
-add_newdoc('numpy.core.umath', 'sign',
+add_newdoc('numpy._core.umath', 'sign',
     """
     Returns an element-wise indication of the sign of a number.
 
@@ -3388,7 +3602,7 @@ add_newdoc('numpy.core.umath', 'sign',
 
     """)
 
-add_newdoc('numpy.core.umath', 'signbit',
+add_newdoc('numpy._core.umath', 'signbit',
     """
     Returns element-wise True where signbit is set (less than zero).
 
@@ -3413,7 +3627,7 @@ add_newdoc('numpy.core.umath', 'signbit',
 
     """)
 
-add_newdoc('numpy.core.umath', 'copysign',
+add_newdoc('numpy._core.umath', 'copysign',
     """
     Change the sign of x1 to that of x2, element-wise.
 
@@ -3450,7 +3664,7 @@ add_newdoc('numpy.core.umath', 'copysign',
 
     """)
 
-add_newdoc('numpy.core.umath', 'nextafter',
+add_newdoc('numpy._core.umath', 'nextafter',
     """
     Return the next floating-point value after x1 towards x2, element-wise.
 
@@ -3479,7 +3693,7 @@ add_newdoc('numpy.core.umath', 'nextafter',
 
     """)
 
-add_newdoc('numpy.core.umath', 'spacing',
+add_newdoc('numpy._core.umath', 'spacing',
     """
     Return the distance between x and the nearest adjacent number.
 
@@ -3511,7 +3725,7 @@ add_newdoc('numpy.core.umath', 'spacing',
 
     """)
 
-add_newdoc('numpy.core.umath', 'sin',
+add_newdoc('numpy._core.umath', 'sin',
     """
     Trigonometric sine, element-wise.
 
@@ -3569,7 +3783,7 @@ add_newdoc('numpy.core.umath', 'sin',
 
     """)
 
-add_newdoc('numpy.core.umath', 'sinh',
+add_newdoc('numpy._core.umath', 'sinh',
     """
     Hyperbolic sine, element-wise.
 
@@ -3622,7 +3836,7 @@ add_newdoc('numpy.core.umath', 'sinh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'sqrt',
+add_newdoc('numpy._core.umath', 'sqrt',
     """
     Return the non-negative square-root of an array, element-wise.
 
@@ -3645,8 +3859,9 @@ add_newdoc('numpy.core.umath', 'sqrt',
 
     See Also
     --------
-    lib.scimath.sqrt
+    emath.sqrt
         A version which returns complex numbers when given negative reals.
+        Note that 0.0 and -0.0 are handled differently for complex inputs.
 
     Notes
     -----
@@ -3668,7 +3883,7 @@ add_newdoc('numpy.core.umath', 'sqrt',
 
     """)
 
-add_newdoc('numpy.core.umath', 'cbrt',
+add_newdoc('numpy._core.umath', 'cbrt',
     """
     Return the cube-root of an array, element-wise.
 
@@ -3696,7 +3911,7 @@ add_newdoc('numpy.core.umath', 'cbrt',
 
     """)
 
-add_newdoc('numpy.core.umath', 'square',
+add_newdoc('numpy._core.umath', 'square',
     """
     Return the element-wise square of the input.
 
@@ -3725,7 +3940,7 @@ add_newdoc('numpy.core.umath', 'square',
 
     """)
 
-add_newdoc('numpy.core.umath', 'subtract',
+add_newdoc('numpy._core.umath', 'subtract',
     """
     Subtract arguments, element-wise.
 
@@ -3758,9 +3973,19 @@ add_newdoc('numpy.core.umath', 'subtract',
            [ 3.,  3.,  3.],
            [ 6.,  6.,  6.]])
 
+    The ``-`` operator can be used as a shorthand for ``np.subtract`` on
+    ndarrays.
+
+    >>> x1 = np.arange(9.0).reshape((3, 3))
+    >>> x2 = np.arange(3.0)
+    >>> x1 - x2
+    array([[0., 0., 0.],
+           [3., 3., 3.],
+           [6., 6., 6.]])
+
     """)
 
-add_newdoc('numpy.core.umath', 'tan',
+add_newdoc('numpy._core.umath', 'tan',
     """
     Compute tangent element-wise.
 
@@ -3809,7 +4034,7 @@ add_newdoc('numpy.core.umath', 'tan',
 
     """)
 
-add_newdoc('numpy.core.umath', 'tanh',
+add_newdoc('numpy._core.umath', 'tanh',
     """
     Compute hyperbolic tangent element-wise.
 
@@ -3836,7 +4061,7 @@ add_newdoc('numpy.core.umath', 'tanh',
     ----------
     .. [1] M. Abramowitz and I. A. Stegun, Handbook of Mathematical Functions.
            New York, NY: Dover, 1972, pg. 83.
-           http://www.math.sfu.ca/~cbm/aands/
+           https://personal.math.ubc.ca/~cbm/aands/page_83.htm
 
     .. [2] Wikipedia, "Hyperbolic function",
            https://en.wikipedia.org/wiki/Hyperbolic_function
@@ -3861,53 +4086,12 @@ add_newdoc('numpy.core.umath', 'tanh',
 
     """)
 
-add_newdoc('numpy.core.umath', 'true_divide',
-    """
-    Returns a true division of the inputs, element-wise.
-
-    Instead of the Python traditional 'floor division', this returns a true
-    division.  True division adjusts the output type to present the best
-    answer, regardless of input types.
-
-    Parameters
-    ----------
-    x1 : array_like
-        Dividend array.
-    x2 : array_like
-        Divisor array.
-        $BROADCASTABLE_2
-    $PARAMS
-
-    Returns
-    -------
-    out : ndarray or scalar
-        $OUT_SCALAR_2
-
-    Notes
-    -----
-    In Python, ``//`` is the floor division operator and ``/`` the
-    true division operator.  The ``true_divide(x1, x2)`` function is
-    equivalent to true division in Python.
-
-    Examples
-    --------
-    >>> x = np.arange(5)
-    >>> np.true_divide(x, 4)
-    array([ 0.  ,  0.25,  0.5 ,  0.75,  1.  ])
-
-    >>> x/4
-    array([ 0.  ,  0.25,  0.5 ,  0.75,  1.  ])
-
-    >>> x//4
-    array([0, 0, 0, 0, 1])
-    """)
-
-add_newdoc('numpy.core.umath', 'frexp',
+add_newdoc('numpy._core.umath', 'frexp',
     """
     Decompose the elements of x into mantissa and twos exponent.
 
-    Returns (`mantissa`, `exponent`), where `x = mantissa * 2**exponent``.
-    The mantissa is lies in the open interval(-1, 1), while the twos
+    Returns (`mantissa`, `exponent`), where ``x = mantissa * 2**exponent``.
+    The mantissa lies in the open interval(-1, 1), while the twos
     exponent is a signed integer.
 
     Parameters
@@ -3951,7 +4135,7 @@ add_newdoc('numpy.core.umath', 'frexp',
 
     """)
 
-add_newdoc('numpy.core.umath', 'ldexp',
+add_newdoc('numpy._core.umath', 'ldexp',
     """
     Returns x1 * 2**x2, element-wise.
 
@@ -3995,7 +4179,7 @@ add_newdoc('numpy.core.umath', 'ldexp',
 
     """)
 
-add_newdoc('numpy.core.umath', 'gcd',
+add_newdoc('numpy._core.umath', 'gcd',
     """
     Returns the greatest common divisor of ``|x1|`` and ``|x2|``
 
@@ -4026,7 +4210,7 @@ add_newdoc('numpy.core.umath', 'gcd',
 
     """)
 
-add_newdoc('numpy.core.umath', 'lcm',
+add_newdoc('numpy._core.umath', 'lcm',
     """
     Returns the lowest common multiple of ``|x1|`` and ``|x2|``
 

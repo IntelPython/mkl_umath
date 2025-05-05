@@ -1,0 +1,62 @@
+name: Build using pip and pre-release NumPy
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+         shell: bash -el {0}
+
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+        use_pre: ["", "--pre"]
+
+    steps:
+      - name: Install jq
+        shell: bash -l {0}
+        run: |
+          sudo apt-get install jq
+
+      - name: Checkout repo
+        uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 0
+
+      - uses: conda-incubator/setup-miniconda@v3.1.1
+        with:
+          use-mamba: true
+          miniforge-version: latest
+          channels: conda-forge
+          conda-remove-defaults: true
+          activate-environment: test
+          python-version: ${{ matrix.python }}
+
+      - name: Install Compiler and MKL
+        run: |
+          conda install mkl-devel mkl-service dpcpp_linux-64
+          python -c "import sys; print(sys.executable)"
+          which python
+          python -c "import mkl; print(mkl.__file__)"
+
+      - name: Build conda package
+        run: |
+          pip install --no-cache-dir scikit-build cmake ninja cython
+          pip install --no-cache-dir numpy ${{ matrix.use_pre }}
+          echo "CONDA_PREFFIX is '${CONDA_PREFIX}'"
+          export MKLROOT=${CONDA_PREFIX}
+          pip install . --no-build-isolation --no-deps --verbose
+          pip install --no-cache-dir pytest
+          pip list
+          # mkl_umath cannot be installed in editable mode, we need 
+          # to change directory before importing it and running tests
+          cd ..
+          python -m pytest -v mkl_umath/mkl_umath/tests

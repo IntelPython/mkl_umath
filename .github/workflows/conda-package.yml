@@ -48,7 +48,7 @@ jobs:
         run: echo $CONDA/bin >> $GITHUB_PATH
 
       - name: Install conda-build
-        run: conda install conda-build
+        run: conda install conda-build python=3.12
 
       - name: Build conda package
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Add conda to system path
         run: echo $CONDA/bin >> $GITHUB_PATH
       - name: Install conda-build
-        run: conda install conda-build
+        run: conda install conda-build python=3.12
       - name: Create conda channel
         run: |
           mkdir -p $GITHUB_WORKSPACE/channel/linux-64
@@ -187,7 +187,7 @@ jobs:
       - name: Install conda build
         run: |
           conda activate
-          conda install -y conda-build
+          conda install -y conda-build python=3.12
           conda list -n base
 
       - name: Build conda package

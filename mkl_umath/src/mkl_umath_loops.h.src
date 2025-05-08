@@ -160,37 +160,6 @@ void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 /**end repeat1**/
 
-/**begin repeat1
- * Arithmetic
- * # kind = equal, not_equal, less, less_equal, greater, greater_equal,
- *        logical_and, logical_or#
- */
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-/**end repeat1**/
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-/**begin repeat1
- * #kind = isnan, isinf, isfinite, signbit#
- **/
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-/**end repeat1**/
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_spacing(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_copysign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
@@ -200,7 +169,7 @@ void
 mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 /**begin repeat1
- * #kind = maximum, minimum, fmax, fmin#
+ * #kind = fmax, fmin#
  **/
 MKL_UMATH_API
 void
@@ -209,15 +178,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
@@ -229,39 +190,11 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_negative(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_positive(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_frexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 /**end repeat**/
 
@@ -295,48 +228,11 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-
-/**begin repeat1
- * arithmetic
- * #kind = greater, greater_equal, less, less_equal, equal, 
-           not_equal, logical_and, logical_or, logical_xor, logical_not,
-	   isnan, isinf, isfinite#
- */
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-/**end repeat1**/
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-/**begin repeat1
- * arithmetic
- * #kind = maximum, minimum, fmax, fmin#
- */
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-/**end repeat1**/
 
 /**end repeat**/
 

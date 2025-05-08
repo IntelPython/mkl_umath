@@ -410,20 +410,20 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.conjugate'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(cmplxvec),
           ),
 # 'fmod':
 'square':
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.square'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 'reciprocal':
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.reciprocal'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 # '_ones_like':
 # 'power':
@@ -437,108 +437,33 @@ defdict = {
           TD('D', out='d'),
           ),
 # '_arg':
-'negative':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.negative'),
-          None,
-          TD(inexactvec),
-          ),
-'positive':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.positive'),
-          None,
-          TD(inexactvec),
-          ),
-'sign':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.sign'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
-'greater':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.greater'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'greater_equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.greater_equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'less':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.less'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'less_equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.less_equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'not_equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.not_equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'logical_and':
-    Ufunc(2, 1, True_,
-          docstrings.get('numpy._core.umath.logical_and'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'logical_not':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.logical_not'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'logical_or':
-    Ufunc(2, 1, False_,
-          docstrings.get('numpy._core.umath.logical_or'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'logical_xor':
-    Ufunc(2, 1, False_,
-          docstrings.get('numpy._core.umath.logical_xor'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'maximum':
-    Ufunc(2, 1, ReorderableNone,
-          docstrings.get('numpy._core.umath.maximum'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
-'minimum':
-    Ufunc(2, 1, ReorderableNone,
-          docstrings.get('numpy._core.umath.minimum'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
+# 'negative':
+# 'positive':
+# 'sign':
+# 'greater':
+# 'greater_equal':
+# 'less':
+# 'less_equal':
+# 'equal':
+# 'not_equal':
+# 'logical_and':
+# 'logical_not':
+# 'logical_or':
+# logical_xor':
+# 'maximum':
+# 'minimum':
 # 'clip':
 'fmax':
     Ufunc(2, 1, ReorderableNone,
           docstrings.get('numpy._core.umath.fmax'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 'fmin':
     Ufunc(2, 1, ReorderableNone,
           docstrings.get('numpy._core.umath.fmin'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 # 'logaddexp':
 # 'logaddexp2':
@@ -718,25 +643,10 @@ defdict = {
           ),
 # 'divmod':
 # 'hypot':
-'isnan':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isnan'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
+# 'isnan':
 # 'isnat':
-'isinf':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isinf'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'isfinite':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isfinite'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
+# 'isinf':
+# 'isfinite':
 # 'signbit':
 'copysign':
     Ufunc(2, 1, None,
@@ -750,38 +660,15 @@ defdict = {
           None,
           TD(inexactvec),
           ),
-'spacing':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.spacing'),
-          None,
-          TD(inexactvec),
-          ),
+# 'spacing':
 'modf':
     Ufunc(1, 2, None,
           docstrings.get('numpy._core.umath.modf'),
           None,
           TD(inexactvec),
           ),
-'ldexp' :
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.ldexp'),
-          None,
-          [
-              TypeDescription('f', None, 'fi', 'f'),
-              TypeDescription('f', FuncNameSuffix('long'), 'fl', 'f'),
-              TypeDescription('d', None, 'di', 'd'),
-              TypeDescription('d', FuncNameSuffix('long'), 'dl', 'd'),
-          ],
-          ),
-'frexp' :
-    Ufunc(1, 2, None,
-          docstrings.get('numpy._core.umath.frexp'),
-          None,
-          [
-              TypeDescription('f', None, 'f', 'fi'),
-              TypeDescription('d', None, 'd', 'di'),
-          ],
-          ),
+# 'ldexp' :
+# 'frexp' :
 # 'gcd':
 # 'lcm':
 # 'bitwise_count':

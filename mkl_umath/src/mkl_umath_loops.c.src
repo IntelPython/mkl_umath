@@ -42,12 +42,6 @@
 #include "blocking_utils.h"
 #include "mkl_umath_loops.h"
 
-// NPY_2_0_API_VERSION 0x00000012 is defined in numpy-2
-// inside numpy/_core/include/numpy/numpyconfig.h
-#if NPY_API_VERSION >= 0x00000012 
-    #define USE_NUMPY_2
-#endif
-
 /* Adapated from NumPy's source code.
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
 
@@ -140,25 +134,6 @@
 /** Provides the various *_LOOP macros */
 #include "fast_loop_macros.h"
 #include <stdio.h>
-
-static inline npy_double spacing(npy_double x) {
-    if (isinf(x))
-    return ((npy_double) NAN);
-    return copysign(nextafter(fabs(x), ((npy_double) INFINITY)), x) - x;
-}
-
-static inline npy_float spacingf(npy_float x) {
-    if (isinff(x))
-    return ((npy_float) NAN);
-
-    return copysignf(nextafterf(fabsf(x), INFINITY), x) - x;
-}
-
-#if defined(_MSC_VER) && defined(__INTEL_COMPILER)
-extern __inline float __cdecl ldexpf( float _X, int _Y) { 
-    return (float)ldexp(_X, _Y); 
-}
-#endif
 
 /**begin repeat
  * Float types
@@ -884,6 +859,7 @@ mkl_umath_@TYPE@_arctanh(char **args, const npy_intp *dimensions, const npy_intp
  *  #scalarf = fabsf, fabs#
  */
 
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_fabs(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -1827,69 +1803,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 }
 /**end repeat1**/
 
-/**begin repeat1
- * #kind = equal, not_equal, less, less_equal, greater, greater_equal,
- *        logical_and, logical_or#
- * #OP = ==, !=, <, <=, >, >=, &&, ||#
- */
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    {
-        BINARY_LOOP {
-            const @type@ in1 = *(@type@ *)ip1;
-            const @type@ in2 = *(@type@ *)ip2;
-            *((npy_bool *)op1) = in1 @OP@ in2;
-        }
-    }
-}
-/**end repeat1**/
-
-void
-mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const int t1 = !!*(@type@ *)ip1;
-        const int t2 = !!*(@type@ *)ip2;
-        *((npy_bool *)op1) = (t1 != t2);
-    }
-}
-
-void
-mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((npy_bool *)op1) = !in1;
-    }
-}
-
-/**begin repeat1
- * #kind = isnan, isinf, isfinite, signbit#
- * #func = isnan, isinf, isfinite, signbit#
- **/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    {
-        UNARY_LOOP {
-            const @type@ in1 = *(@type@ *)ip1;
-            *((npy_bool *)op1) = @func@(in1) != 0;
-        }
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
-void
-mkl_umath_@TYPE@_spacing(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = (spacing@c@(in1));
-    }
-}
-
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_copysign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -1900,6 +1814,7 @@ mkl_umath_@TYPE@_copysign(char **args, const npy_intp *dimensions, const npy_int
     }
 }
 
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -1910,37 +1825,7 @@ mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_in
     }
 }
 
-/**begin repeat1
- * #kind = maximum, minimum#
- * #OP =  >=, <=#
- **/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    /*  */
-    if (IS_BINARY_REDUCE) {
-        {
-            BINARY_REDUCE_LOOP(@type@) {
-                const @type@ in2 = *(@type@ *)ip2;
-                /* Order of operations important for MSVC 2015 */
-                io1 = (io1 @OP@ in2 || isnan(io1)) ? io1 : in2;
-            }
-            *((@type@ *)iop1) = io1;
-        }
-    }
-    else {
-        BINARY_LOOP {
-            @type@ in1 = *(@type@ *)ip1;
-            const @type@ in2 = *(@type@ *)ip2;
-            /* Order of operations important for MSVC 2015 */
-            in1 = (in1 @OP@ in2 || isnan(in1)) ? in1 : in2;
-            *((@type@ *)op1) = in1;
-        }
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
+/* TODO: Use VML */
 /**begin repeat1
  * #kind = fmax, fmin#
  * #OP =  >=, <=#
@@ -1969,6 +1854,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 }
 /**end repeat1**/
 
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -1976,16 +1862,6 @@ mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_in
         const @type@ in1 = *(@type@ *)ip1;
         const @type@ in2 = *(@type@ *)ip2;
         divmod@c@(in1, in2, (@type@ *)op1);
-    }
-}
-
-void
-mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP_TWO_OUT {
-        const @type@ in1 = *(@type@ *)ip1;
-        const @type@ in2 = *(@type@ *)ip2;
-        *((@type@ *)op1) = divmod@c@(in1, in2, (@type@ *)op2);
     }
 }
 
@@ -2028,15 +1904,6 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 }
 
 void
-mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = in1;
-    }
-}
-
-void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
 #if @SUPPORTED_BY_VML@
@@ -2058,91 +1925,13 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 
-void
-mkl_umath_@TYPE@_negative(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    {
-        UNARY_LOOP {
-            const @type@ in1 = *(@type@ *)ip1;
-            *((@type@ *)op1) = -in1;
-        }
-    }
-}
-
-void
-mkl_umath_@TYPE@_positive(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = +in1;
-    }
-}
-
-void
-mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    /* Sign of nan is nan */
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = in1 > 0 ? 1 : (in1 < 0 ? -1 : (in1 == 0 ? 0 : in1));
-    }
-}
-
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     UNARY_LOOP_TWO_OUT {
         const @type@ in1 = *(@type@ *)ip1;
         *((@type@ *)op1) = modf@c@(in1, (@type@ *)op2);
-    }
-}
-
-void
-mkl_umath_@TYPE@_frexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP_TWO_OUT {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = frexp@c@(in1, (int *)op2);
-    }
-}
-
-void
-mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        const int in2 = *(int *)ip2;
-        *((@type@ *)op1) = ldexp@c@(in1, in2);
-    }
-}
-
-void
-mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    /*
-     * Additional loop to handle npy_long integer inputs (cf. #866, #1633).
-     * npy_long != npy_int on many 64-bit platforms, so we need this second loop
-     * to handle the default integer type.
-     */
-    BINARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        const long in2 = *(long *)ip2;
-        if (((int)in2) == in2) {
-            /* Range OK */
-            *((@type@ *)op1) = ldexp@c@(in1, ((int)in2));
-        }
-        else {
-            /*
-             * Outside npy_int range -- also ldexp will overflow in this case,
-             * given that exponent has less bits than npy_int.
-             */
-            if (in2 > 0) {
-                *((@type@ *)op1) = ldexp@c@(in1, NPY_MAX_INT);
-            }
-            else {
-                *((@type@ *)op1) = ldexp@c@(in1, NPY_MIN_INT);
-            }
-        }
     }
 }
 
@@ -2250,6 +2039,8 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n,
  * #OP = +, -#
  * #PW = 1, 0#
  */
+
+ /* TODO: Use VML */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -2277,6 +2068,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 }
 /**end repeat1**/
 
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -2290,6 +2082,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
     }
 }
 
+/* TODO: Use VML */
 void
 mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -2318,113 +2111,6 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
             const @ftype@ scl = 1.0@c@/(in2i + in2r*rat);
             ((@ftype@ *)op1)[0] = (in1r*rat + in1i)*scl;
             ((@ftype@ *)op1)[1] = (in1i*rat - in1r)*scl;
-        }
-    }
-}
-
-/**begin repeat1
- * #kind= greater, greater_equal, less, less_equal, equal, not_equal#
- * #OP = CGT, CGE, CLT, CLE, CEQ, CNE#
- */
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        *((npy_bool *)op1) = @OP@(in1r,in1i,in2r,in2i);
-    }
-}
-/**end repeat1**/
-
-/**begin repeat1
-   #kind = logical_and, logical_or#
-   #OP1 = ||, ||#
-   #OP2 = &&, ||#
-*/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        *((npy_bool *)op1) = (in1r @OP1@ in1i) @OP2@ (in2r @OP1@ in2i);
-    }
-}
-/**end repeat1**/
-
-void
-mkl_umath_@TYPE@_logical_xor(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        const npy_bool tmp1 = (in1r || in1i);
-        const npy_bool tmp2 = (in2r || in2i);
-        *((npy_bool *)op1) = tmp1 != tmp2;
-    }
-}
-
-void
-mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        *((npy_bool *)op1) = !(in1r || in1i);
-    }
-}
-
-/**begin repeat1
- * #kind = isnan, isinf, isfinite#
- * #func = isnan, isinf, isfinite#
- * #OP = ||, ||, &&#
- **/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        *((npy_bool *)op1) = @func@(in1r) @OP@ @func@(in1i);
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
-void
-mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
-{
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        ((@ftype@ *)op1)[0] = in1r*in1r - in1i*in1i;
-        ((@ftype@ *)op1)[1] = in1r*in1i + in1i*in1r;
-    }
-}
-
-void
-mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))
-{
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        if (fabs@c@(in1i) <= fabs@c@(in1r)) {
-            const @ftype@ r = in1i/in1r;
-            const @ftype@ d = in1r + in1i*r;
-            ((@ftype@ *)op1)[0] = 1/d;
-            ((@ftype@ *)op1)[1] = -r/d;
-        } else {
-            const @ftype@ r = in1r/in1i;
-            const @ftype@ d = in1r*r + in1i;
-            ((@ftype@ *)op1)[0] = r/d;
-            ((@ftype@ *)op1)[1] = -1/d;
         }
     }
 }
@@ -2468,105 +2154,6 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
         feclearexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW | FE_INVALID);
     }
 }
-
-void
-mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    #ifdef USE_NUMPY_2
-        UNARY_LOOP {
-            const @ftype@ in_r = ((@ftype@ *)ip1)[0];
-            const @ftype@ in_i = ((@ftype@ *)ip1)[1];
-            const @ftype@ in_abs = hypot@c@(in_r, in_i);
-            if (NPY_UNLIKELY(npy_isnan(in_abs))) {
-                ((@ftype@ *)op1)[0] = NPY_NAN@C@;
-                ((@ftype@ *)op1)[1] = NPY_NAN@C@;
-            }
-            else if (NPY_UNLIKELY(npy_isinf(in_abs))) {
-                if (npy_isinf(in_r)) {
-                    if (npy_isinf(in_i)) {
-                        ((@ftype@ *)op1)[0] = NPY_NAN@C@;
-                        ((@ftype@ *)op1)[1] = NPY_NAN@C@;
-                    }
-                    else {
-                        ((@ftype@ *)op1)[0] = in_r > 0 ? 1.: -1.;
-                        ((@ftype@ *)op1)[1] = 0.;
-                    }
-                }
-                else {
-                    ((@ftype@ *)op1)[0] = 0.;
-                    ((@ftype@ *)op1)[1] = in_i > 0 ? 1.: -1.;
-                }
-            }
-            else if (NPY_UNLIKELY(in_abs == 0)) {
-                ((@ftype@ *)op1)[0] = 0.@C@;
-                ((@ftype@ *)op1)[1] = 0.@C@;
-            }
-            else{
-                ((@ftype@ *)op1)[0] = in_r / in_abs;
-                ((@ftype@ *)op1)[1] = in_i / in_abs;
-            }
-        }
-    #else
-        /* fixme: sign of nan is currently 0 */
-        UNARY_LOOP {
-            const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-            const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-            ((@ftype@ *)op1)[0] = CGT(in1r, in1i, 0.0, 0.0) ?  1 :
-                                (CLT(in1r, in1i, 0.0, 0.0) ? -1 :
-                                (CEQ(in1r, in1i, 0.0, 0.0) ?  0 : NPY_NAN@C@));
-            ((@ftype@ *)op1)[1] = 0;
-        }
-        feclearexcept(FE_INVALID);    
-    #endif
-}
-
-/**begin repeat1
- * #kind = maximum, minimum#
- * #OP = CGE, CLE#
- */
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if ( !(isnan(in1r) || isnan(in1i) || @OP@(in1r, in1i, in2r, in2i))) {
-            in1r = in2r;
-            in1i = in2i;
-        }
-        ((@ftype@ *)op1)[0] = in1r;
-        ((@ftype@ *)op1)[1] = in1i;
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
-/**begin repeat1
- * #kind = fmax, fmin#
- * #OP = CGE, CLE#
- */
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if (isnan(in2r) || isnan(in2i) || @OP@(in1r, in1i, in2r, in2i)) {
-            ((@ftype@ *)op1)[0] = in1r;
-            ((@ftype@ *)op1)[1] = in1i;
-        }
-        else {
-            ((@ftype@ *)op1)[0] = in2r;
-            ((@ftype@ *)op1)[1] = in2i;
-        }
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
 
 /**end repeat**/
 

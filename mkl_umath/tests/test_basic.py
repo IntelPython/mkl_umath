@@ -29,21 +29,18 @@ import mkl_umath._ufuncs as mu
 
 np.random.seed(42)
 
+size = 8200
 def get_args(args_str):
     args = []
     for s in args_str:
         if s == 'f':
-            args.append(np.single(np.random.random_sample()))
+            args.append(np.single(np.random.random_sample(size)))
         elif s == 'd':
-            args.append(np.double(np.random.random_sample()))
+            args.append(np.double(np.random.random_sample(size)))
         elif s == 'F':
-            args.append(np.single(np.random.random_sample()) + np.single(np.random.random_sample()) * 1j)
+            args.append(np.single(np.random.random_sample(size)) + np.single(np.random.random_sample(size)) * 1j)
         elif s == 'D':
-            args.append(np.double(np.random.random_sample()) + np.double(np.random.random_sample()) * 1j)
-        elif s == 'i':
-            args.append(np.int_(np.random.randint(low=1, high=10)))
-        elif s == 'l':
-            args.append(np.dtype('long').type(np.random.randint(low=1, high=10)))
+            args.append(np.double(np.random.random_sample(size)) + np.double(np.random.random_sample(size)) * 1j)
         else:
             raise ValueError("Unexpected type specified!")
     return tuple(args)
@@ -61,8 +58,8 @@ for umath in umaths:
         generated_cases[(umath, type_)] = args
 
 additional_cases = {
-    ('arccosh', 'f->f'): (np.single(np.random.random_sample() + 1),),
-    ('arccosh', 'd->d'): (np.double(np.random.random_sample() + 1),),
+    ('arccosh', 'f->f'): (np.single(np.random.random_sample(size) + 1),),
+    ('arccosh', 'd->d'): (np.double(np.random.random_sample(size) + 1),),
 }
 
 test_cases = {**generated_cases, **additional_cases}
@@ -81,7 +78,3 @@ def test_umath(case):
     np_res = np_umath(*args)
        
     assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"
-
-def test_cases_count():
-    print("Test cases count:", len(test_cases))
-    assert len(test_cases) > 0, "No test cases found"

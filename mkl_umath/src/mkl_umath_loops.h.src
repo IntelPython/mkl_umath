@@ -53,10 +53,6 @@ mkl_umath_@TYPE@_sqrt(char **args, const npy_intp *dimensions, const npy_intp *s
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_invsqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
@@ -66,10 +62,6 @@ mkl_umath_@TYPE@_exp2(char **args, const npy_intp *dimensions, const npy_intp *s
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_expm1(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_erf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
@@ -237,10 +229,6 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
@@ -275,8 +263,6 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
-#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
-
 /**end repeat**/
 
 /*
@@ -284,13 +270,6 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  **                           COMPLEX LOOPS                                 **
  *****************************************************************************
  */
-
-#define CGE(xr,xi,yr,yi) (xr > yr || (xr == yr && xi >= yi));
-#define CLE(xr,xi,yr,yi) (xr < yr || (xr == yr && xi <= yi));
-#define CGT(xr,xi,yr,yi) (xr > yr || (xr == yr && xi > yi));
-#define CLT(xr,xi,yr,yi) (xr < yr || (xr == yr && xi < yi));
-#define CEQ(xr,xi,yr,yi) (xr == yr && xi == yi);
-#define CNE(xr,xi,yr,yi) (xr != yr || xi != yi);
 
 /**begin repeat
  * complex types
@@ -340,19 +319,11 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@__arg(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
@@ -367,15 +338,6 @@ void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 /**end repeat1**/
 
-#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
-
 /**end repeat**/
-
-#undef CGE
-#undef CLE
-#undef CGT
-#undef CLT
-#undef CEQ
-#undef CNE
 
 #endif

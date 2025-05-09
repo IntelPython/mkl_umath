@@ -129,6 +129,7 @@
  *  when these conditions are not met VML functions may produce incorrect output
  */
 #define DISJOINT_OR_SAME(p1, p2, n, s) (((p1) == (p2)) || ((p2) + (n)*(s) < (p1)) || ((p1) + (n)*(s) < (p2)) )
+#define DISJOINT_OR_SAME_TWO_DTYPES(p1, p2, n, s1, s2) (((p1) == (p2)) || ((p2) + (n)*(s2) < (p1)) || ((p1) + (n)*(s1) < (p2)) )
 
 /*
  * include vectorized functions and dispatchers
@@ -316,8 +317,7 @@ mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *st
             can_vectorize
             ,
             const @type@ in1 = *(@type@ *)ip1;
-            const int invalid_cases = npy_isnan(in1) || in1 == NPY_INFINITY || in1 == -NPY_INFINITY;
-            ignore_fpstatus |= (invalid_cases ? 1 : 0);
+            ignore_fpstatus = npy_isnan(in1) || in1 == NPY_INFINITY || in1 == -NPY_INFINITY;
             *(@type@ *)op1 = @scalarf@(in1);
         )
     }
@@ -355,8 +355,7 @@ mkl_umath_@TYPE@_exp2(char **args, const npy_intp *dimensions, const npy_intp *s
             can_vectorize
             ,
             const @type@ in1 = *(@type@ *)ip1;
-            const int invalid_cases = npy_isnan(in1) || in1 == NPY_INFINITY || in1 == -NPY_INFINITY;
-            ignore_fpstatus |= (invalid_cases ? 1 : 0);
+            ignore_fpstatus = npy_isnan(in1) || in1 == NPY_INFINITY || in1 == -NPY_INFINITY;
             *(@type@ *)op1 = @scalarf@(in1);
         )
     }
@@ -493,8 +492,7 @@ mkl_umath_@TYPE@_log2(char **args, const npy_intp *dimensions, const npy_intp *s
             can_vectorize
             ,
             const @type@ in1 = *(@type@ *)ip1;
-            const int invalid_cases = in1 < 0 || in1 == 0 || npy_isnan(in1) || in1 == -NPY_INFINITY;
-            ignore_fpstatus |= (invalid_cases ? 1 : 0);
+            ignore_fpstatus = in1 < 0 || in1 == 0 || npy_isnan(in1) || in1 == -NPY_INFINITY;
             *(@type@ *)op1 = @scalarf@(in1);
         )
     }
@@ -2124,10 +2122,9 @@ mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_in
         BINARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
             const @type@ in2 = *(@type@ *)ip2;
-            int invalid_cases = !npy_isnan(in1) && in2 == 0;
-            invalid_cases |= (in1 == NPY_INFINITY || in1 == -NPY_INFINITY) && !npy_isnan(in2);
-            invalid_cases |= (in1 != NPY_INFINITY && in1 != -NPY_INFINITY) && (in2 == NPY_INFINITY || in2 == -NPY_INFINITY);
-            ignore_fpstatus |= (invalid_cases ? 1 : 0);            
+            ignore_fpstatus = !npy_isnan(in1) && in2 == 0;
+            ignore_fpstatus |= (in1 == NPY_INFINITY || in1 == -NPY_INFINITY) && !npy_isnan(in2);
+            ignore_fpstatus |= (in1 != NPY_INFINITY && in1 != -NPY_INFINITY) && (in2 == NPY_INFINITY || in2 == -NPY_INFINITY);
             divmod@c@(in1, in2, (@type@ *)op1);
         }
     }
@@ -2376,10 +2373,10 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  * complex types
  * #TYPE = CFLOAT, CDOUBLE#
  * #ftype = npy_float, npy_double#
+ * #type = npy_cfloat, npy_cdouble# 
  * #c = f, #
- * #C = F, #
- * #s = s, d#
- * #SUPPORTED_BY_VML = 1, 1#
+ * #C = F, # 
+ * #s = c, z#
  */
 
 /* similar to pairwise sum of real floats */
@@ -2659,44 +2656,47 @@ mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_i
     }
 }
 
-/* TODO: USE MKL */
 void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func)) {
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        ((@ftype@ *)op1)[0] = in1r;
-        ((@ftype@ *)op1)[1] = -in1i;
-    }
+    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int disjoint_or_same = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same;
+
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
+        CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @type@, args[0], args[1]);
+        /* v@s@Conj(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+    } else {
+		UNARY_LOOP {
+			const @ftype@ in1r = ((@ftype@ *)ip1)[0];
+			const @ftype@ in1i = ((@ftype@ *)ip1)[1];
+			((@ftype@ *)op1)[0] = in1r;
+			((@ftype@ *)op1)[1] = -in1i;
+		}
+	}
 }
 
-/* TODO: USE MKL */
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
+    const int contig = IS_UNARY_CONT(@type@, @ftype@);
+    const int disjoint_or_same = DISJOINT_OR_SAME_TWO_DTYPES(args[0], args[1], dimensions[0], sizeof(@type@), sizeof(@ftype@));
+    const int can_vectorize = contig && disjoint_or_same;
     int ignore_fpstatus = 0;
-
-    // FIXME: abs function VML for complex numbers breaks FFT test_basic.py
-    //if(steps[0]/2 == sizeof(@ftype@) && steps[1] == sizeof(@ftype@) && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-#if @SUPPORTED_BY_VML@
-    if(0 == 1) {
+    
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
         ignore_fpstatus = 1;
-        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @ftype@, args[0], args[1]);
-        /* v@s@Abs(dimensions[0], (@ftype@ *) args[0], (@ftype@ *) args[1]); */
-    } else
-#endif
-    {
+        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, args[0], args[1]);
+        /* v@s@Abs(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+    } else {
         UNARY_LOOP {
             const @ftype@ in1r = ((@ftype@ *)ip1)[0];
             const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-            if(in1r == 0.0 && in1i == 0.0){
-                ignore_fpstatus = 1;
-            }
+            ignore_fpstatus = npy_isnan(in1r) && npy_isnan(in1i);
             *((@ftype@ *)op1) = hypot@c@(in1r, in1i);
         }
     }
     if(ignore_fpstatus) {
-        feclearexcept(FE_DIVBYZERO | FE_OVERFLOW | FE_UNDERFLOW | FE_INVALID);
+        feclearexcept(FE_INVALID);
     }
 }
 

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 * Added mkl implementation for floating point data-types of `exp2`, `log2`, `fabs`, `copysign`, `nextafter`, `fmax`, `fmin` and `remainder` functions [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Added mkl implementation for complex data-types of `conjugate` and `abs` functions [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 
 ## [0.2.0] (06/DD/2025)
 This release updates `mkl_umath` to be aligned with both numpy-1.26.x and numpy-2.x.x.

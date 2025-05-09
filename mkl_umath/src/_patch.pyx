@@ -143,7 +143,7 @@ def _initialize_tls():
 
 def use_in_numpy():
     """
-    Enables using of mkl_umath in Numpy.
+    Enables using of mkl_umath in NumPy.
 
     Examples
     --------
@@ -151,11 +151,11 @@ def use_in_numpy():
     >>> mkl_umath.is_patched()
     # False
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # True
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.restore()  # Disable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # False
     
@@ -167,7 +167,7 @@ def use_in_numpy():
 
 def restore():
     """
-    Disables using of mkl_umath in Numpy.
+    Disables using of mkl_umath in NumPy.
 
     Examples
     --------
@@ -175,11 +175,11 @@ def restore():
     >>> mkl_umath.is_patched()
     # False
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # True
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.restore()  # Disable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # False   
 
@@ -191,7 +191,7 @@ def restore():
 
 def is_patched():
     """
-    Returns whether Numpy has been patched with mkl_umath.
+    Returns whether NumPy has been patched with mkl_umath.
 
     Examples
     --------
@@ -199,11 +199,11 @@ def is_patched():
     >>> mkl_umath.is_patched()
     # False
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # True
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.restore()  # Disable mkl_umath in NumPy
     >>> mkl_umath.is_patched()
     # False 
 
@@ -225,7 +225,7 @@ class mkl_umath(ContextDecorator):
     >>> mkl_umath.is_patched()
     # False
 
-    >>> with mkl_umath.mkl_umath():  # Enable mkl_umath in Numpy
+    >>> with mkl_umath.mkl_umath():  # Enable mkl_umath in NumPy
     >>>     print(mkl_umath.is_patched())
     # True
 

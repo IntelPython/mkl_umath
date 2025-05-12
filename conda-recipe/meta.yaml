@@ -20,7 +20,7 @@ requirements:
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
       - sysroot_linux-64 >=2.28  # [linux]
     host:
-      - setuptools
+      - setuptools >=77
       - cmake
       - ninja
       - git

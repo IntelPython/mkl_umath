@@ -45,7 +45,6 @@ if(WIN32)
    string(CONCAT PRECISION_FLAGS
      "/fp:fast=2 "
      "/Qimf-precision=high "
-     "/Qprec-sqrt "
      "/Qprotect-parens "
    )
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Ox ${WARNING_FLAGS} ${SDL_FLAGS} ${PRECISION_FLAGS}")
@@ -82,7 +81,6 @@ elseif(UNIX)
      "${SDL_FLAGS}"
    )
    string(CONCAT PRECISION_FLAGS
-     "-prec-sqrt "
      "-fprotect-parens "
      "-fimf-precision=high "
      "-fp-model fast=2 "

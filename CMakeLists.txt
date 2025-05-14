@@ -27,17 +27,6 @@ set(MKL_LINK sdl)
 find_package(MKL REQUIRED)
 
 if(WIN32)
- string(CONCAT WARNING_FLAGS
-     "-Wall "
-     "-Wextra "
-     "-Winit-self "
-     "-Wunused-function "
-     "-Wuninitialized "
-     "-Wmissing-declarations "
-     "-Wstrict-prototypes "
-     "-Wno-unused-parameter "
-     "-Wno-implicit-function-declaration "
-   )
    string(CONCAT SDL_FLAGS
      "/GS "
      "/DynamicBase "

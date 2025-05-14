@@ -148,7 +148,7 @@ static inline npy_double spacing(npy_double x) {
 }
 
 static inline npy_float spacingf(npy_float x) {
-    if (isinff(x))
+    if (isinf((double)x))
     return ((npy_float) NAN);
 
     return copysignf(nextafterf(fabsf(x), INFINITY), x) - x;

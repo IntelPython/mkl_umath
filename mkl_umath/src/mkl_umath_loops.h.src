@@ -42,6 +42,12 @@
 #define MKL_UMATH_API
 #endif
 
+// NPY_2_0_API_VERSION 0x00000012 is defined in numpy-2
+// inside numpy/_core/include/numpy/numpyconfig.h
+#if NPY_API_VERSION >= 0x00000012 
+    #define USE_NUMPY_2
+#endif
+
 /**begin repeat
  * Float types
  *  #TYPE = FLOAT, DOUBLE#
@@ -271,9 +277,15 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
+#ifdef USE_NUMPY_2
+MKL_UMATH_API
+void
+mkl_umath_@TYPE@_ldexp_int64(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+#else
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+#endif
 
 #define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
 

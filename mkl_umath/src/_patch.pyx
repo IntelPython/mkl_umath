@@ -147,7 +147,7 @@ def use_in_numpy():
 
     Examples
     --------
-    >>> import mkl_umath, numpy as np
+    >>> import mkl_umath
     >>> mkl_umath.is_patched()
     # False
 
@@ -171,7 +171,7 @@ def restore():
 
     Examples
     --------
-    >>> import mkl_umath, numpy as np
+    >>> import mkl_umath
     >>> mkl_umath.is_patched()
     # False
 
@@ -195,7 +195,7 @@ def is_patched():
 
     Examples
     --------
-    >>> import mkl_umath, numpy as np
+    >>> import mkl_umath
     >>> mkl_umath.is_patched()
     # False
 
@@ -221,7 +221,7 @@ class mkl_umath(ContextDecorator):
 
     Examples
     --------
-    >>> import mkl_umath, numpy as np
+    >>> import mkl_umath
     >>> mkl_umath.is_patched()
     # False
 

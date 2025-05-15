@@ -325,10 +325,13 @@ jobs:
 
       - name: Smoke test
         shell: cmd /C CALL {0}
-        run: >-
-          conda activate mkl_umath_test && python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
+        run: |
+          @ECHO ON
+          conda activate mkl_umath_test
+          python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
 
       - name: Run tests
         shell: cmd /C CALL {0}
         run: |
-          conda activate mkl_umath_test && python -m pytest -v -s --pyargs ${{ env.PACKAGE_NAME }}
+          conda activate mkl_umath_test
+          python -m pytest -v -s --pyargs ${{ env.PACKAGE_NAME }}

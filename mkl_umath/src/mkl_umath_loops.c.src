@@ -2190,6 +2190,37 @@ mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *
     }
 }
 
+#ifdef USE_NUMPY_2
+void
+mkl_umath_@TYPE@_ldexp_int64(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    /*
+     * Additional loop to handle npy_long integer inputs (cf. #866, #1633).
+     * npy_long != npy_int on many 64-bit platforms, so we need this second loop
+     * to handle the default (and larger) integer types.
+     */
+    BINARY_LOOP {
+        const @type@ in1 = *(@type@ *)ip1;
+        const npy_int64 in2 = *(npy_int64 *)ip2;
+        if (((int)in2) == in2) {
+            /* Range OK */
+            *((@type@ *)op1) = ldexp@c@(in1, ((int)in2));
+        }
+        else {
+            /*
+             * Outside npy_int range -- also ldexp will overflow in this case,
+             * given that exponent has less bits than npy_int.
+             */
+            if (in2 > 0) {
+                *((@type@ *)op1) = ldexp@c@(in1, NPY_MAX_INT);
+            }
+            else {
+                *((@type@ *)op1) = ldexp@c@(in1, NPY_MIN_INT);
+            }
+        }
+    }
+}
+#else
 void
 mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -2219,6 +2250,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
         }
     }
 }
+#endif
 
 #define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
 

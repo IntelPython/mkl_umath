@@ -26,6 +26,7 @@
 import pytest
 import numpy as np
 import mkl_umath._ufuncs as mu
+import mkl_umath._patch as mp
 
 np.random.seed(42)
 
@@ -43,7 +44,9 @@ def get_args(args_str):
         elif s == 'i':
             args.append(np.int_(np.random.randint(low=1, high=10)))
         elif s == 'l':
-            args.append(np.dtype('long').type(np.random.randint(low=1, high=10)))
+            args.append(np.int64(np.random.randint(low=1, high=10)))
+        elif s == 'q':
+            args.append(np.int64(np.random.randint(low=1, high=10)))
         else:
             raise ValueError("Unexpected type specified!")
     return tuple(args)
@@ -82,6 +85,12 @@ def test_umath(case):
        
     assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"
 
-def test_cases_count():
-    print("Test cases count:", len(test_cases))
-    assert len(test_cases) > 0, "No test cases found"
+def test_patch():
+    mp.restore()
+    assert not mp.is_patched()
+
+    mp.use_in_numpy()  # Enable mkl_umath in Numpy
+    assert mp.is_patched()
+
+    mp.restore()  # Disable mkl_umath in Numpy
+    assert not mp.is_patched()

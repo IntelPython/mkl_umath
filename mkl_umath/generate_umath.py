@@ -40,6 +40,7 @@ import os
 import re
 import textwrap
 import argparse
+import numpy as np
 
 # identity objects
 Zero = "PyLong_FromLong(0)"
@@ -379,6 +380,22 @@ uint64 = 'K'
 # all the function names and their corresponding ufunc signatures.  TD is
 # an object which expands a list of character codes into an array of
 # TypeDescriptions.
+
+if np.lib.NumpyVersion(np.__version__) < "2.0.0":
+    ldexp_signature = [
+        TypeDescription('f', None, 'fi', 'f'),
+        TypeDescription('f', FuncNameSuffix('long'), 'fl', 'f'),
+        TypeDescription('d', None, 'di', 'd'),
+        TypeDescription('d', FuncNameSuffix('long'), 'dl', 'd'),
+    ]
+else:
+    ldexp_signature = [
+        TypeDescription('f', None, 'fi', 'f'),
+        TypeDescription('f', FuncNameSuffix('int64'), 'f'+int64, 'f'),
+        TypeDescription('d', None, 'di', 'd'),
+        TypeDescription('d', FuncNameSuffix('int64'), 'd'+int64, 'd'),
+    ]
+
 defdict = {
 'add':
     Ufunc(2, 1, Zero,
@@ -766,12 +783,7 @@ defdict = {
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.ldexp'),
           None,
-          [
-              TypeDescription('f', None, 'fi', 'f'),
-              TypeDescription('f', FuncNameSuffix('long'), 'fl', 'f'),
-              TypeDescription('d', None, 'di', 'd'),
-              TypeDescription('d', FuncNameSuffix('long'), 'dl', 'd'),
-          ],
+          ldexp_signature,
           ),
 'frexp' :
     Ufunc(1, 2, None,

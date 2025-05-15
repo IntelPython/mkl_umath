@@ -28,11 +28,10 @@ requirements:
       - scikit-build
       - python
       - mkl-devel
+      - tbb-devel
       - numpy-base
     run:
       - python
-      - mkl
-      - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
       - {{ pin_compatible('numpy') }}
 

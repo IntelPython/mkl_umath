@@ -23,7 +23,11 @@ cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
 set(CYTHON_FLAGS "-t -w \"${CMAKE_SOURCE_DIR}\"")
 find_package(Cython REQUIRED)
 
-set(MKL_LINK sdl)
+find_package(TBB REQUIRED)
+set(MKL_ARCH "intel64")
+set(MKL_LINK "dynamic")
+set(MKL_THREADING "tbb_thread")
+set(MKL_INTERFACE "lp64")
 find_package(MKL REQUIRED)
 
 if(WIN32)

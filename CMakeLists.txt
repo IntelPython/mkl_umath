@@ -27,7 +27,7 @@ find_package(TBB REQUIRED)
 set(MKL_ARCH "intel64")
 set(MKL_LINK "dynamic")
 set(MKL_THREADING "tbb_thread")
-set(MKL_INTERFACE "ilp64")
+set(MKL_INTERFACE "lp64")
 find_package(MKL REQUIRED)
 
 if(WIN32)

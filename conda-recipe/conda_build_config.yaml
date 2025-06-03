@@ -1,0 +1,12 @@
+numpy:
+    - '1.25'
+c_compiler:                   # [linux]
+    - gcc                     # [linux]
+cxx_compiler:                 # [linux]
+    - gxx                     # [linux]
+cxx_compiler_version:         # [linux]
+    - '14'                    # [linux]
+cxx_compiler:                 # [win]
+    - vs2022                  # [win]
+c_compiler:                   # [win]
+    - vs2022                  # [win]

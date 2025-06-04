@@ -142,7 +142,7 @@ jobs:
           pytest -v --pyargs ${{ env.PACKAGE_NAME }}
 
   build_windows:
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     strategy:
       matrix:
@@ -211,7 +211,7 @@ jobs:
       matrix:
         python: ["3.9", "3.10", "3.11", "3.12"]
         experimental: [false]
-        runner: [windows-2019]
+        runner: [windows-latest]
     continue-on-error: ${{ matrix.experimental }}
     env:
       workdir: '${{ github.workspace }}'

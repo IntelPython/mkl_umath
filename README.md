@@ -47,6 +47,7 @@ If these are installed as part of a `oneAPI` installation, the following package
 
 If build dependencies are to be installed with Conda, the following packages must be installed from the Intel(R) channel
 - `mkl-devel`
+- `tbb-devel`
 - `dpcpp_linux-64` (or `dpcpp_win-64` for Windows)
 - `numpy-base`
 
@@ -56,7 +57,7 @@ then the remaining dependencies
 - `cython`
 - `scikit-build`
 
-and for `mkl-devel` and `dpcpp_linux-64` in a Conda environment, `MKLROOT` environment variable must be set
+and for `mkl-devel`, `tbb-devel` and `dpcpp_linux-64` in a Conda environment, `MKLROOT` environment variable must be set
 On Linux
 ```sh
 export MKLROOT=$CONDA_PREFIX

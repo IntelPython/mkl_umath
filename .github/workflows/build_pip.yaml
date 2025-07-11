@@ -35,15 +35,14 @@ jobs:
         with:
           use-mamba: true
           miniforge-version: latest
-          channels: conda-forge
+          channels: https://software.repos.intel.com/python/conda, conda-forge
           conda-remove-defaults: true
           activate-environment: test
           python-version: ${{ matrix.python }}
 
       - name: Install Compiler and MKL
         run: |
-          CHANNELS="-c https://software.repos.intel.com/python/conda -c conda-forge --override-channels"        
-          conda install $CHANNELS mkl-devel tbb-devel dpcpp_linux-64
+          conda install mkl-devel tbb-devel dpcpp_linux-64
           python -c "import sys; print(sys.executable)"
           which python
 

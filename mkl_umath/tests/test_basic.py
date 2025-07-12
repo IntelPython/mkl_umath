@@ -30,53 +30,63 @@ import mkl_umath._patch as mp
 
 np.random.seed(42)
 
-def get_args(args_str):
+def get_args(args_str, size, low, high):
     args = []
+    a = np.random.uniform(low, high, size)
+    b = np.random.uniform(low, high, size)
     for s in args_str:
-        if s == 'f':
-            args.append(np.single(np.random.random_sample()))
-        elif s == 'd':
-            args.append(np.double(np.random.random_sample()))
-        elif s == 'F':
-            args.append(np.single(np.random.random_sample()) + np.single(np.random.random_sample()) * 1j)
-        elif s == 'D':
-            args.append(np.double(np.random.random_sample()) + np.double(np.random.random_sample()) * 1j)
-        elif s == 'i':
+        if s == "f":
+            args.append(np.single(a))
+        elif s == "d":
+            args.append(np.double(a))
+        elif s == "F":
+            args.append(np.single(a) + np.single(b) * 1j)
+        elif s == "D":
+            args.append(np.double(a) + np.double(b) * 1j)
+        elif s == "i":
             args.append(np.int_(np.random.randint(low=1, high=10)))
-        elif s == 'l':
-            args.append(np.dtype('long').type(np.random.randint(low=1, high=10)))
-        elif s == 'q':
+        elif s == "l":
+            args.append(np.dtype("long").type(np.random.randint(low=1, high=10)))
+        elif s == "q":
             args.append(np.int64(np.random.randint(low=1, high=10)))
         else:
             raise ValueError("Unexpected type specified!")
     return tuple(args)
 
 umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
-umaths.remove('arccosh') # expects input greater than 1
 
-generated_cases = {}
+mkl_cases = {}
+fall_back_cases = {}
 for umath in umaths:
     mkl_umath = getattr(mu, umath)
     types = mkl_umath.types
     for type_ in types:
-        args_str = type_[:type_.find('->')]
-        args = get_args(args_str)
-        generated_cases[(umath, type_)] = args
+        args_str = type_[:type_.find("->")]
+        if umath in ["arccos", "arcsin", "arctanh"]:
+            low = -1; high = 1
+        elif umath in ["log", "log10", "log1p", "log2", "sqrt"]:
+            low = 0; high = 10
+        elif umath == "arccosh":
+            low = 1; high = 10
+        else:
+            low = -10; high = 10
+        # when size > 8192, mkl is used (if supported), 
+        # otherwise it falls back on numpy algorithm
+        args_mkl = get_args(args_str, 8200, low, high)
+        args_fall_back = get_args(args_str, 100, low, high)
+        mkl_cases[(umath, type_)] = args_mkl
+        fall_back_cases[(umath, type_)] = args_fall_back     
 
-additional_cases = {
-    ('arccosh', 'f->f'): (np.single(np.random.random_sample() + 1),),
-    ('arccosh', 'd->d'): (np.double(np.random.random_sample() + 1),),
-}
-
-test_cases = {**generated_cases, **additional_cases}
+test_mkl = {**mkl_cases}
+test_fall_back = {**fall_back_cases}
 
 def get_id(val):
     return val.__str__()
 
-@pytest.mark.parametrize("case", test_cases, ids=get_id)
-def test_umath(case):
+@pytest.mark.parametrize("case", test_mkl, ids=get_id)
+def test_mkl_umath(case):
     umath, _ = case
-    args = test_cases[case]
+    args = test_mkl[case]
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
     
@@ -84,6 +94,20 @@ def test_umath(case):
     np_res = np_umath(*args)
        
     assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"
+
+
+@pytest.mark.parametrize("case", test_fall_back, ids=get_id)
+def test_fall_back_umath(case):
+    umath, _ = case
+    args = test_fall_back[case]
+    mkl_umath = getattr(mu, umath)
+    np_umath = getattr(np, umath)
+    
+    mkl_res = mkl_umath(*args)
+    np_res = np_umath(*args)
+       
+    assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"    
+
 
 def test_patch():
     mp.restore()

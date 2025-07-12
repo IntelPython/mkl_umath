@@ -35,7 +35,7 @@ jobs:
         with:
           use-mamba: true
           miniforge-version: latest
-          channels: conda-forge
+          channels: https://software.repos.intel.com/python/conda, conda-forge
           conda-remove-defaults: true
           activate-environment: test
           python-version: ${{ matrix.python }}
@@ -52,7 +52,7 @@ jobs:
           pip install --no-cache-dir numpy ${{ matrix.use_pre }}
           echo "CONDA_PREFFIX is '${CONDA_PREFIX}'"
           export MKLROOT=${CONDA_PREFIX}
-          pip install . --no-build-isolation --no-deps --verbose
+          CC=icx pip install . --no-build-isolation --no-deps --verbose
           pip install --no-cache-dir pytest
           pip list
           # mkl_umath cannot be installed in editable mode, we need 

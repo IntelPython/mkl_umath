@@ -2695,7 +2695,7 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
         UNARY_LOOP {
             const @ftype@ in1r = ((@ftype@ *)ip1)[0];
             const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-            *((@ftype@ *)op1) = npy_hypot@c@(in1r, in1i);
+            *((@ftype@ *)op1) = hypot@c@(in1r, in1i);
         }
     }
     if(ignore_fpstatus) {

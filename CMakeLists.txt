@@ -111,8 +111,6 @@ set_target_properties(${_trgt} PROPERTIES
     C_STANDARD 99
 )
 target_include_directories(${_trgt} PUBLIC mkl_umath/src/ ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
-set(NPYMATH_PATH "${Python_NumPy_INCLUDE_DIRS}/../lib")
-target_link_libraries(${_trgt} PRIVATE ${NPYMATH_PATH}/libnpymath.a)
 target_link_libraries(${_trgt} PUBLIC MKL::MKL ${Python_LIBRARIES})
 target_link_options(${_trgt} PUBLIC ${_linker_options})
 target_compile_options(${_trgt} PUBLIC -fveclib=SVML)

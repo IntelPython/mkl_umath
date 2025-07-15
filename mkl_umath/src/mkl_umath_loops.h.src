@@ -59,10 +59,6 @@ mkl_umath_@TYPE@_sqrt(char **args, const npy_intp *dimensions, const npy_intp *s
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_invsqrt(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
@@ -72,10 +68,6 @@ mkl_umath_@TYPE@_exp2(char **args, const npy_intp *dimensions, const npy_intp *s
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_expm1(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_erf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
@@ -223,10 +215,6 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
@@ -240,10 +228,6 @@ mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp 
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
@@ -287,8 +271,6 @@ void
 mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 #endif
 
-#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
-
 /**end repeat**/
 
 /*
@@ -326,10 +308,6 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
 
 /**begin repeat1
  * arithmetic
@@ -352,19 +330,11 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@__ones_like(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
-
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@__arg(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
 
 MKL_UMATH_API
 void
@@ -378,8 +348,6 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 /**end repeat1**/
-
-#define mkl_umath_@TYPE@_true_divide mkl_umath_@TYPE@_divide
 
 /**end repeat**/
 

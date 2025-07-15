@@ -2387,83 +2387,113 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n,
     }
 }
 
-/* TODO: USE MKL */
 /**begin repeat1
  * arithmetic
  * #kind = add, subtract#
  * #OP = +, -#
  * #PW = 1, 0#
+ * #VML = Add, Sub# 
  */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    if (IS_BINARY_REDUCE && @PW@) {
-        npy_intp n = dimensions[0];
-        @ftype@ * or = ((@ftype@ *)args[0]);
-        @ftype@ * oi = ((@ftype@ *)args[0]) + 1;
-        @ftype@ rr, ri;
+    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
-        pairwise_sum_@TYPE@(&rr, &ri, args[1], n * 2, steps[1] / 2);
-        *or @OP@= rr;
-        *oi @OP@= ri;
-        return;
+    if(can_vectorize && dimensions[0] > VML_ASM_THRESHOLD) {
+        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, args[0], args[1], args[2]);
+        /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
     }
-    else {
-        BINARY_LOOP {
-            const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-            const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-            const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-            const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-            ((@ftype@ *)op1)[0] = in1r @OP@ in2r;
-            ((@ftype@ *)op1)[1] = in1i @OP@ in2i;
+    else { 
+        if (IS_BINARY_REDUCE && @PW@) {
+            npy_intp n = dimensions[0];
+            @ftype@ * or = ((@ftype@ *)args[0]);
+            @ftype@ * oi = ((@ftype@ *)args[0]) + 1;
+            @ftype@ rr, ri;
+
+            pairwise_sum_@TYPE@(&rr, &ri, args[1], n * 2, steps[1] / 2);
+            *or @OP@= rr;
+            *oi @OP@= ri;
+            return;
+        } else {
+            BINARY_LOOP {
+                const @ftype@ in1r = ((@ftype@ *)ip1)[0];
+                const @ftype@ in1i = ((@ftype@ *)ip1)[1];
+                const @ftype@ in2r = ((@ftype@ *)ip2)[0];
+                const @ftype@ in2i = ((@ftype@ *)ip2)[1];
+                ((@ftype@ *)op1)[0] = in1r @OP@ in2r;
+                ((@ftype@ *)op1)[1] = in1i @OP@ in2i;
+            }
         }
     }
 }
 /**end repeat1**/
 
-/* TODO: USE MKL */
 void
 mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        ((@ftype@ *)op1)[0] = in1r*in2r - in1i*in2i;
-        ((@ftype@ *)op1)[1] = in1r*in2i + in1i*in2r;
+    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
+
+    if(can_vectorize && dimensions[0] > VML_ASM_THRESHOLD) {
+        CHUNKED_VML_CALL3(v@s@Mul, dimensions[0], @type@, args[0], args[1], args[2]);
+        /* v@s@Mul(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+    }
+    else {    
+        BINARY_LOOP {
+            const @ftype@ in1r = ((@ftype@ *)ip1)[0];
+            const @ftype@ in1i = ((@ftype@ *)ip1)[1];
+            const @ftype@ in2r = ((@ftype@ *)ip2)[0];
+            const @ftype@ in2i = ((@ftype@ *)ip2)[1];
+            ((@ftype@ *)op1)[0] = in1r*in2r - in1i*in2i;
+            ((@ftype@ *)op1)[1] = in1r*in2i + in1i*in2r;
+        }
     }
 }
 
-/* TODO: USE MKL */
 void
 mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        const @ftype@ in2r_abs = fabs@c@(in2r);
-        const @ftype@ in2i_abs = fabs@c@(in2i);
-        if (in2r_abs >= in2i_abs) {
-            if (in2r_abs == 0 && in2i_abs == 0) {
-                /* divide by zero should yield a complex inf or nan */
-                ((@ftype@ *)op1)[0] = in1r/in2r_abs;
-                ((@ftype@ *)op1)[1] = in1i/in2i_abs;
+    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;    
+
+    if(can_vectorize && dimensions[0] > VML_ASM_THRESHOLD) {
+        CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, args[0], args[1], args[2]);
+        /* v@s@Div(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+    }
+    else {       
+        BINARY_LOOP {
+            const @ftype@ in1r = ((@ftype@ *)ip1)[0];
+            const @ftype@ in1i = ((@ftype@ *)ip1)[1];
+            const @ftype@ in2r = ((@ftype@ *)ip2)[0];
+            const @ftype@ in2i = ((@ftype@ *)ip2)[1];
+            const @ftype@ in2r_abs = fabs@c@(in2r);
+            const @ftype@ in2i_abs = fabs@c@(in2i);
+            if (in2r_abs >= in2i_abs) {
+                if (in2r_abs == 0 && in2i_abs == 0) {
+                    /* divide by zero should yield a complex inf or nan */
+                    ((@ftype@ *)op1)[0] = in1r/in2r_abs;
+                    ((@ftype@ *)op1)[1] = in1i/in2i_abs;
+                }
+                else {
+                    const @ftype@ rat = in2i/in2r;
+                    const @ftype@ scl = 1.0@c@/(in2r + in2i*rat);
+                    ((@ftype@ *)op1)[0] = (in1r + in1i*rat)*scl;
+                    ((@ftype@ *)op1)[1] = (in1i - in1r*rat)*scl;
+                }
             }
             else {
-                const @ftype@ rat = in2i/in2r;
-                const @ftype@ scl = 1.0@c@/(in2r + in2i*rat);
-                ((@ftype@ *)op1)[0] = (in1r + in1i*rat)*scl;
-                ((@ftype@ *)op1)[1] = (in1i - in1r*rat)*scl;
+                const @ftype@ rat = in2r/in2i;
+                const @ftype@ scl = 1.0@c@/(in2i + in2r*rat);
+                ((@ftype@ *)op1)[0] = (in1r*rat + in1i)*scl;
+                ((@ftype@ *)op1)[1] = (in1i*rat - in1r)*scl;
             }
-        }
-        else {
-            const @ftype@ rat = in2r/in2i;
-            const @ftype@ scl = 1.0@c@/(in2i + in2r*rat);
-            ((@ftype@ *)op1)[0] = (in1r*rat + in1i)*scl;
-            ((@ftype@ *)op1)[1] = (in1i*rat - in1r)*scl;
         }
     }
 }

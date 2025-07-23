@@ -168,8 +168,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 /**begin repeat1
  * Arithmetic
- * # kind = equal, not_equal, less, less_equal, greater, greater_equal,
- *        logical_and, logical_or#
+ * # kind = logical_and, logical_or#
  */
 MKL_UMATH_API
 void
@@ -227,7 +226,7 @@ mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
@@ -311,9 +310,7 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
 
 /**begin repeat1
  * arithmetic
- * #kind = greater, greater_equal, less, less_equal, equal, 
-           not_equal, logical_and, logical_or, logical_xor, logical_not,
-	   isnan, isinf, isfinite#
+ * #kind = equal, not_equal, logical_and, logical_or, logical_xor, logical_not, isnan, isinf, isfinite#
  */
 MKL_UMATH_API
 void
@@ -322,23 +319,23 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
 void
-mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 /**begin repeat1
  * arithmetic

@@ -733,7 +733,12 @@ defdict = {
           None,
           TD(inexactvec),
           ),
-# 'divmod':
+'divmod':
+    Ufunc(2, 2, None,
+          docstrings.get('numpy._core.umath.divmod'),
+          None,
+          TD(inexactvec),
+          ),
 # 'hypot':
 'isnan':
     Ufunc(1, 1, None,

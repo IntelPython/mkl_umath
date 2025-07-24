@@ -416,7 +416,12 @@ defdict = {
           TD(inexactvec + cmplxvec),
           ),
 # 'true_divide': aliased to divide
-# 'floor_divide':
+'floor_divide':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy._core.umath.floor_divide'),
+          None,
+          TD(inexactvec),
+          ),
 'divide':
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.divide'),

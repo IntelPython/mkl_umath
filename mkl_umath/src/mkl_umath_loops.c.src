@@ -2040,6 +2040,17 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 /**end repeat1**/
 
 void
+mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    BINARY_LOOP {
+        const @type@ in1 = *(@type@ *)ip1;
+        const @type@ in2 = *(@type@ *)ip2;
+        @type@ mod;
+        *((@type@ *)op1) = divmod@c@(in1, in2, &mod);
+    }
+}
+
+void
 mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
 #if @SUPPORTED_BY_VML@    

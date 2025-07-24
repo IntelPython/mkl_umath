@@ -215,6 +215,10 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 MKL_UMATH_API
 void
+mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+MKL_UMATH_API
+void
 mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 MKL_UMATH_API
@@ -307,7 +311,6 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-
 
 /**begin repeat1
  * arithmetic

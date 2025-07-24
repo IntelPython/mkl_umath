@@ -261,6 +261,10 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
+MKL_UMATH_API
+void
+mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data));
+
 #ifdef USE_NUMPY_2
 MKL_UMATH_API
 void

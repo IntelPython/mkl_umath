@@ -296,6 +296,44 @@ mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *st
 
 /**end repeat**/
 
+/* binary and two MKL pow and powx */
+/**begin repeat
+ * Float types
+ *  #type = npy_float, npy_double#
+ *  #TYPE = FLOAT, DOUBLE#
+ *  #A = F, #
+ *  #c = s, d#
+ *  #scalarf = powf, pow#
+ */
+void
+mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int disjoint_or_same = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same;
+    int ignore_fpstatus = 0;
+
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD)
+    {
+        ignore_fpstatus = 1;
+        CHUNKED_VML_CALL2(v@c@Pow, dimensions[0], @type@, args[0], args[1]);
+        /* v@c@Pow(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+    } else {
+        UNARY_LOOP_DISPATCH(
+            @type@, @type@
+            ,
+            can_vectorize
+            ,
+            const @type@ in1 = *(@type@ *)ip1;
+            *(@type@ *)op1 = @scalarf@(in1);
+        )
+    }
+    if(ignore_fpstatus) {
+        feclearexcept(FE_OVERFLOW | ZERODIVIDE | FE_INVALID);
+    }
+}
+/**end repeat**/
+
 /**begin repeat
  * Float types
  *  #type = npy_float, npy_double#
@@ -2691,6 +2729,30 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
+
+/* binary and two MKL pow and powx */
+void
+mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int disjoint_or_same = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same;
+
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD)
+    {
+        CHUNKED_VML_CALL2(v@s@Pow, dimensions[0], @type@, args[0], args[1]);
+        /* v@s@Pow(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+    } else {
+        UNARY_LOOP_DISPATCH(
+            @type@, @type@
+            ,
+            can_vectorize
+            ,
+            const @type@ in1 = *(@type@ *)ip1;
+            *(@type@ *)op1 = cpow@c@(in1);
+        )
+    }
+}
 
 /**begin repeat1
  * #kind = fmax, fmin#

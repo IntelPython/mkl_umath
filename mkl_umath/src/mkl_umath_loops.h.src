@@ -185,7 +185,7 @@ void
 mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 /**begin repeat1
- * #kind = isnan, isinf, isfinite, signbit#
+ * #kind = isnan, isinf, isfinite#
  **/
 MKL_UMATH_API
 void

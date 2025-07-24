@@ -754,12 +754,7 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec, out='?'),
           ),
-'signbit':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.signbit'),
-          None,
-          TD(inexactvec, out='?'),
-          ),
+# 'signbit':
 'copysign':
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.copysign'),

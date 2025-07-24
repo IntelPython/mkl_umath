@@ -1896,8 +1896,8 @@ mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_
 }
 
 /**begin repeat1
- * #kind = isnan, isinf, isfinite, signbit#
- * #func = isnan, isinf, isfinite, signbit#
+ * #kind = isnan, isinf, isfinite#
+ * #func = isnan, isinf, isfinite#
  **/
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))

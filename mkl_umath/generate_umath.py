@@ -646,7 +646,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.exp'),
           None,
-          TD(inexactvec),
+          TD(inexactvec + cmplxvec),
           ),
 'exp2':
     Ufunc(1, 1, None,

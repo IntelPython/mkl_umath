@@ -2284,7 +2284,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  **                           COMPLEX LOOPS                                 **
  *****************************************************************************
  */
-/* TODO: USE MKL for pow, exp, ln, log10, sqrt, trigonometric functions and hyperbolic functions */
+/* TODO: USE MKL for pow, ln, log10, sqrt, trigonometric functions and hyperbolic functions */
 
 #define CGE(xr,xi,yr,yi) ((xr > yr && !isnan(xi) && !isnan(yi)) \
                           || (xr == yr && xi >= yi))
@@ -2691,6 +2691,29 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 /**end repeat1**/
+
+void
+mkl_umath_@TYPE@_exp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int disjoint_or_same = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same;
+
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD)
+    {
+        CHUNKED_VML_CALL2(v@s@Exp, dimensions[0], @type@, args[0], args[1]);
+        /* v@s@Exp(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+    } else {
+        UNARY_LOOP_DISPATCH(
+            @type@, @type@
+            ,
+            can_vectorize
+            ,
+            const @type@ in1 = *(@type@ *)ip1;
+            *(@type@ *)op1 = cexp@c@(in1);
+        )
+    }
+}
 
 /**begin repeat1
  * #kind = fmax, fmin#

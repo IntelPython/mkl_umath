@@ -205,6 +205,11 @@ MKL_UMATH_API
 void
 mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
+MKL_UMATH_API
+void
+mkl_umath_@TYPE@_arctan2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
+
 /**begin repeat1
  * #kind = maximum, minimum, fmax, fmin#
  **/

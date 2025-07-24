@@ -220,7 +220,7 @@ divmod@c@(@type@ a, @type@ b, @type@ *modulus)
  **                             FLOAT LOOPS                                 **
  *****************************************************************************
  */
-/* TODO: Use MKL for pow, arctan2, fmod, hypot, i0 */
+/* TODO: Use MKL for pow, fmod, hypot, i0 */
 
 /**begin repeat
  * Float types
@@ -1963,6 +1963,29 @@ mkl_umath_@TYPE@_nextafter(char **args, const npy_intp *dimensions, const npy_in
             const @type@ in1 = *(@type@ *)ip1;
             const @type@ in2 = *(@type@ *)ip2;
             *((@type@ *)op1)= nextafter@c@(in1, in2);
+        }
+    }
+}
+
+void
+mkl_umath_@TYPE@_arctan2(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+#if @SUPPORTED_BY_VML@    
+    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
+
+    if(can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
+        CHUNKED_VML_CALL3(v@s@Atan2, dimensions[0], @type@, args[0], args[1], args[2]);
+        /* v@s@Atan2(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+    } else    
+#endif
+    {
+        BINARY_LOOP {
+            const @type@ in1 = *(@type@ *)ip1;
+            const @type@ in2 = *(@type@ *)ip2;
+            *((@type@ *)op1)= atan2@c@(in1, in2);
         }
     }
 }

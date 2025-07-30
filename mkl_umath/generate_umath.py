@@ -735,15 +735,7 @@ defdict = {
           None,
           ldexp_signature,
           ),
-'frexp' :
-    Ufunc(1, 2, None,
-          docstrings.get('numpy._core.umath.frexp'),
-          None,
-          [
-              TypeDescription('f', None, 'f', 'fi'),
-              TypeDescription('d', None, 'd', 'di'),
-          ],
-          ),
+# 'frexp' :
 # 'gcd':
 # 'lcm':
 # 'bitwise_count':

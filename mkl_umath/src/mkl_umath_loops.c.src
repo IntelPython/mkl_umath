@@ -201,7 +201,7 @@ divmod@c@(@type@ a, @type@ b, @type@ *modulus)
  **                             FLOAT LOOPS                                 **
  *****************************************************************************
  */
-/* TODO: Use MKL for pow, arctan2, fmod, hypot, i0 */
+/* TODO: Use MKL for pow, i0 */
 
 /**begin repeat
  * Float types
@@ -791,8 +791,9 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 /**end repeat1**/
 
 /**begin repeat1
- * # kind = copysign, nextafter#
- * # VML = CopySign, NextAfter#
+ * # kind = arctan2, copysign, fmod, hypot, nextafter#
+ * # func = atan2, copysign, fmod, hypot, nextafter#
+ * # VML = Atan2, CopySign, Fmod, Hypot, NextAfter#
  */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
@@ -810,7 +811,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
         BINARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
             const @type@ in2 = *(@type@ *)ip2;
-            *((@type@ *)op1)= @kind@@c@(in1, in2);
+            *((@type@ *)op1)= @func@@c@(in1, in2);
         }
     }
 }

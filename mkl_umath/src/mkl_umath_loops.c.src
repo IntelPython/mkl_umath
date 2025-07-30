@@ -82,6 +82,21 @@
         }                                                                       \
     } while (0)
 
+#define CHUNKED_ABS_COMPLEX_CALL(vml_func, n, type, ftype, in1, op1)                          \
+    do {                                                                        \
+        npy_intp _n_ = (n);                                                     \
+        const npy_intp _chunk_size = MKL_INT_MAX;                               \
+        type *in1p = (type *) (in1);                                            \
+        ftype *op1p = (ftype *) (op1);                                            \
+        while (_n_ > 0) {                                                       \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
+            vml_func((MKL_INT) _current_chunk, in1p, op1p);                     \
+            _n_ -= _current_chunk;                                              \
+            in1p += _current_chunk;                                             \
+            op1p += _current_chunk;                                             \
+        }                                                                       \
+    } while (0)
+
 #define CHUNKED_VML_CALL3(vml_func, n, type, in1, in2, op1)                     \
     do  {                                                                       \
         npy_intp _n_ = (n);                                                     \
@@ -99,8 +114,7 @@
         }                                                                       \
     } while(0)
 
-
-#define CHUNKED_VML_LINEARFRAC_CALL(vml_func, n, type, in1, op1, scaleA, shiftA, scaleB, shiftB) \
+#define CHUNKED_LINEARFRAC_CALL(vml_func, n, type, in1, op1, scaleA, shiftA, scaleB, shiftB) \
      do {                                                                                        \
         npy_intp _n_ = (n);                                                                      \
         const npy_intp _chunk_size = MKL_INT_MAX;                                                \
@@ -354,7 +368,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     } 
     else if (IS_BINARY_CONT_S1(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same2) {
-            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], @OP@1.0, *(@type@*)args[0], 0.0, 1.0);
+            CHUNKED_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], @OP@1.0, *(@type@*)args[0], 0.0, 1.0);
             /* v@s@LinearFrac(dimensions[0], (@type@*) args[1], (@type@*) args[1], @OP@1.0, *(@type@*)args[0], 0.0, 1.0, (@type@*) args[2]); */
         } 
         else {
@@ -394,7 +408,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     } 
     else if (IS_BINARY_CONT_S2(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1) {
-            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], 1.0, @OP@(*(@type@*)args[1]), 0.0, 1.0);
+            CHUNKED_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], 1.0, @OP@(*(@type@*)args[1]), 0.0, 1.0);
             /* v@s@LinearFrac(dimensions[0], (@type@*) args[0], (@type@*) args[0], 1.0, @OP@(*(@type@*)args[1]), 0.0, 1.0, (@type@*) args[2]); */
         }
         else {
@@ -513,7 +527,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
     } 
     else if (IS_BINARY_CONT_S1(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same2) {
-            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], *(@type@*)args[0], 0.0, 0.0, 1.0);
+            CHUNKED_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], *(@type@*)args[0], 0.0, 0.0, 1.0);
             /* v@s@LinearFrac(dimensions[0], (@type@*) args[1], (@type@*) args[1], *(@type@*)args[0], 0.0, 0.0, 1.0, (@type@*) args[2]); */
         }
         else {
@@ -553,7 +567,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
     } 
     else if (IS_BINARY_CONT_S2(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1) {
-            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], *(@type@*)args[1], 0.0, 0.0, 1.0);
+            CHUNKED_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], *(@type@*)args[1], 0.0, 0.0, 1.0);
             /* v@s@LinearFrac(dimensions[0], (@type@*) args[0], (@type@*) args[0], *(@type@*)args[1], 0.0, 0.0, 1.0, (@type@*) args[2]); */
         }
         else {
@@ -1191,6 +1205,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  * #TYPE = CFLOAT, CDOUBLE#
  * #ftype = npy_float, npy_double#
  * #type = npy_cfloat, npy_cdouble# 
+ * #mkl_type = MKL_Complex8, MKL_Complex16# 
  * #c = f, #
  * #C = F, # 
  * #s = c, z#
@@ -1469,8 +1484,8 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, args[0], args[1]);
-        /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @mkl_type@, args[0], args[1]);
+        /* v@s@@VML@(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1]); */
     } else {
         UNARY_LOOP_DISPATCH(
             @type@, @type@
@@ -1491,8 +1506,8 @@ mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_in
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @type@, args[0], args[1]);
-        /* v@s@Conj(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+        CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @mkl_type@, args[0], args[1]);
+        /* v@s@Conj(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1]); */
     } 
     else {
         UNARY_LOOP {
@@ -1507,6 +1522,7 @@ mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_in
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
+    // input is complex @type@ and output is float @ftype@
     const int contig = IS_UNARY_CONT(@type@, @ftype@);
     const int disjoint_or_same = DISJOINT_OR_SAME_TWO_DTYPES(args[0], args[1], dimensions[0], sizeof(@type@), sizeof(@ftype@));
     const int can_vectorize = contig && disjoint_or_same;
@@ -1514,8 +1530,8 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
         ignore_fpstatus = 1;
-        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, args[0], args[1]);
-        /* v@s@Abs(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+        CHUNKED_ABS_COMPLEX_CALL(v@s@Abs, dimensions[0], @mkl_type@, @ftype@, args[0], args[1]);
+        /* v@s@Abs(dimensions[0], (@mkl_type@*) args[0], (@ftype@*) args[1]); */
     } 
     else {
         UNARY_LOOP {

@@ -1163,6 +1163,7 @@ mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *s
         const @type@ in1 = *(@type@ *)ip1;
         *((@type@ *)op1) = in1 > 0 ? 1 : (in1 < 0 ? -1 : (in1 == 0 ? 0 : in1));
     }
+    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
 }
 
 void

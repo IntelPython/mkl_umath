@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Dropped support for FLOAT LOOPs of `equal` and `not_equal` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 * Dropped support for `less`, `less_equal`, `greater`, `greater_equal` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 * Dropped support for `isinf`, `isnan` and `isfinite` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Dropped support for COMPLEX LOOPs of `sign` and `reciprocal` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 
 ## [0.2.0] - 2025-06-03
 This release updates `mkl_umath` to be aligned with both numpy-1.26.x and numpy-2.x.x.

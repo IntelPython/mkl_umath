@@ -1116,15 +1116,6 @@ mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp 
 }
 
 void
-mkl_umath_@TYPE@_frexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP_TWO_OUT {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = frexp@c@(in1, (int *)op2);
-    }
-}
-
-void
 mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {

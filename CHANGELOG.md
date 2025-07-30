@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added mkl implementation for complex data-types of `conjugate` and `absolute` functions [gh-86](https://github.com/IntelPython/mkl_umath/pull/86)
 * Enabled support of Python 3.13 [gh-101](https://github.com/IntelPython/mkl_umath/pull/101)
 * Added mkl implementation for complex data-types of `add`, `subtract`, `multiply` and `divide` functions [gh-102](https://github.com/IntelPython/mkl_umath/pull/102)
+* Added support for `floor_divide` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Enabled support for `divmod` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 
 ### Changed 
 * Dropped support for `maximum` and `minimum` [gh-104](https://github.com/IntelPython/mkl_umath/pull/104)

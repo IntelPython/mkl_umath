@@ -626,7 +626,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.exp'),
           None,
-          TD(inexactvec),
+          TD(inexactvec + cmplxvec),
           ),
 'exp2':
     Ufunc(1, 1, None,
@@ -644,7 +644,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.log'),
           None,
-          TD(inexactvec),
+          TD(inexactvec + cmplxvec),
           ),
 'log2':
     Ufunc(1, 1, None,
@@ -656,7 +656,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.log10'),
           None,
-          TD(inexactvec),
+          TD(inexactvec + cmplxvec),
           ),
 'log1p':
     Ufunc(1, 1, None,
@@ -668,7 +668,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.sqrt'),
           None,
-          TD(inexactvec),
+          TD(inexactvec + cmplxvec),
           ),
 'cbrt':
     Ufunc(1, 1, None,

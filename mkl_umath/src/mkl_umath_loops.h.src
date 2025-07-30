@@ -97,7 +97,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  */
 
 /**begin repeat1
- * # kind = absolute, add, conjugate, divide, isfinite, isinf, isnan, equal, fmax, fmin, greater, greater_equal, 
+ * # kind = absolute, add, conjugate, divide, isfinite, isinf, isnan, equal, greater, greater_equal, 
             less, less_equal, logical_and, logical_not, logical_or, logical_xor, multiply,
             not_equal, reciprocal, sign, square, subtract#
  */

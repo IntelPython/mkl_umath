@@ -472,41 +472,21 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec),
           ),
-'greater':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.greater'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'greater_equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.greater_equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'less':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.less'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'less_equal':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.less_equal'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
+# 'greater':
+# 'greater_equal':
+# 'less':
+# 'less_equal':
 'equal':
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.equal'),
           None,
-          TD(inexactvec + cmplxvec, out='?'),
+          TD(cmplxvec, out='?'),
           ),
 'not_equal':
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.not_equal'),
           None,
-          TD(inexactvec + cmplxvec, out='?'),
+          TD(cmplxvec, out='?'),
           ),
 'logical_and':
     Ufunc(2, 1, True_,

@@ -13,9 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added mkl implementation for complex data-types of `add`, `subtract`, `multiply` and `divide` functions [gh-102](https://github.com/IntelPython/mkl_umath/pull/102)
 * Added support for `floor_divide` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 * Enabled support for `divmod` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
-* Added oneMKL implementation for floating point data-types of `arctan2`, `hypot`, `fmod` function [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Added oneMKL implementation for floating point data-types of `arctan2`, `hypot`, `fmod` functions [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 * Added oneMKL implementation for complex data-types of `exp`, `log`, `log10`, and `sqrt` functions [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 * Added oneMKL implementation for complex data-types of trigonometric and hyperbolic functions [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Added oneMKL implementation for `power` function [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 
 ### Changed 
 * Dropped support for `maximum` and `minimum` [gh-104](https://github.com/IntelPython/mkl_umath/pull/104)

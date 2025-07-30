@@ -93,11 +93,19 @@ def test_mkl_umath(case):
     args = test_mkl[case]
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
-    
-    mkl_res = mkl_umath(*args)
-    np_res = np_umath(*args)
-       
-    assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"
+
+    if umath == "power":
+        # Negative values raised to a non-integral value will return nan.
+        equal_nan = True
+        with np.errstate(invalid='ignore'):
+            mkl_res = mkl_umath(*args)
+            np_res = np_umath(*args)
+    else:
+        equal_nan = False
+        mkl_res = mkl_umath(*args)
+        np_res = np_umath(*args)
+
+    assert np.allclose(mkl_res, np_res, equal_nan=equal_nan), f"Results for '{umath}' do not match"
 
 
 @pytest.mark.parametrize("case", test_fall_back, ids=get_id)
@@ -106,11 +114,19 @@ def test_fall_back_umath(case):
     args = test_fall_back[case]
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
-    
-    mkl_res = mkl_umath(*args)
-    np_res = np_umath(*args)
 
-    assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"    
+    if umath == "power":
+        # Negative values raised to a non-integral value will return nan.
+        equal_nan = True
+        with np.errstate(invalid='ignore'):
+            mkl_res = mkl_umath(*args)
+            np_res = np_umath(*args)
+    else:
+        equal_nan = False
+        mkl_res = mkl_umath(*args)
+        np_res = np_umath(*args)
+
+    assert np.allclose(mkl_res, np_res, equal_nan=equal_nan), f"Results for '{umath}' do not match"
 
 
 @pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide"])
@@ -128,6 +144,21 @@ def test_scalar(func, size, dtype):
     mkl_res = getattr(mu, func)(1.0, a)
     np_res = getattr(np, func)(1.0, a)
     assert np.allclose(mkl_res, np_res), f"Results for '{func}(scalar, array)' do not match"
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])
+@pytest.mark.parametrize("pow", [2.5, 3])
+def test_power_scalar(dtype, pow):
+    size = 10**5
+    a = np.random.uniform(-10, 10, size).astype(dtype)
+    if np.issubdtype(dtype, np.complexfloating):
+        a += 1j * np.random.uniform(-10, 10, size)
+
+    # testing implementation in IS_BINARY_CONT_S1 branch
+    with np.errstate(invalid='ignore'):
+        mkl_res = mu.power(a, pow)
+        np_res = np.power(a, pow)
+    assert np.allclose(mkl_res, np_res, equal_nan=True), f"Results for 'power(array, scalar)' do not match"
 
 
 @pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide"])

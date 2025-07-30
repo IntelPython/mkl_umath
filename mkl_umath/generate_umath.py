@@ -539,13 +539,13 @@ defdict = {
     Ufunc(2, 1, ReorderableNone,
           docstrings.get('numpy._core.umath.fmax'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 'fmin':
     Ufunc(2, 1, ReorderableNone,
           docstrings.get('numpy._core.umath.fmin'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 # 'logaddexp':
 # 'logaddexp2':

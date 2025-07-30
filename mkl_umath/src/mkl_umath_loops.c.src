@@ -1069,8 +1069,8 @@ mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_
 }
 
 /**begin repeat1
- * #kind = isnan, isinf, isfinite, signbit#
- * #func = isnan, isinf, isfinite, signbit#
+ * #kind = signbit#
+ * #func = signbit#
  **/
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
@@ -1493,23 +1493,6 @@ mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_
         *((npy_bool *)op1) = !(in1r || in1i);
     }
 }
-
-/**begin repeat1
- * #kind = isnan, isinf, isfinite#
- * #func = isnan, isinf, isfinite#
- * #OP = ||, ||, &&#
- **/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        *((npy_bool *)op1) = @func@(in1r) @OP@ @func@(in1i);
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
 
 void
 mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(data))

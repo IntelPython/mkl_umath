@@ -95,7 +95,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
 /**begin repeat1
  * # kind = absolute, add, conjugate, divide, equal,
             logical_and, logical_not, logical_or, logical_xor, multiply,
-            not_equal, reciprocal, sign, square, subtract#
+            not_equal, square, subtract#
  */
 MKL_UMATH_API
 void

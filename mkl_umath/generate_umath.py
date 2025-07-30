@@ -440,7 +440,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.reciprocal'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 # '_ones_like':
 # 'power':
@@ -470,7 +470,7 @@ defdict = {
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.sign'),
           None,
-          TD(inexactvec + cmplxvec),
+          TD(inexactvec),
           ),
 # 'greater':
 # 'greater_equal':

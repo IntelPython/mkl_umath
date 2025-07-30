@@ -705,25 +705,10 @@ defdict = {
           ),
 # 'divmod':
 # 'hypot':
-'isnan':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isnan'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
+# 'isnan':
 # 'isnat':
-'isinf':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isinf'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
-'isfinite':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.isfinite'),
-          None,
-          TD(inexactvec + cmplxvec, out='?'),
-          ),
+# 'isinf':
+# 'isfinite':
 # 'signbit':
 'copysign':
     Ufunc(2, 1, None,

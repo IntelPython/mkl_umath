@@ -722,12 +722,7 @@ defdict = {
           None,
           TD(inexactvec),
           ),
-'spacing':
-    Ufunc(1, 1, None,
-          docstrings.get('numpy._core.umath.spacing'),
-          None,
-          TD(inexactvec),
-          ),
+# 'spacing':
 'modf':
     Ufunc(1, 2, None,
           docstrings.get('numpy._core.umath.modf'),

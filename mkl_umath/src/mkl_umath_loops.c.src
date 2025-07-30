@@ -136,19 +136,6 @@
 #include "fast_loop_macros.h"
 #include <stdio.h>
 
-static inline npy_double spacing(npy_double x) {
-    if (isinf(x))
-    return ((npy_double) NAN);
-    return copysign(nextafter(fabs(x), ((npy_double) INFINITY)), x) - x;
-}
-
-static inline npy_float spacingf(npy_float x) {
-    if (isinff(x))
-    return ((npy_float) NAN);
-
-    return copysignf(nextafterf(fabsf(x), INFINITY), x) - x;
-}
-
 #if defined(_MSC_VER) && defined(__INTEL_COMPILER)
 extern __inline float __cdecl ldexpf( float _X, int _Y) { 
     return (float)ldexp(_X, _Y); 
@@ -1085,15 +1072,6 @@ mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_in
     UNARY_LOOP {
         const @type@ in1 = *(@type@ *)ip1;
         *((@type@ *)op1) = in1;
-    }
-}
-
-void
-mkl_umath_@TYPE@_spacing(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    UNARY_LOOP {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = (spacing@c@(in1));
     }
 }
 

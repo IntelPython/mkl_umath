@@ -59,7 +59,7 @@
             floor, fmax, fmin, frexp, ldexp, log, log2, log10, 
             log1p, logical_and, logical_not, logical_or, logical_xor, multiply, modf, 
             negative, nextafter, positive, reciprocal, remainder, rint, sign, signbit, sin,
-            sinh, spacing, sqrt, square, subtract, tan, tanh, trunc#
+            sinh, sqrt, square, subtract, tan, tanh, trunc#
  */
 MKL_UMATH_API
 void

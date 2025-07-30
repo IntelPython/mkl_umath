@@ -1049,23 +1049,6 @@ mkl_umath_@TYPE@_logical_not(char **args, const npy_intp *dimensions, const npy_
     }
 }
 
-/**begin repeat1
- * #kind = signbit#
- * #func = signbit#
- **/
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    {
-        UNARY_LOOP {
-            const @type@ in1 = *(@type@ *)ip1;
-            *((npy_bool *)op1) = @func@(in1) != 0;
-        }
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
 void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {

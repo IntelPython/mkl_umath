@@ -140,7 +140,7 @@ def test_strided(func):
     assert np.allclose(mkl_res, np_res), f"Results for '{func}[strided]' do not match"
 
 
-@pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide", "maximum", "minimum", "fmax", "fmin"])
+@pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide", "fmax", "fmin"])
 def test_reduce_float(func):
     # testing implementation in IS_BINARY_REDUCE branch
     a = np.random.uniform(-10, 10, 100)

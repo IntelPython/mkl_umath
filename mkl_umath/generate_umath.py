@@ -434,7 +434,12 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec),
           ),
-# 'fmod':
+'fmod':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy._core.umath.fmod'),
+          None,
+          TD(inexactvec),
+          ),
 'square':
     Ufunc(1, 1, None,
           docstrings.get('numpy._core.umath.square'),
@@ -701,7 +706,12 @@ defdict = {
           None,
           TD(inexactvec),
           ),
-# 'arctan2':
+'arctan2':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy._core.umath.arctan2'),
+          None,
+          TD(inexactvec),
+          ),
 'remainder':
     Ufunc(2, 1, None,
           docstrings.get('numpy._core.umath.remainder'),
@@ -714,7 +724,12 @@ defdict = {
           None,
           TD(inexactvec),
           ),
-# 'hypot':
+'hypot':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy._core.umath.hypot'),
+          None,
+          TD(inexactvec),
+          ),
 # 'isnan':
 # 'isnat':
 # 'isinf':

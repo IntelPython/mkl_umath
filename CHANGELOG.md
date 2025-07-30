@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [dev] (MM/DD/YYYY)
 
 ### Added
-* Added mkl implementation for floating point data-types of `exp2`, `log2`, `fabs`, `copysign`, `nextafter`, `fmax`, `fmin` and `remainder` functions [gh-81](https://github.com/IntelPython/mkl_umath/pull/81)
-* Added mkl implementation for complex data-types of `conjugate` and `absolute` functions [gh-86](https://github.com/IntelPython/mkl_umath/pull/86)
+* Added oneMKL implementation for floating point data-types of `exp2`, `log2`, `fabs`, `copysign`, `nextafter`, `fmax`, `fmin` and `remainder` functions [gh-81](https://github.com/IntelPython/mkl_umath/pull/81)
+* Added oneMKL implementation for complex data-types of `conjugate` and `absolute` functions [gh-86](https://github.com/IntelPython/mkl_umath/pull/86)
+* Added support for `floor_divide` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
+* Enabled support for `divmod` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)
 
 ### Changed 
 * Dropped support for `maximum` and `minimum` [gh-??](https://github.com/IntelPython/mkl_umath/pull/??)

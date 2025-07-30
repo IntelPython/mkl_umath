@@ -1099,6 +1099,17 @@ mkl_umath_@TYPE@_divmod(char **args, const npy_intp *dimensions, const npy_intp 
 }
 
 void
+mkl_umath_@TYPE@_floor_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    BINARY_LOOP {
+        const @type@ in1 = *(@type@ *)ip1;
+        const @type@ in2 = *(@type@ *)ip2;
+        @type@ mod;
+        *((@type@ *)op1) = divmod@c@(in1, in2, &mod);
+    }
+}
+
+void
 mkl_umath_@TYPE@_ldexp(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
     BINARY_LOOP {

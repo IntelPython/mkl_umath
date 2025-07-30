@@ -1648,31 +1648,6 @@ mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *s
     #endif
 }
 
-/**begin repeat1
- * #kind = fmax, fmin#
- * #OP = CGE, CLE#
- */
-void
-mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    BINARY_LOOP {
-        const @ftype@ in1r = ((@ftype@ *)ip1)[0];
-        const @ftype@ in1i = ((@ftype@ *)ip1)[1];
-        const @ftype@ in2r = ((@ftype@ *)ip2)[0];
-        const @ftype@ in2i = ((@ftype@ *)ip2)[1];
-        if (isnan(in2r) || isnan(in2i) || @OP@(in1r, in1i, in2r, in2i)) {
-            ((@ftype@ *)op1)[0] = in1r;
-            ((@ftype@ *)op1)[1] = in1i;
-        }
-        else {
-            ((@ftype@ *)op1)[0] = in2r;
-            ((@ftype@ *)op1)[1] = in2i;
-        }
-    }
-    feclearexcept(FE_ALL_EXCEPT); /* clear floatstatus */
-}
-/**end repeat1**/
-
 /**end repeat**/
 
 #undef CGE

@@ -453,7 +453,12 @@ defdict = {
           TD(inexactvec),
           ),
 # '_ones_like':
-# 'power':
+'power':
+    Ufunc(2, 1, None,
+          docstrings.get('numpy._core.umath.power'),
+          None,
+          TD(inexactvec + cmplxvec),
+          ),
 # 'float_power':
 'absolute':
     Ufunc(1, 1, None,

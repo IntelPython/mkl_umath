@@ -1033,9 +1033,8 @@ mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *s
 }
 
 /**begin repeat1
- * #kind = equal, not_equal, less, less_equal, greater, greater_equal,
- *        logical_and, logical_or#
- * #OP = ==, !=, <, <=, >, >=, &&, ||#
+ * #kind = logical_and, logical_or#
+ * #OP = &&, ||#
  */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
@@ -1233,14 +1232,6 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  */
 /* TODO: USE MKL for pow, exp, ln, log10, sqrt, trigonometric functions and hyperbolic functions */
 
-#define CGE(xr,xi,yr,yi) ((xr > yr && !isnan(xi) && !isnan(yi)) \
-                          || (xr == yr && xi >= yi))
-#define CLE(xr,xi,yr,yi) ((xr < yr && !isnan(xi) && !isnan(yi)) \
-                          || (xr == yr && xi <= yi))
-#define CGT(xr,xi,yr,yi) ((xr > yr && !isnan(xi) && !isnan(yi)) \
-                          || (xr == yr && xi > yi))
-#define CLT(xr,xi,yr,yi) ((xr < yr && !isnan(xi) && !isnan(yi)) \
-                          || (xr == yr && xi < yi))
 #define CEQ(xr,xi,yr,yi) (xr == yr && xi == yi)
 #define CNE(xr,xi,yr,yi) (xr != yr || xi != yi)
 
@@ -1445,8 +1436,8 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
 }
 
 /**begin repeat1
- * #kind= greater, greater_equal, less, less_equal, equal, not_equal#
- * #OP = CGT, CGE, CLT, CLE, CEQ, CNE#
+ * #kind= equal, not_equal#
+ * #OP = CEQ, CNE#
  */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
@@ -1650,10 +1641,6 @@ mkl_umath_@TYPE@_sign(char **args, const npy_intp *dimensions, const npy_intp *s
 
 /**end repeat**/
 
-#undef CGE
-#undef CLE
-#undef CGT
-#undef CLT
 #undef CEQ
 #undef CNE
 

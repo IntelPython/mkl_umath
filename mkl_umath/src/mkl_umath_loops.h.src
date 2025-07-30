@@ -55,10 +55,10 @@
 
 /**begin repeat1
  * # kind = absolute, add, arccos, arccosh, arcsin, arcsinh, arctan, arctanh, cbrt, ceil, conjugate, 
-            copysign, cos, cosh, divide, divmod, isfinite, isinf, isnan, equal, exp, exp2, expm1, fabs, 
-            floor, fmax, fmin, frexp, greater, greater_equal, ldexp, less, less_equal, log, log2, log10, 
+            copysign, cos, cosh, divide, divmod, isfinite, isinf, isnan, exp, exp2, expm1, fabs, 
+            floor, fmax, fmin, frexp, ldexp, log, log2, log10, 
             log1p, logical_and, logical_not, logical_or, logical_xor, multiply, modf, 
-            negative, nextafter, not_equal, positive, reciprocal, remainder, rint, sign, signbit, sin,
+            negative, nextafter, positive, reciprocal, remainder, rint, sign, signbit, sin,
             sinh, spacing, sqrt, square, subtract, tan, tanh, trunc#
  */
 MKL_UMATH_API
@@ -84,10 +84,6 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  *****************************************************************************
  */
 
-#define CGE(xr,xi,yr,yi) (xr > yr || (xr == yr && xi >= yi));
-#define CLE(xr,xi,yr,yi) (xr < yr || (xr == yr && xi <= yi));
-#define CGT(xr,xi,yr,yi) (xr > yr || (xr == yr && xi > yi));
-#define CLT(xr,xi,yr,yi) (xr < yr || (xr == yr && xi < yi));
 #define CEQ(xr,xi,yr,yi) (xr == yr && xi == yi);
 #define CNE(xr,xi,yr,yi) (xr != yr || xi != yi);
 
@@ -97,8 +93,8 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  */
 
 /**begin repeat1
- * # kind = absolute, add, conjugate, divide, isfinite, isinf, isnan, equal, greater, greater_equal, 
-            less, less_equal, logical_and, logical_not, logical_or, logical_xor, multiply,
+ * # kind = absolute, add, conjugate, divide, isfinite, isinf, isnan, equal,
+            logical_and, logical_not, logical_or, logical_xor, multiply,
             not_equal, reciprocal, sign, square, subtract#
  */
 MKL_UMATH_API
@@ -108,10 +104,6 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
 /**end repeat**/
 
-#undef CGE
-#undef CLE
-#undef CGT
-#undef CLT
 #undef CEQ
 #undef CNE
 

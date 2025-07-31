@@ -94,7 +94,7 @@ def test_mkl_umath(case):
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
 
-    if umath == "power":
+    if umath in ["power", "float_power"]:
         # Negative values raised to a non-integral value will return nan.
         equal_nan = True
         with np.errstate(invalid='ignore'):
@@ -115,7 +115,7 @@ def test_fall_back_umath(case):
     mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
 
-    if umath == "power":
+    if umath in ["power", "float_power"]:
         # Negative values raised to a non-integral value will return nan.
         equal_nan = True
         with np.errstate(invalid='ignore'):
@@ -147,8 +147,9 @@ def test_scalar(func, size, dtype):
 
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64, np.complex64, np.complex128])
+@pytest.mark.parametrize("func", ["power", "float_power"])
 @pytest.mark.parametrize("pow", [2.5, 3])
-def test_power_scalar(dtype, pow):
+def test_power_scalar(dtype, func, pow):
     size = 10**5
     a = np.random.uniform(-10, 10, size).astype(dtype)
     if np.issubdtype(dtype, np.complexfloating):
@@ -156,8 +157,8 @@ def test_power_scalar(dtype, pow):
 
     # testing implementation in IS_BINARY_CONT_S1 branch
     with np.errstate(invalid='ignore'):
-        mkl_res = mu.power(a, pow)
-        np_res = np.power(a, pow)
+        mkl_res = getattr(mu, func)(a, pow)
+        np_res = getattr(mu, func)(a, pow)
     assert np.allclose(mkl_res, np_res, equal_nan=True), f"Results for 'power(array, scalar)' do not match"
 
 

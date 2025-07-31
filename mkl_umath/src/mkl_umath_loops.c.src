@@ -1259,6 +1259,31 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
 #endif
 /**end repeat**/
 
+void
+mkl_umath_DOUBLE_float_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const int contig = IS_BINARY_CONT(npy_double, npy_double);
+    const int contig_scalar = IS_BINARY_CONT_S2(npy_double, npy_double);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(npy_double));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(npy_double));
+    const int large_array = dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD;
+    
+    if (contig && disjoint_or_same1 && disjoint_or_same2 && large_array) {
+        CHUNKED_VML_CALL3(vdPow, dimensions[0], npy_double, args[0], args[1], args[2]);
+        /* vdPow(dimensions[0], (npy_double*) args[0], (npy_double*) args[1], (npy_double*) args[2]); */
+    } else if (contig_scalar && disjoint_or_same1 && large_array) {
+        CHUNKED_POWX_CALL(vdPowx, dimensions[0], npy_double, args[0], args[1], args[2]);
+        /* vdPowx(dimensions[0], (npy_double*) args[0], (npy_double*) args[1], (npy_double*) args[2]); */
+    }
+    else {
+        BINARY_LOOP {
+            const npy_double in1 = *(npy_double *)ip1;
+            const npy_double in2 = *(npy_double *)ip2;
+            *((npy_double *)op1)= pow(in1, in2);
+        }
+    }
+}
+
 /*
  *****************************************************************************
  **                           COMPLEX LOOPS                                 **
@@ -1638,6 +1663,31 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     }
 }
 /**end repeat**/
+
+void
+mkl_umath_CDOUBLE_float_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const int contig = IS_BINARY_CONT(npy_cdouble, npy_cdouble);
+    const int contig_scalar = IS_BINARY_CONT_S2(npy_cdouble, npy_cdouble);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(npy_cdouble));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(npy_cdouble));
+    const int large_array = dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD;
+    
+    if (contig && disjoint_or_same1 && disjoint_or_same2 && large_array) {
+        CHUNKED_VML_CALL3(vzPow, dimensions[0], MKL_Complex16, args[0], args[1], args[2]);
+        /* vzPow(dimensions[0], (MKL_Complex16*) args[0], (MKL_Complex16*) args[1], (MKL_Complex16*) args[2]); */
+    } else if (contig_scalar && disjoint_or_same1 && large_array) {
+        CHUNKED_POWX_CALL(vzPowx, dimensions[0], MKL_Complex16, args[0], args[1], args[2]);
+        /* vzPowx(dimensions[0], (MKL_Complex16*) args[0], (MKL_Complex16*) args[1], (MKL_Complex16*) args[2]); */
+    }
+    else {
+        BINARY_LOOP {
+            const npy_cdouble in1 = *(npy_cdouble *)ip1;
+            const npy_cdouble in2 = *(npy_cdouble *)ip2;
+            *((npy_cdouble *)op1)= cpow(in1, in2);
+        }
+    }
+}
 
 #undef CEQ
 #undef CNE

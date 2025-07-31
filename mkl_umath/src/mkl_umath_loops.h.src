@@ -78,6 +78,10 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
 
 /**end repeat**/
 
+MKL_UMATH_API
+void 
+mkl_umath_DOUBLE_float_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
+
 /*
  *****************************************************************************
  **                           COMPLEX LOOPS                                 **
@@ -93,8 +97,8 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  */
 
 /**begin repeat1
- * # kind = absolute, add, arccos, arccosh, arcsin, arcsinh, arctan, arctanh, conjugate, cos, cosh, divide, equal, exp, log, log10,
-            logical_and, logical_not, logical_or, logical_xor, multiply,
+ * # kind = absolute, add, arccos, arccosh, arcsin, arcsinh, arctan, arctanh, conjugate, cos, cosh, divide,
+            equal, exp, log, log10, logical_and, logical_not, logical_or, logical_xor, multiply,
             not_equal, power, sin, sinh, sqrt, square, subtract, tan, tanh#
  */
 MKL_UMATH_API
@@ -103,6 +107,10 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 /**end repeat1**/
 
 /**end repeat**/
+
+MKL_UMATH_API
+void
+mkl_umath_CDOUBLE_float_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 
 #undef CEQ
 #undef CNE

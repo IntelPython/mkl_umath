@@ -97,6 +97,23 @@
         }                                                                       \
     } while (0)
 
+#define CHUNKED_MODF_CALL(vml_func, n, type, in1, op1, op2)                     \
+    do  {                                                                       \
+        npy_intp _n_ = (n);                                                     \
+        const npy_intp _chunk_size = MKL_INT_MAX;                               \
+        type *in1p = (type *) (in1);                                            \
+        type *op1p = (type *) (op1);                                            \
+        type *op2p = (type *) (op2);                                            \
+        while (_n_ > 0) {                                                       \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
+            vml_func((MKL_INT) _current_chunk, in1p, op1p, op2p);               \
+            _n_ -= _current_chunk;                                              \
+            in1p += _current_chunk;                                             \
+            op1p += _current_chunk;                                             \
+            op2p += _current_chunk;                                             \
+        }                                                                       \
+    } while(0)
+
 #define CHUNKED_VML_CALL3(vml_func, n, type, in1, in2, op1)                     \
     do  {                                                                       \
         npy_intp _n_ = (n);                                                     \
@@ -1055,13 +1072,25 @@ mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp 
     }
 }
 
-/* TODO: USE MKL */
 void
 mkl_umath_@TYPE@_modf(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    UNARY_LOOP_TWO_OUT {
-        const @type@ in1 = *(@type@ *)ip1;
-        *((@type@ *)op1) = modf@c@(in1, (@type@ *)op2);
+    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
+    const int disjoint_or_same3 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2 && disjoint_or_same3;
+    
+    if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
+        // order of MKL output is different than NumPy, so first pass args[2] and then args[1]
+        CHUNKED_MODF_CALL(v@s@Modf, dimensions[0], @type@, args[0], args[2], args[1]);
+        /* v@s@Modf(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+    }
+    else {
+        UNARY_LOOP_TWO_OUT {
+            const @type@ in1 = *(@type@ *)ip1;
+            *((@type@ *)op1) = modf@c@(in1, (@type@ *)op2);
+        }
     }
 }
 

@@ -60,6 +60,7 @@ fall_back_cases = {}
 for umath in umaths:
     mkl_umath = getattr(mu, umath)
     types = mkl_umath.types
+    size_mkl = 8192 + 1
     for type_ in types:
         args_str = type_[:type_.find("->")]
         if umath in ["arccos", "arcsin", "arctanh"]:
@@ -70,9 +71,12 @@ for umath in umaths:
             low = 1; high = 10
         else:
             low = -10; high = 10
-        # when size > 8192, mkl is used (if supported), 
+        
+        if umath in ["add", "subtract", "multiply"]:
+            size_mkl = 10**5 + 1
+        # when size > size_mkl, mkl is used (if supported), 
         # otherwise it falls back on numpy algorithm
-        args_mkl = get_args(args_str, 8200, low, high)
+        args_mkl = get_args(args_str, size_mkl, low, high)
         args_fall_back = get_args(args_str, 100, low, high)
         mkl_cases[(umath, type_)] = args_mkl
         fall_back_cases[(umath, type_)] = args_fall_back     
@@ -93,7 +97,7 @@ def test_mkl_umath(case):
     mkl_res = mkl_umath(*args)
     np_res = np_umath(*args)
        
-    assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"
+    assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"
 
 
 @pytest.mark.parametrize("case", test_fall_back, ids=get_id)
@@ -105,8 +109,64 @@ def test_fall_back_umath(case):
     
     mkl_res = mkl_umath(*args)
     np_res = np_umath(*args)
-       
-    assert np.allclose(mkl_res, np_res), f"Results for '{umath}': mkl_res: {mkl_res}, np_res: {np_res}"    
+
+    assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"    
+
+
+@pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide"])
+@pytest.mark.parametrize("size", [10**5 + 1, 100])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_scalar(func, size, dtype):
+    a = np.random.uniform(-10, 10, size).astype(dtype)
+
+    # testing implementation in IS_BINARY_CONT_S1 branch
+    mkl_res = getattr(mu, func)(a, 1.0)
+    np_res = getattr(np, func)(a, 1.0)
+    assert np.allclose(mkl_res, np_res), f"Results for '{func}(array, scalar)' do not match"
+
+    # testing implementation in IS_BINARY_CONT_S2 branch
+    mkl_res = getattr(mu, func)(1.0, a)
+    np_res = getattr(np, func)(1.0, a)
+    assert np.allclose(mkl_res, np_res), f"Results for '{func}(scalar, array)' do not match"
+
+
+@pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide"])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_strided(func, dtype):
+    # testing implementation in rthe final else branch
+    a = np.random.uniform(-10, 10, 100)[::2].astype(dtype)
+    b = np.random.uniform(-10, 10, 100)[::2].astype(dtype)
+
+    mkl_res = getattr(mu, func)(a, b)
+    np_res = getattr(np, func)(a, b)
+    assert np.allclose(mkl_res, np_res), f"Results for '{func}[strided]' do not match"
+
+
+@pytest.mark.parametrize("func", ["add", "subtract", "multiply", "divide", "maximum", "minimum", "fmax", "fmin"])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_reduce_float(func, dtype):
+    # testing implementation in IS_BINARY_REDUCE branch
+    a = np.random.uniform(-10, 10, 50).astype(dtype)
+    mkl_func = getattr(mu, func)
+    np_func = getattr(np, func)
+
+    mkl_res = mkl_func.reduce(a)
+    np_res = np_func.reduce(a)
+    assert np.allclose(mkl_res, np_res), f"Results for '{func}[reduce]' do not match"
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_reduce_complex(func, dtype):
+    # testing implementation in IS_BINARY_REDUCE branch
+    a = np.random.uniform(-10, 10, 100) + 1j * np.random.uniform(-10, 10, 100)
+    a = a.astype(dtype)
+    mkl_func = getattr(mu, func)
+    np_func = getattr(np, func)
+
+    mkl_res = mkl_func.reduce(a)
+    np_res = np_func.reduce(a)
+    assert np.allclose(mkl_res, np_res), f"Results for '{func}[reduce]' do not match"
 
 
 def test_patch():

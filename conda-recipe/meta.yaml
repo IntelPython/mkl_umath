@@ -33,7 +33,7 @@ requirements:
     run:
       - python
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
-      - {{ pin_compatible('numpy') }}
+      - {{ pin_compatible('numpy-base') }}
 
 test:
     requires:

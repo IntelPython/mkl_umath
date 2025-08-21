@@ -1,15 +1,14 @@
-{% set version = "0.2.0" %}
-{% set buildnumber = 0 %}
-
 package:
     name: mkl_umath
-    version: {{ version }}
+    version: {{ GIT_DESCRIBE_TAG }}
 
 source:
     path: ../
 
 build:
-    number: {{ buildnumber }}
+    number: {{ GIT_DESCRIBE_NUMBER }}
+    script_env:
+      - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:
       - blas
 
@@ -30,10 +29,12 @@ requirements:
       - mkl-devel
       - tbb-devel
       - numpy-base
+      - wheel  >=0.41.3
     run:
       - python
+      - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
-      - {{ pin_compatible('numpy') }}
+      - {{ pin_compatible('numpy-base') }}
 
 test:
     requires:
@@ -49,6 +50,15 @@ test:
 
 about:
     home: http://github.com/IntelPython/mkl_umath
-    license: BSD-3
+    license: BSD-3-Clause
     license_file: LICENSE.txt
     summary: Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)
+    description: |
+        <strong>LEGAL NOTICE: Use of this software package is subject to the
+        software license agreement (as set forth above, in the license section of
+        the installed Conda package and/or the README file) and all notices,
+        disclaimers or license terms for third party or open source software
+        included in or with the software.</strong>
+        <br/><br/>
+        EULA: <a href="https://opensource.org/licenses/BSD-3-Clause" target="_blank">BSD-3-Clause</a>
+        <br/><br/>

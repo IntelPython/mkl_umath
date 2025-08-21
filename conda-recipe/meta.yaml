@@ -50,7 +50,7 @@ test:
 
 about:
     home: http://github.com/IntelPython/mkl_umath
-    license: BSD-3
+    license: BSD-3-Clause
     license_file: LICENSE.txt
     summary: Universal functions for real and complex floating point arrays powered by Intel(R) Math Kernel Library Vector (Intel(R) MKL) and Intel(R) Short Vector Math Library (Intel(R) SVML)
     description: |

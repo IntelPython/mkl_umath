@@ -35,6 +35,7 @@ requirements:
       - wheel  >=0.41.3
     run:
       - python
+      - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
       - {{ pin_compatible('numpy-base') }}
 

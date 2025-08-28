@@ -16,3 +16,9 @@ cxx_compiler:                 # [win]
     - vs2022                  # [win]
 c_compiler:                   # [win]
     - vs2022                  # [win]
+CFLAGS:
+  - -fno-fast-math            # [linux]
+CXXFLAGS:
+  - -fno-fast-math            # [linux] 
+CL:
+  - /fp:precise               # [win]

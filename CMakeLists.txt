@@ -47,13 +47,13 @@ if(WIN32)
      "/DynamicBase "
    )
    string(CONCAT PRECISION_FLAGS
-     "/fp:fast=2 "
+     "/fp:precise "
      "/Qimf-precision=high "
      "/Qprotect-parens "
    )
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /Ox ${WARNING_FLAGS} ${SDL_FLAGS} ${PRECISION_FLAGS}")
    set(CMAKE_C_FLAGS_DEBUG
-     "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} -O0 -g1 -DDEBUG"
+     "${CMAKE_C_FLAGS_DEBUG} ${WARNING_FLAGS} ${SDL_FLAGS} /fp:precise -O0 -g1 -DDEBUG"
    )
   set(MKL_UMATH_LINKER_OPTIONS "LINKER:/NXCompat;LINKER:/DynamicBase")
 elseif(UNIX)
@@ -87,11 +87,11 @@ elseif(UNIX)
    string(CONCAT PRECISION_FLAGS
      "-fprotect-parens "
      "-fimf-precision=high "
-     "-fp-model fast=2 "
+     "-fno-fast-math "
    )
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 ${CFLAGS} ${PRECISION_FLAGS}")
    set(CMAKE_C_FLAGS_DEBUG
-     "${CMAKE_C_FLAGS_DEBUG} ${CFLAGS} -O0 -g1 -DDEBUG"
+     "${CMAKE_C_FLAGS_DEBUG} ${CFLAGS} -fno-fast-math -O0 -g1 -DDEBUG"
    )
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-incompatible-function-pointer-types ${CFLAGS}")
   set(MKL_UMATH_LINKER_OPTIONS "LINKER:-z,noexecstack,-z,relro,-z,now")

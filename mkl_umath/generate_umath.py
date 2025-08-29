@@ -532,18 +532,8 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec, out='?'),
           ),
-'maximum':
-    Ufunc(2, 1, ReorderableNone,
-          docstrings.get('numpy._core.umath.maximum'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
-'minimum':
-    Ufunc(2, 1, ReorderableNone,
-          docstrings.get('numpy._core.umath.minimum'),
-          None,
-          TD(inexactvec + cmplxvec),
-          ),
+# 'maximum':
+# 'minimum':
 # 'clip':
 'fmax':
     Ufunc(2, 1, ReorderableNone,

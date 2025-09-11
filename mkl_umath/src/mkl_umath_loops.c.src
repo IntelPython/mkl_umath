@@ -48,7 +48,7 @@
     #define USE_NUMPY_2
 #endif
 
-/* Adapated from NumPy's source code.
+/* Adapted from NumPy's source code.
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
 
 /*

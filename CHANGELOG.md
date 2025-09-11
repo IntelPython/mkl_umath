@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed 
 * Dropped support for `maximum` and `minimum` [gh-104](https://github.com/IntelPython/mkl_umath/pull/104)
+* Used a common umath loop for `log2` function to match NumPy [gh-109](https://github.com/IntelPython/mkl_umath/pull/109)
 
 ## [0.2.0] - 2025-06-03
 This release updates `mkl_umath` to be aligned with both numpy-1.26.x and numpy-2.x.x.

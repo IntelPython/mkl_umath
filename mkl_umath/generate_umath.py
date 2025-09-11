@@ -532,8 +532,8 @@ defdict = {
           None,
           TD(inexactvec + cmplxvec, out='?'),
           ),
-# 'maximum':
-# 'minimum':
+# 'maximum': no dedicated Intel(R) MKL function
+# 'minimum': no dedicated Intel(R) MKL function
 # 'clip':
 'fmax':
     Ufunc(2, 1, ReorderableNone,

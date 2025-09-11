@@ -717,12 +717,8 @@ defdict = {
           TD(inexactvec),
           ),
 # 'arctan2':
-'remainder':
-    Ufunc(2, 1, None,
-          docstrings.get('numpy._core.umath.remainder'),
-          None,
-          TD(inexactvec),
-          ),
+# 'remainder': Intel(R) MKL function v?Remainder follows C's modulo operator,
+#              but NumPy is expecting Python's one
 # 'divmod':
 # 'hypot':
 'isnan':

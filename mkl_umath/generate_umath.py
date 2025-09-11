@@ -719,7 +719,7 @@ defdict = {
 # 'arctan2':
 # 'remainder': Intel(R) MKL function v?Remainder follows C's modulo operator,
 #              but NumPy is expecting Python's one
-# 'divmod':
+# 'divmod': TODO: check if it can be added
 # 'hypot':
 'isnan':
     Ufunc(1, 1, None,

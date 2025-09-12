@@ -27,7 +27,7 @@
 
 #include "numpy/arrayobject.h"
 
-/* Adapated from NumPy's source code. 
+/* Adapted from NumPy's source code. 
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
 
 /*

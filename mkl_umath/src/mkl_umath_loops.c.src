@@ -48,7 +48,7 @@
     #define USE_NUMPY_2
 #endif
 
-/* Adapated from NumPy's source code.
+/* Adapted from NumPy's source code.
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
 
 /*
@@ -834,36 +834,6 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     }
 }
 /**end repeat1**/
-
-void
-mkl_umath_@TYPE@_remainder(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
-{
-    const int contig = IS_BINARY_CONT(@type@, @type@);
-    const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
-    const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
-    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
-    int ignore_fpstatus = 0;
-
-    if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        ignore_fpstatus = 1;
-        CHUNKED_VML_CALL3(v@s@Remainder, dimensions[0], @type@, args[0], args[1], args[2]);
-        /* v@s@Remainder(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
-    }
-    else {
-        BINARY_LOOP {
-            const @type@ in1 = *(@type@ *)ip1;
-            const @type@ in2 = *(@type@ *)ip2;
-            int invalid_cases = !npy_isnan(in1) && in2 == 0;
-            invalid_cases |= (in1 == NPY_INFINITY || in1 == -NPY_INFINITY) && !npy_isnan(in2);
-            invalid_cases |= (in1 != NPY_INFINITY && in1 != -NPY_INFINITY) && (in2 == NPY_INFINITY || in2 == -NPY_INFINITY);
-            ignore_fpstatus |= invalid_cases;
-            divmod@c@(in1, in2, (@type@ *)op1);
-        }
-    }
-    if (ignore_fpstatus) {
-        feclearexcept(FE_UNDERFLOW | FE_INVALID);
-    }
-}
 
 /**begin repeat1
  * # kind = cos, sin, tan, arccos, arcsin, arctan, cosh, sinh, tanh, arccosh, arcsinh, arctanh, fabs, floor, ceil, rint, trunc, cbrt, sqrt, expm1, log, log2, log1p, log10#

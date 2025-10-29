@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Enabled support of Python 3.14 [gh-119](https://github.com/IntelPython/mkl_umath/pull/119)
 
+### Removed
+* Dropped support for Python 3.9 [gh-125](https://github.com/IntelPython/mkl_umath/pull/125)
+
 ## [0.3.0] - 2025-10-06
 
 ### Added

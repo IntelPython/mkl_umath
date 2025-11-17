@@ -74,7 +74,7 @@ jobs:
           export CC=$CMPLR_ROOT/bin/icx
           export CFLAGS="-O1 -g -fno-fast-math -fno-omit-frame-pointer -fsanitize=address"
           export CXXFLAGS="$CFLAGS"
-          export LDFLAGS="-fsanitize=address"
+          export LDFLAGS="-fsanitize=address -shared-libsan"
           pip install . --no-build-isolation --no-deps --verbose
 
       # - name: Run tests under gdb

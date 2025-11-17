@@ -72,7 +72,7 @@ jobs:
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           echo $CMPLR_ROOT
           export CC=$CMPLR_ROOT/bin/icx
-          export CFLAGS="-O0 -g -fno-fast-math -fsanitize=address"
+          export CFLAGS="-O1 -g -fno-fast-math -fno-omit-frame-pointer -fsanitize=address"
           export CXXFLAGS="$CFLAGS"
           export LDFLAGS="-fsanitize=address"
           pip install . --no-build-isolation --no-deps --verbose

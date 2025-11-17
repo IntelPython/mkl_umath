@@ -99,4 +99,5 @@ jobs:
       - name: Run mkl_umath tests
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
+          pip install pytest
           pytest -q --pyargs mkl_umath/tests

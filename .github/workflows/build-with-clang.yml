@@ -72,9 +72,8 @@ jobs:
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           echo $CMPLR_ROOT
           export CC=$CMPLR_ROOT/bin/icx
-          export CXX=$CMPLR_ROOT/bin/icpx
-          export CFLAGS="${CFLAGS} -fno-fast-math -O2"
-          pip install -e . --no-build-isolation --no-deps --verbose
+          export CFLAGS="${CFLAGS} -fsanitize=address -fno-fast-math -O2"
+          pip install . --no-build-isolation --no-deps --verbose
 
       # - name: Run tests under gdb
       #   run: |
@@ -101,4 +100,4 @@ jobs:
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
           cd ..
-          pytest -q --pyargs mkl_umath.tests
+          python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests

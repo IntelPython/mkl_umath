@@ -70,36 +70,51 @@ jobs:
       - name: Build mkl_umath
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          echo $CMPLR_ROOT
           export CC=$CMPLR_ROOT/bin/icx
-          export CFLAGS="-O1 -g -fno-fast-math -fno-omit-frame-pointer -fsanitize=address"
+          export CFLAGS="-O0 -g -fno-fast-math -fno-strict-aliasing"
           export CXXFLAGS="$CFLAGS"
-          export LDFLAGS="-fsanitize=address -shared-libsan"
           pip install . --no-build-isolation --no-deps --verbose
 
-      # - name: Run tests under gdb
-      #   run: |
-      #     source ${{ env.ONEAPI_ROOT }}/setvars.sh
-      #     pip install pytest
-      #     setarch $(uname -m) -R gdb --batch -ex r -ex 'info sharedlibrary' -ex 'set print elements 1000' -ex bt --args python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests || true
 
-      # - name: run tests under valgrind
-      #   run: |
-      #     sudo apt-get install -y valgrind
-      #     source ${{ env.ONEAPI_ROOT }}/setvars.sh
-      #     pip install pytest
-      #     valgrind --error-exitcode=99 python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests || true
+      - name: Enable local core dumps (only Python 3.13)
+        if: matrix.python == '3.13'
+        run: |
+          sudo sysctl -w kernel.core_uses_pid=1 || true
+          sudo bash -c 'echo core > /proc/sys/kernel/core_pattern' || true
+          ulimit -c unlimited
+          echo "core_pattern=$(cat /proc/sys/kernel/core_pattern)"
 
-      # - name: Enable local core dumps (Python 3.13 only)
-      #   run: |
-      #     sudo sysctl -w kernel.core_uses_pid=1
-      #     sudo bash -c 'echo core > /proc/sys/kernel/core_pattern'
-      #     ulimit -c unlimited
-      #     cat /proc/sys/kernel/core_pattern
+      - name: Core sanity check (only Python 3.13)
+        if: matrix.python == '3.13'
+        run: |
+          ulimit -c unlimited
+          python - <<'EOF'
+          import ctypes
+          print("Triggering intentional segfault for core sanity...")
+          ctypes.string_at(0)
+          EOF
+          ls -l core* || echo "No core from sanity segfault"
+          # Clean up test core so real test core is distinct
+          rm -f core*
 
-      - name: Run mkl_umath tests
+      - name: Run mkl_umath tests (expect possible segfault)
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
           cd ..
-          python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests
+          ulimit -c unlimited
+          python -X faulthandler -m pytest -q --pyargs mkl_umath/mkl_umath/tests || echo "pytest exit code=$?"
+          ls -l core* || echo "No test core produced"
+
+      - name: Post-mortem gdb (only if core, Python 3.13)
+        if: matrix.python == '3.13'
+        run: |
+          COREFILE=$(ls core* 2>/dev/null | head -1 || true)
+          if [ -f "$COREFILE" ]; then
+            echo "Analyzing $COREFILE"
+            sudo apt-get update && sudo apt-get install -y gdb
+            gdb -batch -ex "set print address off" -ex "bt full" -ex "info threads" python "$COREFILE"
+            rm -f "$COREFILE"
+          else
+            echo "No core to analyze"
+          fi

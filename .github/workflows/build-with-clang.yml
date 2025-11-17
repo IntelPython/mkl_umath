@@ -62,19 +62,41 @@ jobs:
       - name: List oneAPI folder content
         run: ls ${{ env.ONEAPI_ROOT }}/compiler
 
+      # - name: Install gdb
+      #   run: |
+      #     sudo apt-get update --fix-missing
+      #     sudo apt-get install -y gdb
+
       - name: Build mkl_umath
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           echo $CMPLR_ROOT
           export CC=$CMPLR_ROOT/bin/icx
+          export CXX=$CMPLR_ROOT/bin/icpx
           export CFLAGS="${CFLAGS} -fno-fast-math -O2"
-          pip install . --no-build-isolation --no-deps --verbose
+          pip install -e . --no-build-isolation --no-deps --verbose
+
+      # - name: Run tests under gdb
+      #   run: |
+      #     source ${{ env.ONEAPI_ROOT }}/setvars.sh
+      #     pip install pytest
+      #     setarch $(uname -m) -R gdb --batch -ex r -ex 'info sharedlibrary' -ex 'set print elements 1000' -ex bt --args python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests || true
+
+      # - name: run tests under valgrind
+      #   run: |
+      #     sudo apt-get install -y valgrind
+      #     source ${{ env.ONEAPI_ROOT }}/setvars.sh
+      #     pip install pytest
+      #     valgrind --error-exitcode=99 python -m pytest -s -v --pyargs mkl_umath/mkl_umath/tests || true
+
+      # - name: Enable local core dumps (Python 3.13 only)
+      #   run: |
+      #     sudo sysctl -w kernel.core_uses_pid=1
+      #     sudo bash -c 'echo core > /proc/sys/kernel/core_pattern'
+      #     ulimit -c unlimited
+      #     cat /proc/sys/kernel/core_pattern
 
       - name: Run mkl_umath tests
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          pip install pytest
-          # mkl_umath cannot be installed in editable mode, we need 
-          # to change directory before importing it and running tests
-          cd ..
-          python -m pytest -sv --pyargs mkl_umath/mkl_umath/tests
+          pytest -q --pyargs mkl_umath/mkl_umath/tests

@@ -71,8 +71,9 @@ jobs:
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           echo $CMPLR_ROOT
-          export CC=$CMPLR_ROOT/bin/icx
-          export CFLAGS="${CFLAGS} -fsanitize=address -fno-fast-math -O2"
+          export CFLAGS="-O0 -g -fno-omit-frame-pointer -fno-fast-math -fno-strict-aliasing -fsanitize=address"
+          export CXXFLAGS="$CFLAGS"
+          export LDFLAGS="-fsanitize=address"
           pip install . --no-build-isolation --no-deps --verbose
 
       # - name: Run tests under gdb

@@ -75,7 +75,6 @@ jobs:
           export CXXFLAGS="$CFLAGS"
           pip install . --no-build-isolation --no-deps --verbose
 
-
       - name: Enable local core dumps (only Python 3.13)
         if: matrix.python == '3.13'
         run: |
@@ -83,19 +82,6 @@ jobs:
           sudo bash -c 'echo core > /proc/sys/kernel/core_pattern' || true
           ulimit -c unlimited
           echo "core_pattern=$(cat /proc/sys/kernel/core_pattern)"
-
-      - name: Core sanity check (only Python 3.13)
-        if: matrix.python == '3.13'
-        run: |
-          ulimit -c unlimited
-          python - <<'EOF'
-          import ctypes
-          print("Triggering intentional segfault for core sanity...")
-          ctypes.string_at(0)
-          EOF
-          ls -l core* || echo "No core from sanity segfault"
-          # Clean up test core so real test core is distinct
-          rm -f core*
 
       - name: Run mkl_umath tests (expect possible segfault)
         run: |

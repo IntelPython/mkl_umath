@@ -14,8 +14,7 @@ jobs:
     strategy:
       matrix:
         python: ["3.10", "3.11", "3.12", "3.13"]
-        # numpy_version: ["numpy'>=2'"]
-        numpy_version: ["numpy'<2.3.3'"]
+        numpy_version: ["numpy'>=2'"]
 
     env:
       ONEAPI_ROOT: /opt/intel/oneapi
@@ -57,7 +56,7 @@ jobs:
 
       - name: Install mkl_umath dependencies
         run: |
-          pip install scikit-build cmake ninja cython setuptools">=77"
+          pip install scikit-build cmake ninja cython"<3.2" setuptools">=77"
           pip install ${{ matrix.numpy_version }}
 
       - name: List oneAPI folder content

@@ -56,7 +56,7 @@ jobs:
 
       - name: Install mkl_umath dependencies
         run: |
-          pip install scikit-build cmake ninja cython"<3.2" setuptools">=77"
+          pip install scikit-build cmake ninja cython"<3.1.7" setuptools">=77"
           pip install ${{ matrix.numpy_version }}
 
       - name: List oneAPI folder content

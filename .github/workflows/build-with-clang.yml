@@ -86,7 +86,7 @@ jobs:
       - name: Run mkl_umath tests (expect possible segfault)
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          pip install pytest
+          pip install pytest"<8.4.3"
           cd ..
           ulimit -c unlimited
           python -X faulthandler -m pytest -q --pyargs mkl_umath/mkl_umath/tests || echo "pytest exit code=$?"

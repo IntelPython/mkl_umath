@@ -14,7 +14,8 @@ jobs:
     strategy:
       matrix:
         python: ["3.10", "3.11", "3.12", "3.13"]
-        numpy_version: ["numpy'>=2'"]
+        # numpy_version: ["numpy'>=2'"]
+        numpy_version: ["numpy'<2.3.5'"]
 
     env:
       ONEAPI_ROOT: /opt/intel/oneapi
@@ -92,7 +93,7 @@ jobs:
           python -X faulthandler -m pytest -q --pyargs mkl_umath/mkl_umath/tests || echo "pytest exit code=$?"
           ls -l core* || echo "No test core produced"
 
-          core_path=$(find . -maxdepth 1 -type f -name setup.* -print0 | xargs -0 -r readlink -f)
+          core_path=$(find . -maxdepth 1 -type f -name core* -print0 | xargs -0 -r readlink -f)
           if [ -z "$core_path" ]; then
             echo "No test core produced"
           else
@@ -106,7 +107,7 @@ jobs:
           if [ -f "$COREFILE" ]; then
             echo "Analyzing $COREFILE"
             sudo apt-get update && sudo apt-get install -y gdb
-            gdb -batch -ex "set print address off" -ex "bt full" -ex "info threads" python "$COREFILE"
+            gdb -batch -ex "set print address off" -ex "thread apply all bt full" -ex "info threads" python "$COREFILE"
             rm -f "$COREFILE"
           else
             echo "No core to analyze"

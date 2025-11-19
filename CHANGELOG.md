@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [dev] - YYYY-MM-DD
+## [dev] (MM/DD/YYYY)
+
+### Added
+* Enabled support of Python 3.14 [gh-119](https://github.com/IntelPython/mkl_umath/pull/119)
+
+### Removed
+* Dropped support for Python 3.9 [gh-125](https://github.com/IntelPython/mkl_umath/pull/125)
+
+## [0.3.0] - 2025-10-06
 
 ### Added
 * Added mkl implementation for floating point data-types of `exp2`, `log2`, `fabs`, `copysign`, `nextafter`, `fmax`, `fmin` and `remainder` functions [gh-81](https://github.com/IntelPython/mkl_umath/pull/81)
@@ -14,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed 
 * Dropped support for `maximum` and `minimum` [gh-104](https://github.com/IntelPython/mkl_umath/pull/104)
+* Disabled `-fast-math` by default [gh-105](https://github.com/IntelPython/mkl_umath/pull/105)
 * Used a common umath loop for `log2` function to match NumPy [gh-109](https://github.com/IntelPython/mkl_umath/pull/109)
 * Dropped support for `remainder` function [gh-110](https://github.com/IntelPython/mkl_umath/pull/110)
 

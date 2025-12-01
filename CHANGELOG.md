@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [dev] (MM/DD/YYYY)
+
+### Added
+* Enabled support of Python 3.14 [gh-119](https://github.com/IntelPython/mkl_umath/pull/119)
+
 ## [0.3.0] - 2025-10-06
 
 ### Added

@@ -73,7 +73,7 @@
 
 #define MKL_INT_MAX ((npy_intp) ((~((MKL_UINT) 0)) >> 1))
 
-#define CHUNKED_VML_CALL2(vml_func, n, type, in1, op1)                          \
+#define CHUNKED_VML_CALL2(vml_func, n, type, mkl_type, mkl_ftype, in1, op1)     \
     do {                                                                        \
         npy_intp _n_ = (n);                                                     \
         const npy_intp _chunk_size = MKL_INT_MAX;                               \
@@ -81,14 +81,15 @@
         type *op1p = (type *) (op1);                                            \
         while (_n_ > 0) {                                                       \
             npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
-            vml_func((MKL_INT) _current_chunk, in1p, op1p);                     \
+            vml_func((MKL_INT) _current_chunk, (mkl_type *)(void *) in1p,       \
+                     (mkl_ftype *)(void *) op1p);                               \
             _n_ -= _current_chunk;                                              \
             in1p += _current_chunk;                                             \
             op1p += _current_chunk;                                             \
         }                                                                       \
     } while (0)
 
-#define CHUNKED_VML_CALL3(vml_func, n, type, in1, in2, op1)                     \
+#define CHUNKED_VML_CALL3(vml_func, n, type, mkl_type, in1, in2, op1)           \
     do  {                                                                       \
         npy_intp _n_ = (n);                                                     \
         const npy_intp _chunk_size = MKL_INT_MAX;                               \
@@ -97,7 +98,8 @@
         type *op1p = (type *) (op1);                                            \
         while (_n_ > 0) {                                                       \
             npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
-            vml_func((MKL_INT) _current_chunk, in1p, in2p, op1p);               \
+            vml_func((MKL_INT) _current_chunk, (mkl_type *)(void *) in1p,       \
+                     (mkl_type *)(void *) in2p, (mkl_type *)(void *) op1p);     \
             _n_ -= _current_chunk;                                              \
             in1p += _current_chunk;                                             \
             in2p += _current_chunk;                                             \
@@ -323,7 +325,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
     if (IS_BINARY_CONT(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1 && disjoint_or_same2) {
-            CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, args[0], args[1], args[2]);
+            CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, @type@, args[0], args[1], args[2]);
             /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
         }
         else {
@@ -482,7 +484,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
 
     if (IS_BINARY_CONT(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1 && disjoint_or_same2) {
-            CHUNKED_VML_CALL3(v@s@Mul, dimensions[0], @type@, args[0], args[1], args[2]);
+            CHUNKED_VML_CALL3(v@s@Mul, dimensions[0], @type@, @type@, args[0], args[1], args[2]);
             /* v@s@Mul(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
         }
         else {
@@ -633,7 +635,7 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
 
     if (IS_BINARY_CONT(@type@, @type@)) {
         if (dimensions[0] > VML_D_THRESHOLD && disjoint_or_same1 && disjoint_or_same2) {
-            CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, args[0], args[1], args[2]);
+            CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, @type@, args[0], args[1], args[2]);
             /* v@s@Div(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
         }
         else {
@@ -784,7 +786,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, args[0], args[1], args[2]);
+        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, @type@, args[0], args[1], args[2]);
         /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
     }
     else {
@@ -822,7 +824,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, args[0], args[1], args[2]);
+        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, @type@, args[0], args[1], args[2]);
         /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
     }
     else {
@@ -849,7 +851,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD)
     {
-        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, args[0], args[1]);
+        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
     }
     else {
@@ -880,7 +882,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD)
     {
         ignore_fpstatus = 1;
-        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, args[0], args[1]);
+        CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@Exp(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
     } 
     else {
@@ -909,7 +911,7 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, args[0], args[1]);
+        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@Abs(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
     }
     else {
@@ -931,7 +933,7 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@Inv, dimensions[0], @type@, args[0], args[1]);
+        CHUNKED_VML_CALL2(v@s@Inv, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@Inv(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
     }
     else {
@@ -950,7 +952,7 @@ mkl_umath_@TYPE@_square(char **args, const npy_intp *dimensions, const npy_intp 
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@Sqr, dimensions[0], @type@, args[0], args[1]);
+        CHUNKED_VML_CALL2(v@s@Sqr, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@Sqr(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
     }
     else {
@@ -1187,7 +1189,9 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  * complex types
  * #TYPE = CFLOAT, CDOUBLE#
  * #ftype = npy_float, npy_double#
- * #type = npy_cfloat, npy_cdouble# 
+ * #type = npy_cfloat, npy_cdouble#
+ * #mkl_type = MKL_Complex8, MKL_Complex16#
+ * #mkl_ftype = float, double#
  * #c = f, #
  * #C = F, # 
  * #s = c, z#
@@ -1281,14 +1285,14 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n, npy_intp st
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int contig = IS_BINARY_CONT(@mkl_type@, @mkl_type@);
     const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
     const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
     const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
     if (can_vectorize && dimensions[0] > VML_ASM_THRESHOLD) {
-        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, args[0], args[1], args[2]);
-        /* v@s@@VML@(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+        CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, @mkl_type@, args[0], args[1], args[2]);
+        /* v@s@@VML@(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1], (@mkl_type@*) args[2]); */
     }
     else { 
         if (IS_BINARY_REDUCE && @PW@) {
@@ -1319,14 +1323,14 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 void
 mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int contig = IS_BINARY_CONT(@mkl_type@, @mkl_type@);
     const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
     const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
     const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
     if (can_vectorize && dimensions[0] > VML_ASM_THRESHOLD) {
-        CHUNKED_VML_CALL3(v@s@Mul, dimensions[0], @type@, args[0], args[1], args[2]);
-        /* v@s@Mul(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+        CHUNKED_VML_CALL3(v@s@Mul, dimensions[0], @type@, @mkl_type@, args[0], args[1], args[2]);
+        /* v@s@Mul(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1], (@mkl_type@*) args[2]); */
     }
     else {
         BINARY_LOOP {
@@ -1343,14 +1347,14 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
 void
 mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    const int contig = IS_BINARY_CONT(@type@, @type@);
+    const int contig = IS_BINARY_CONT(@mkl_type@, @mkl_type@);
     const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
     const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
     const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;    
 
     if (can_vectorize && dimensions[0] > VML_D_THRESHOLD) {
-        CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, args[0], args[1], args[2]);
-        /* v@s@Div(dimensions[0], (@type@*) args[0], (@type@*) args[1], (@type@*) args[2]); */
+        CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, @mkl_type@, args[0], args[1], args[2]);
+        /* v@s@Div(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1], (@mkl_type@*) args[2]); */
     }
     else {       
         BINARY_LOOP {
@@ -1493,13 +1497,13 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
 
 void
 mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func)) {
-    const int contig = IS_UNARY_CONT(@type@, @type@);
+    const int contig = IS_UNARY_CONT(@mkl_type@, @mkl_type@);
     const int disjoint_or_same = DISJOINT_OR_SAME(args[0], args[1], dimensions[0], sizeof(@type@));
     const int can_vectorize = contig && disjoint_or_same;
 
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
-        CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @type@, args[0], args[1]);
-        /* v@s@Conj(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+        CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @type@, @mkl_type@, @mkl_type@, args[0], args[1]);
+        /* v@s@Conj(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1]); */
     } 
     else {
         UNARY_LOOP {
@@ -1511,18 +1515,27 @@ mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_in
     }
 }
 
+/**begin repeat
+ * complex types
+ * #TYPE = CFLOAT, CDOUBLE#
+ * #ftype = npy_float, npy_double#
+ * #type = npy_cfloat, npy_cdouble#
+ * #mkl_ftype = float, double#
+ * #mkl_type = MKL_Complex8, MKL_Complex16#
+
+ */
 void
 mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
-    const int contig = IS_UNARY_CONT(@type@, @ftype@);
+    const int contig = IS_UNARY_CONT(@mkl_type@, @mkl_ftype@);
     const int disjoint_or_same = DISJOINT_OR_SAME_TWO_DTYPES(args[0], args[1], dimensions[0], sizeof(@type@), sizeof(@ftype@));
     const int can_vectorize = contig && disjoint_or_same;
     int ignore_fpstatus = 0;
     
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
         ignore_fpstatus = 1;
-        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, args[0], args[1]);
-        /* v@s@Abs(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
+        CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, @mkl_type@, @mkl_ftype@, args[0], args[1]);
+        /* v@s@Abs(dimensions[0], (@mkl_type@*) args[0], (@mkl_ftype@*) args[1]); */
     } 
     else {
         UNARY_LOOP {

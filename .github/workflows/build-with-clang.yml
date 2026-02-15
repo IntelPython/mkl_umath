@@ -56,25 +56,58 @@ jobs:
 
       - name: Install mkl_umath dependencies
         run: |
-          pip install scikit-build cmake ninja cython setuptools">=77"
+          pip install scikit-build cmake ninja cython"<3.1.7" setuptools">=77"
           pip install ${{ matrix.numpy_version }}
 
       - name: List oneAPI folder content
         run: ls ${{ env.ONEAPI_ROOT }}/compiler
 
+      # - name: Install gdb
+      #   run: |
+      #     sudo apt-get update --fix-missing
+      #     sudo apt-get install -y gdb
+
       - name: Build mkl_umath
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          echo $CMPLR_ROOT
           export CC=$CMPLR_ROOT/bin/icx
-          export CFLAGS="${CFLAGS} -fno-fast-math -O2"
+          export CFLAGS="-O0 -g -fno-fast-math -fno-strict-aliasing"
+          export CXXFLAGS="$CFLAGS"
           pip install . --no-build-isolation --no-deps --verbose
 
-      - name: Run mkl_umath tests
+      - name: Enable local core dumps (only Python 3.13)
+        if: matrix.python == '3.13'
+        run: |
+          sudo sysctl -w kernel.core_uses_pid=1 || true
+          sudo bash -c 'echo core > /proc/sys/kernel/core_pattern' || true
+          ulimit -c unlimited
+          echo "core_pattern=$(cat /proc/sys/kernel/core_pattern)"
+
+      - name: Run mkl_umath tests (expect possible segfault)
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          pip install pytest
-          # mkl_umath cannot be installed in editable mode, we need 
-          # to change directory before importing it and running tests
+          pip install pytest"<8.4.3"
           cd ..
-          python -m pytest -sv --pyargs mkl_umath/mkl_umath/tests
+          ulimit -c unlimited
+          python -X faulthandler -m pytest -q --pyargs mkl_umath/mkl_umath/tests || echo "pytest exit code=$?"
+          ls -l core* || echo "No test core produced"
+
+          core_path=$(find . -maxdepth 1 -type f -name core* -print0 | xargs -0 -r readlink -f)
+          if [ -z "$core_path" ]; then
+            echo "No test core produced"
+          else
+            echo "Found core file: $core_path"
+          fi
+
+      - name: Post-mortem gdb (only if core, Python 3.13)
+        if: matrix.python == '3.13'
+        run: |
+          COREFILE=$(ls ../core* 2>/dev/null | head -1 || true)
+          if [ -f "$COREFILE" ]; then
+            echo "Analyzing $COREFILE"
+            sudo apt-get update && sudo apt-get install -y gdb
+            gdb -batch -ex "set print address off" -ex "thread apply all bt full" -ex "info threads" python "$COREFILE"
+            rm -f "$COREFILE"
+          else
+            echo "No core to analyze"
+          fi

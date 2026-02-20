@@ -67,6 +67,17 @@ mkl_umath.restore()       # Restore original NumPy loops
 - **Precision flags:** fp:precise, fimf-precision=high, fprotect-parens (non-negotiable)
 - **Security:** Stack protection, FORTIFY_SOURCE, NX/DEP enforced in CMake
 
+
+## Common pitfalls
+- **NumPy source:** Requires Intel-optimized NumPy from Intel channel (`software.repos.intel.com/python/conda`). PyPI NumPy may cause runtime failures or incorrect results.
+- **Precision flags:** `fp:precise`, `fimf-precision=high` enforce IEEE 754 compliance. Removing them breaks numerical correctness in scientific computing.
+- **Patching order:** If using multiple Intel patches (e.g., `mkl_random` + `mkl_umath`), apply `mkl_umath` last. Verify with `is_patched()` after each.
+- **Compiler:** Intel `icx` is the supported compiler. `build-with-clang.yml` validates compatibility, but icx is recommended for production.
+- **Build validation:**
+  - After setup: `which icx` → should point to conda env or oneAPI location
+  - Verify: `echo $MKLROOT` → should be set
+  - Check: `python -c "import numpy; print(numpy.__version__)"` → confirm Intel NumPy
+
 ## Notes
 - `_vendored/` contains vendored NumPy code generation utilities
 - Version in `mkl_umath/_version.py` (dynamic via setuptools)

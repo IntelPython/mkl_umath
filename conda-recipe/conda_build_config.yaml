@@ -19,6 +19,6 @@ c_compiler:                   # [win]
 CFLAGS:
   - -fno-fast-math            # [linux]
 CXXFLAGS:
-  - -fno-fast-math            # [linux] 
+  - -fno-fast-math            # [linux]
 CL:
   - /fp:precise               # [win]

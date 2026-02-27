@@ -15,19 +15,20 @@
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include "numpy/arrayobject.h"
 
-/* Adapted from NumPy's source code. 
+/* Adapted from NumPy's source code.
  * https://github.com/numpy/numpy/blob/main/LICENSE.txt */
 
 /*
@@ -38,17 +39,17 @@
  * blocking. See the 'npy_blocked_end' function documentation below for an
  * example of how this function is used.
  */
-static NPY_INLINE npy_intp
-npy_aligned_block_offset(const void * addr, const npy_uintp esize,
-                         const npy_uintp alignment, const npy_uintp nvals)
-{
-    npy_uintp offset, peel;
+static NPY_INLINE npy_intp npy_aligned_block_offset(const void *addr,
+                                                    const npy_uintp esize,
+                                                    const npy_uintp alignment,
+                                                    const npy_uintp nvals) {
+  npy_uintp offset, peel;
 
-    offset = (npy_uintp)addr & (alignment - 1);
-    peel = offset ? (alignment - offset) / esize : 0;
-    peel = (peel <= nvals) ? peel : nvals;
-    assert(peel <= NPY_MAX_INTP);
-    return (npy_intp)peel;
+  offset = (npy_uintp)addr & (alignment - 1);
+  peel = offset ? (alignment - offset) / esize : 0;
+  peel = (peel <= nvals) ? peel : nvals;
+  assert(peel <= NPY_MAX_INTP);
+  return (npy_intp)peel;
 }
 
 /*
@@ -71,15 +72,14 @@ npy_aligned_block_offset(const void * addr, const npy_uintp esize,
  * for(; i < n; i++)
  *   <scalar-op>
  */
-static NPY_INLINE npy_intp
-npy_blocked_end(const npy_uintp peel, const npy_uintp esize,
-                const npy_uintp vsz, const npy_uintp nvals)
-{
-    npy_uintp ndiff = nvals - peel;
-    npy_uintp res = (ndiff - ndiff % (vsz / esize));
+static NPY_INLINE npy_intp npy_blocked_end(const npy_uintp peel,
+                                           const npy_uintp esize,
+                                           const npy_uintp vsz,
+                                           const npy_uintp nvals) {
+  npy_uintp ndiff = nvals - peel;
+  npy_uintp res = (ndiff - ndiff % (vsz / esize));
 
-    assert(nvals >= peel);
-    assert(res <= NPY_MAX_INTP);
-    return (npy_intp)(res);
+  assert(nvals >= peel);
+  assert(res <= NPY_MAX_INTP);
+  return (npy_intp)(res);
 }
-

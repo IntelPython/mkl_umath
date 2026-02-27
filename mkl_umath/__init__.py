@@ -23,16 +23,16 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-'''
-Implementation of Numpy universal math functions using Intel(R) MKL and Intel(R) C compiler runtime.
-'''
+"""
+Implementation of Numpy universal math functions using Intel(R) MKL and
+Intel(R) C compiler runtime.
+"""
 
 from . import _init_helper
-
+from ._patch import is_patched, mkl_umath, restore, use_in_numpy
+from ._ufuncs import *
 from ._version import __version__
 
-from ._ufuncs import *
-
-from ._patch import mkl_umath, use_in_numpy, restore, is_patched
+# TODO: add __all__ with public API and remove star imports
 
 del _init_helper

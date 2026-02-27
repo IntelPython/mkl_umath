@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Enabled support of Python 3.13 [gh-101](https://github.com/IntelPython/mkl_umath/pull/101)
 * Added mkl implementation for complex data-types of `add`, `subtract`, `multiply` and `divide` functions [gh-102](https://github.com/IntelPython/mkl_umath/pull/102)
 
-### Changed 
+### Changed
 * Dropped support for `maximum` and `minimum` [gh-104](https://github.com/IntelPython/mkl_umath/pull/104)
 * Disabled `-fast-math` by default [gh-105](https://github.com/IntelPython/mkl_umath/pull/105)
 * Used a common umath loop for `log2` function to match NumPy [gh-109](https://github.com/IntelPython/mkl_umath/pull/109)
@@ -37,7 +37,7 @@ This release updates `mkl_umath` to be aligned with both numpy-1.26.x and numpy-
 * The definition of `sign` function for complex floating point data types is updated to match numpy-2.x.x [gh-65](https://github.com/IntelPython/mkl_umath/pull/65)
 * `ldexp` function is updated to allow `int64` explicitly similar to numpy-2.x.x behavior [gh-73](https://github.com/IntelPython/mkl_umath/pull/73)
 
-### Changed 
+### Changed
 * Migrated from `setup.py` to `pyproject toml` [gh-63](https://github.com/IntelPython/mkl_umath/pull/63)
 * Changed to dynamic linking and added interface and threading layers [gh-72](https://github.com/IntelPython/mkl_umath/pull/72)
 

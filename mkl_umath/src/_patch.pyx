@@ -29,9 +29,10 @@
 import mkl_umath._ufuncs as mu
 
 cimport numpy as cnp
+
 import numpy as np
 
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport free, malloc
 
 cnp.import_umath()
 
@@ -60,7 +61,9 @@ cdef class patch:
             mkl_umath = getattr(mu, umath)
             self.functions_count += mkl_umath.ntypes
 
-        self.functions = <function_info *> malloc(self.functions_count * sizeof(function_info))
+        self.functions = <function_info *> malloc(
+            self.functions_count * sizeof(function_info)
+        )
 
         func_number = 0
         for umath in umaths:
@@ -73,22 +76,38 @@ cdef class patch:
                 while oi < c_orig_umath.ntypes:
                     found = True
                     for i in range(c_patch_umath.nargs):
-                        if c_patch_umath.types[pi * nargs + i] != c_orig_umath.types[oi * nargs + i]:
+                        if (
+                            c_patch_umath.types[pi * nargs + i]
+                            != c_orig_umath.types[oi * nargs + i]
+                        ):
                             found = False
                             break
-                    if found == True:
+                    if found is True:
                         break
                     oi = oi + 1
                 if oi < c_orig_umath.ntypes:
-                    self.functions[func_number].original_function = c_orig_umath.functions[oi]
-                    self.functions[func_number].patch_function = c_patch_umath.functions[pi]
-                    self.functions[func_number].signature = <int *> malloc(nargs * sizeof(int))
+                    self.functions[func_number].original_function = (
+                        c_orig_umath.functions[oi]
+                    )
+                    self.functions[func_number].patch_function = (
+                        c_patch_umath.functions[pi]
+                    )
+                    self.functions[func_number].signature = (
+                        <int *> malloc(nargs * sizeof(int))
+                    )
                     for i in range(nargs):
-                        self.functions[func_number].signature[i] = c_patch_umath.types[pi * nargs + i]
-                    self.functions_dict[(umath, patch_umath.types[pi])] = func_number
+                        self.functions[func_number].signature[i] = (
+                            c_patch_umath.types[pi * nargs + i]
+                        )
+                    self.functions_dict[(umath, patch_umath.types[pi])] = (
+                        func_number
+                    )
                     func_number = func_number + 1
                 else:
-                    raise RuntimeError("Unable to find original function for: " + umath + " " + patch_umath.types[pi])
+                    raise RuntimeError(
+                        f"Unable to find original function for: {umath} "
+                        f"{patch_umath.types[pi]}"
+                    )
 
     def __dealloc__(self):
         for i in range(self.functions_count):
@@ -96,7 +115,7 @@ cdef class patch:
         free(self.functions)
 
     def do_patch(self):
-        cdef int res
+        cdef int _res
         cdef cnp.PyUFuncGenericFunction temp
         cdef cnp.PyUFuncGenericFunction function
         cdef int* signature
@@ -106,12 +125,15 @@ cdef class patch:
             index = self.functions_dict[func]
             function = self.functions[index].patch_function
             signature = self.functions[index].signature
-            res = cnp.PyUFunc_ReplaceLoopBySignature(<cnp.ufunc>np_umath, function, signature, &temp)
+            # TODO: check res, 0 means success, -1 means error
+            _res = cnp.PyUFunc_ReplaceLoopBySignature(
+                <cnp.ufunc>np_umath, function, signature, &temp
+            )
 
         self._is_patched = True
 
     def do_unpatch(self):
-        cdef int res
+        cdef int _res
         cdef cnp.PyUFuncGenericFunction temp
         cdef cnp.PyUFuncGenericFunction function
         cdef int* signature
@@ -121,7 +143,10 @@ cdef class patch:
             index = self.functions_dict[func]
             function = self.functions[index].original_function
             signature = self.functions[index].signature
-            res = cnp.PyUFunc_ReplaceLoopBySignature(np_umath, function, signature, &temp)
+            # TODO: check res, 0 means success, -1 means error
+            _res = cnp.PyUFunc_ReplaceLoopBySignature(
+                <cnp.ufunc>np_umath, function, signature, &temp
+            )
 
         self._is_patched = False
 
@@ -129,11 +154,12 @@ cdef class patch:
         return self._is_patched
 
 from threading import local as threading_local
+
 _tls = threading_local()
 
 
 def _is_tls_initialized():
-    return (getattr(_tls, 'initialized', None) is not None) and (_tls.initialized == True)
+    return getattr(_tls, "initialized", False)
 
 
 def _initialize_tls():
@@ -158,7 +184,7 @@ def use_in_numpy():
     >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
     # False
-    
+
     """
     if not _is_tls_initialized():
         _initialize_tls()
@@ -181,7 +207,7 @@ def restore():
 
     >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
-    # False   
+    # False
 
     """
     if not _is_tls_initialized():
@@ -205,18 +231,20 @@ def is_patched():
 
     >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
-    # False 
+    # False
 
     """
     if not _is_tls_initialized():
         _initialize_tls()
     return _tls.patch.is_patched()
 
+
 from contextlib import ContextDecorator
+
 
 class mkl_umath(ContextDecorator):
     """
-    Context manager and decorator to temporarily patch NumPy ufuncs 
+    Context manager and decorator to temporarily patch NumPy ufuncs
     with MKL-based implementations.
 
     Examples
@@ -230,7 +258,7 @@ class mkl_umath(ContextDecorator):
     # True
 
     >>> mkl_umath.is_patched()
-    # False  
+    # False
 
     """
     def __enter__(self):

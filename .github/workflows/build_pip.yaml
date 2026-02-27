@@ -55,7 +55,7 @@ jobs:
           CC=icx pip install . --no-build-isolation --no-deps --verbose
           pip install --no-cache-dir pytest
           pip list
-          # mkl_umath cannot be installed in editable mode, we need 
+          # mkl_umath cannot be installed in editable mode, we need
           # to change directory before importing it and running tests
           cd ..
           python -m pytest -v mkl_umath/mkl_umath/tests

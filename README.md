@@ -9,7 +9,7 @@ powered version of loops used in the patched version of [NumPy](https://numpy.or
 
 Patches were factored out per community feedback ([NEP-36](https://numpy.org/neps/nep-0036-fair-play.html)).
 
-`mkl_umath` started as a part of Intel® Distribution for Python* optimizations to NumPy, and is now being released 
+`mkl_umath` started as a part of Intel® Distribution for Python* optimizations to NumPy, and is now being released
 as a stand-alone package. It can be installed into conda environment using:
 
 ```

@@ -3,14 +3,14 @@
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
-#     * Redistributions of source code must retain the above copyright notice,
-#       this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of Intel Corporation nor the names of its contributors
-#       may be used to endorse or promote products derived from this software
-#       without specific prior written permission.
+# * Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+# * Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+# * Neither the name of Intel Corporation nor the names of its contributors
+# may be used to endorse or promote products derived from this software
+# without specific prior written permission.
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -26,36 +26,36 @@
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-    "cmake",
-    "ninja",
-    "scikit-build",
-    "setuptools>=77",
-    "Cython",
-    "numpy"
+  "cmake",
+  "ninja",
+  "scikit-build",
+  "setuptools>=77",
+  "Cython",
+  "numpy"
 ]
 
 [project]
 authors = [
-    {name = "Intel Corporation", email = "scripting@intel.com"}
+  {name = "Intel Corporation", email = "scripting@intel.com"}
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Developers",
-    "Programming Language :: C",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
-    "Programming Language :: Python :: Implementation :: CPython",
-    "Topic :: Software Development",
-    "Topic :: Scientific/Engineering",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Operating System :: Unix"
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Programming Language :: C",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Software Development",
+  "Topic :: Scientific/Engineering",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX",
+  "Operating System :: Unix"
 ]
 dependencies = ["numpy >=1.26.4", "mkl-service"]
 description = "Intel (R) MKL-based universal functions for NumPy arrays"
@@ -66,13 +66,33 @@ name = "mkl_umath"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10,<3.15"
 
-
 [project.optional-dependencies]
 test = ["pytest"]
 
 [project.urls]
 Download = "http://github.com/IntelPython/mkl_umath"
 Homepage = "http://github.com/IntelPython/mkl_umath"
+
+[tool.black]
+exclude = "_vendored/conv_template.py"
+line-length = 80
+
+[tool.cython-lint]
+ignore = ['E722']  # do not use bare 'except'
+max-line-length = 80
+
+[tool.isort]
+ensure_newline_before_comments = true
+force_grid_wrap = 0
+include_trailing_comma = true
+line_length = 80
+multi_line_output = 3
+skip = ["_vendored/conv_template.py"]
+use_parentheses = true
+
+[tool.setuptools]
+include-package-data = true
+packages = ["mkl_umath"]
 
 [tool.setuptools.dynamic]
 version = {attr = "mkl_umath._version.__version__"}

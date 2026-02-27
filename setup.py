@@ -25,23 +25,22 @@
 
 import importlib.machinery
 import sys
-from setuptools.modified import newer
 from os import makedirs
-from os.path import join, exists, dirname
+from os.path import dirname, exists, join
 
 import skbuild
+from setuptools.modified import newer
 
 sys.path.insert(0, dirname(__file__))  # Ensures local imports work
-from _vendored.conv_template import process_file as process_c_file
+from _vendored.conv_template import process_file as process_c_file  # noqa: E402
 
 
 # TODO: rewrite generation in CMake, see NumPy meson implementation
 # https://github.com/numpy/numpy/blob/c6fb3357541fd8cf6e4faeaeda3b1a9065da0520/numpy/_core/meson.build#L623
 def load_module(name, fn):
-    """
-    Credit: numpy.compat.npy_load_module
-    """
-    return importlib.machinery.SourceFileLoader(name, fn).load_module()
+    """Credit: numpy.compat.npy_load_module"""
+    return importlib.machinery.SourceFileLoader(name, fn).load_module(name)
+
 
 def separator_join(sep, strs):
     """
@@ -53,26 +52,32 @@ def separator_join(sep, strs):
     assert isinstance(sep, str)
     return sep.join([si for si in strs if si])
 
-pdir = join(dirname(__file__), 'mkl_umath')
-wdir = join(pdir, 'src')
 
-generate_umath_py = join(pdir, 'generate_umath.py')
-n = separator_join('_', ('mkl_umath', 'generate_umath'))
+pdir = join(dirname(__file__), "mkl_umath")
+wdir = join(pdir, "src")
+
+generate_umath_py = join(pdir, "generate_umath.py")
+n = separator_join("_", ("mkl_umath", "generate_umath"))
 generate_umath = load_module(n, generate_umath_py)
 del n
 
 
 def generate_umath_c(build_dir):
-    target_dir = join(build_dir, 'src')
-    target = join(target_dir, '__umath_generated.c')
+    target_dir = join(build_dir, "src")
+    target = join(target_dir, "__umath_generated.c")
     if not exists(target_dir):
-        print("Folder {} was expected to exist, but creating".format(target_dir))
+        print(
+            "Folder {} was expected to exist, but creating".format(target_dir)
+        )
         makedirs(target_dir)
     script = generate_umath_py
     if newer(script, target):
-        with open(target, 'w') as f:
-            f.write(generate_umath.make_code(generate_umath.defdict,
-                                             generate_umath.__file__))
+        with open(target, "w") as f:
+            f.write(
+                generate_umath.make_code(
+                    generate_umath.defdict, generate_umath.__file__
+                )
+            )
     return []
 
 
@@ -82,14 +87,14 @@ loops_header_templ = join(wdir, "mkl_umath_loops.h.src")
 processed_loops_h_fn = join(wdir, "mkl_umath_loops.h")
 loops_header_processed = process_c_file(loops_header_templ)
 
-with open(processed_loops_h_fn, 'w') as fid:
+with open(processed_loops_h_fn, "w") as fid:
     fid.write(loops_header_processed)
 
 loops_src_templ = join(wdir, "mkl_umath_loops.c.src")
 processed_loops_src_fn = join(wdir, "mkl_umath_loops.c")
 loops_src_processed = process_c_file(loops_src_templ)
 
-with open(processed_loops_src_fn, 'w') as fid:
+with open(processed_loops_src_fn, "w") as fid:
     fid.write(loops_src_processed)
 
 

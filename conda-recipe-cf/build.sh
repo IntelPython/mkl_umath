@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # This is necessary to help DPC++ find Intel libraries such as SVML, IRNG, etc in build prefix
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BUILD_PREFIX}/lib"
@@ -20,13 +21,6 @@ SKBUILD_ARGS=(
 )
 
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then
-    # Install packages and assemble wheel package from built bits
-    WHEELS_BUILD_ARGS=(
-        "-p" "manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64"
-    )
-    ${PYTHON} setup.py install bdist_wheel "${WHEELS_BUILD_ARGS[@]}" "${SKBUILD_ARGS[@]}"
+    mkdir -p "${WHEELS_OUTPUT_FOLDER}"
     cp dist/mkl_umath*.whl "${WHEELS_OUTPUT_FOLDER}"
-else
-    # Perform regular install
-    ${PYTHON} setup.py install "${SKBUILD_ARGS[@]}"
 fi

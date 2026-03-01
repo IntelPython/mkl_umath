@@ -24,12 +24,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "mesonpy"
 requires = [
-  "cmake",
+  "meson-python>=0.13.0",
   "ninja",
-  "scikit-build",
-  "setuptools>=77",
   "Cython",
   "numpy"
 ]
@@ -89,10 +87,3 @@ line_length = 80
 multi_line_output = 3
 skip = ["_vendored/conv_template.py"]
 use_parentheses = true
-
-[tool.setuptools]
-include-package-data = true
-packages = ["mkl_umath"]
-
-[tool.setuptools.dynamic]
-version = {attr = "mkl_umath._version.__version__"}

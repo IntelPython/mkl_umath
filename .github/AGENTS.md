@@ -3,7 +3,7 @@
 CI/CD workflows, automation, security scanning, and package distribution.
 
 ## Workflows
-- **conda-package.yml** — main build/test pipeline (Linux/Windows, Python 3.10-3.13)
+- **conda-package.yml** — main build/test pipeline (Linux/Windows, Python 3.10-3.14)
 - **build_pip.yaml** — PyPI wheel builds for Intel channel
 - **build-with-clang.yml** — Clang compatibility validation
 - **openssf-scorecard.yml** — security posture scanning

@@ -59,7 +59,7 @@ dependencies = ["numpy >=1.26.4", "mkl"]
 description = "Intel (R) MKL-based universal functions for NumPy arrays"
 dynamic = ["version"]
 keywords = ["mkl_umath"]
-license = "BSD-3-Clause"
+license = {text = "BSD-3-Clause"}
 name = "mkl_umath"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10,<3.15"

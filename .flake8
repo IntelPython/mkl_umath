@@ -28,7 +28,9 @@ per-file-ignores =
     mkl_umath/ufunc_docstrings_numpy1.py: E501
     mkl_umath/ufunc_docstrings_numpy2.py: E501
 
-exclude = _vendored/conv_template.py
+exclude =
+    _vendored/conv_template.py
+    _vendored/process_src_template.py
 
 filename = *.py, *.pyx, *.pxi, *.pxd
 max_line_length = 80

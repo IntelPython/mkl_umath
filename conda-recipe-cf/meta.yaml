@@ -27,6 +27,8 @@ requirements:
       - git
       - cython
       - python
+      - python-gil     # [py>=314]
+      - python-build
       - mkl-devel
       - numpy
     run:

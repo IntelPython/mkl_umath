@@ -27,6 +27,7 @@ requirements:
       - cython
       - python
       - python-gil     # [py>=314]
+      - python-build
       - mkl-devel
       - tbb-devel
       - numpy-base

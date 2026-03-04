@@ -12,7 +12,7 @@ export ICXCFG
 read -r GLIBC_MAJOR GLIBC_MINOR <<< "$(conda list '^sysroot_linux-64$' \
     | tail -n 1 | awk '{print $2}' | grep -oP '\d+' | head -n 2 | tr '\n' ' ')"
 
-if [-d "build"]; then
+if [ -d "build" ]; then
     rm -rf build
 fi
 
@@ -30,7 +30,7 @@ ${PYTHON} -m pip install dist/mkl_umath*.whl \
     --no-deps \
     --only-binary :all: \
     --no-index \
-    --prefix "${PREFIX}"
+    --prefix "${PREFIX}" \
     -vv
 
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then

@@ -152,3 +152,8 @@ py.install_sources(
     ],
     subdir: 'mkl_umath'
 )
+
+install_subdir(
+    'mkl_umath/tests',
+    install_dir: py.get_install_dir() / 'mkl_umath'
+)

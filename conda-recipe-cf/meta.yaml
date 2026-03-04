@@ -28,6 +28,7 @@ requirements:
       - cython
       - python
       - python-gil     # [py>=314]
+      - python-build
       - mkl-devel
       - numpy  # [not win]
       - numpy <2.4  # [win]

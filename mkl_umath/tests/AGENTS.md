@@ -18,7 +18,7 @@ pytest mkl_umath/tests/
 
 ## CI integration
 - Tests run in conda-package.yml workflow
-- Separate test jobs per Python version (3.10-3.13)
+- Separate test jobs per Python version (3.10-3.14)
 - Linux + Windows platforms
 
 ## Adding tests

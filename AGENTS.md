@@ -35,7 +35,7 @@ CC=icx pip install --no-build-isolation --no-deps .
 
 ## CI/CD
 - **Platforms:** Linux, Windows
-- **Python versions:** 3.10, 3.11, 3.12, 3.13
+- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
 - **Workflows:** `.github/workflows/`
   - `conda-package.yml` — main build/test pipeline
   - `build_pip.yaml` — PyPI wheel builds

@@ -72,7 +72,8 @@ Download = "http://github.com/IntelPython/mkl_umath"
 Homepage = "http://github.com/IntelPython/mkl_umath"
 
 [tool.black]
-extend-exclude = "_vendored/"
+extend-exclude = "(^|/)_vendored/"
+force-exclude = "(^|/)_vendored/"
 line-length = 80
 
 [tool.cython-lint]

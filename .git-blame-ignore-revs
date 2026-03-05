@@ -5,3 +5,6 @@
 
 # added more linters
 3a3df3fae1574558973e3829368dc8a7b9c76ad9
+
+# fix linting in conda-package-cf
+f94f488ce98e06e5ffab1ce02ecd525b1680726c

@@ -35,6 +35,7 @@ requirements:
       # TODO: remove win numpy pin when numpy 2.5 is released, see https://github.com/numpy/numpy/issues/31337
       - llvm-openmp
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]

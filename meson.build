@@ -1,6 +1,6 @@
 project(
     'mkl_umath',
-    ['c', 'cython'],
+    ['c', 'cpp', 'cython'],
     version: run_command(
         'python', '-c',
         'import os; exec(open("mkl_umath/_version.py").read()); print(__version__)',
@@ -42,10 +42,13 @@ endif
 
 if cc.get_argument_syntax() == 'msvc'
     c_args += [
-        '/Ox', '/GS', '/DynamicBase',
-        '/fp:precise', 'Qimf-precision=high', '/Qprotect-parens'
+        '/Ox', '/GS', '/DynamicBase', '/fp:precise'
     ]
     link_args = ['/NXCompat', '/DynamicBase']
+
+    if cc.get_id().startswith('intel')
+        c_args += ['Qimf-precision=high', '/Qprotect-parens']
+    endif
 elif cc.get_argument_syntax() == 'gcc'
     c_args += [
         '-O3', '-Wall', '-Wextra', '-Winit-self', '-Wunused-function',
@@ -53,11 +56,13 @@ elif cc.get_argument_syntax() == 'gcc'
         '-Wno-unused-parameter', '-fdiagnostics-color=auto',
         '-fstack-protector', '-fstack-protector-all', '-fpic', '-fPIC',
         '-D_FORTIFY_SOURCE=2', '-Wformat', '-Wformat-security',
-        '-fno-delete-null-pointer-checks', '-fwrapv',
-        '-fprotect-parens', '-fimf-precision=high', '-fno-fast-math',
+        '-fno-delete-null-pointer-checks', '-fwrapv', '-fno-fast-math',
         '-Wno-incompatible-function-pointer-types'
     ]
     link_args += ['-Wl,-z,noexecstack', '-Wl,-z,relro', '-Wl,-z,now']
+    if cc.get_id().startswith('intel')
+        c_args += ['-fimf-precision=high', '-fprotect-parens']
+    endif
 else
     error('Unsupported system.')
 endif

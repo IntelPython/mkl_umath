@@ -1,4 +1,4 @@
-name: Build project with IntelLLVM clang compiler
+name: Build project with standard clang compiler
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 permissions: read-all
 
 jobs:
-  build-with-intel-clang:
+  build-with-standard-clang:
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,7 +17,7 @@ jobs:
         numpy_version: ["numpy'>=2'"]
 
     env:
-      ONEAPI_ROOT: /opt/intel/oneapi
+      COMPILER_ROOT: /usr/bin
 
     defaults:
       run:
@@ -25,22 +25,13 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@d07a454dad7609a92316b57b23c9ccfd4f59af66 # 0.13.1
+        uses: styfle/cancel-workflow-action@3155a141048f8f89c06b4cdae32e7853e97536bc # 0.13.0
         with:
           access_token: ${{ github.token }}
 
-      - name: Add Intel repository
+      - name: Install Dependencies
         run: |
-          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
-          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
-          sudo apt-get update
-
-      - name: Install Intel OneAPI
-        run: |
-          sudo apt-get install intel-oneapi-compiler-dpcpp-cpp
-          sudo apt-get install intel-oneapi-mkl-devel
+          sudo apt-get update && sudo apt-get install -y clang
 
       - name: Setup Python
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
@@ -55,24 +46,18 @@ jobs:
 
       - name: Install mkl_umath dependencies
         run: |
-          pip install meson-python ninja cython mkl-service
+          pip install meson-python ninja cython mkl-devel
           pip install ${{ matrix.numpy_version }}
-
-      - name: List oneAPI folder content
-        run: ls ${{ env.ONEAPI_ROOT }}/compiler
 
       - name: Build mkl_umath
         run: |
-          source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          echo "$CMPLR_ROOT"
-          export CC="$CMPLR_ROOT/bin/icx"
+          export CC=${{ env.COMPILER_ROOT }}/clang
           pip install . --no-build-isolation --no-deps --verbose
 
       - name: Run mkl_umath tests
         run: |
-          source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
           # mkl_umath cannot be installed in editable mode, we need
           # to change directory before importing it and running tests
           cd ..
-          python -m pytest -sv --pyargs mkl_umath
+          python -m pytest -sv --pyargs mkl_umath/mkl_umath/tests

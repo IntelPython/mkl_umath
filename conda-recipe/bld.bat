@@ -6,7 +6,7 @@ set "CC=icx"
 set "CXX=icx"
 
 %PYTHON% -m build -w -n -x
-if %ERRORLEVEL% neq "0" exit 1
+if %ERRORLEVEL% neq 0 exit 1
 
 for /f %%f in ('dir /b /S .\dist') do (
     %PYTHON% -m pip install %%f ^

@@ -32,6 +32,7 @@ requirements:
       - tbb-devel
       - numpy
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]

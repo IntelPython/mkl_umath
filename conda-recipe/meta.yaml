@@ -31,6 +31,7 @@ requirements:
       - mkl-devel
       - numpy-base
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]

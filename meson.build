@@ -47,7 +47,9 @@ if cc.get_argument_syntax() == 'msvc'
     link_args = ['/NXCompat', '/DynamicBase']
 
     if cc.get_id().startswith('intel')
-        c_args += ['Qimf-precision=high', '/Qprotect-parens']
+        c_args += [
+            '/Qimf-precision=high', '/Qprotect-parens', '/clang:-fveclib=SVML'
+        ]
     endif
 elif cc.get_argument_syntax() == 'gcc'
     c_args += [
@@ -61,14 +63,14 @@ elif cc.get_argument_syntax() == 'gcc'
     ]
     link_args += ['-Wl,-z,noexecstack', '-Wl,-z,relro', '-Wl,-z,now']
     if cc.get_id().startswith('intel')
-        c_args += ['-fimf-precision=high', '-fprotect-parens']
+        c_args += [
+            '-fimf-precision=high', '-fprotect-parens', '-fveclib=SVML',
+            '-fvectorize'
+        ]
     endif
 else
     error('Unsupported system.')
 endif
-
-# vectorization flags
-c_args += ['-fveclib=SVML', '-fvectorize']
 
 # dependencies
 tbb_dep = dependency('tbb', required: true)

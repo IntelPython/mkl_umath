@@ -45,22 +45,22 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
 
       - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
+        run: echo "$CONDA/bin" >> "$GITHUB_PATH"
 
       - name: Install conda-build
         run: conda install conda-build
 
       - name: Build conda package
         run: |
-          CHANNELS="-c https://software.repos.intel.com/python/conda -c conda-forge --override-channels"
-          VERSIONS="--python ${{ matrix.python }}"
-          TEST="--no-test"
-          echo "CONDA_BLD=${CONDA}/conda-bld/linux-64" >> $GITHUB_ENV
+          CHANNELS=(-c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
+          VERSIONS=(--python "${{ matrix.python }}")
+          TEST=(--no-test)
+          echo "CONDA_BLD=${CONDA}/conda-bld/linux-64" >> "$GITHUB_ENV"
 
           conda build \
-            $TEST \
-            $VERSIONS \
-            $CHANNELS \
+            "${TEST[@]}" \
+            "${VERSIONS[@]}" \
+            "${CHANNELS[@]}" \
             conda-recipe
 
       - name: Upload artifact
@@ -88,21 +88,21 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python }}
       - name: Add conda to system path
-        run: echo $CONDA/bin >> $GITHUB_PATH
+        run: echo "$CONDA/bin" >> "$GITHUB_PATH"
       - name: Install conda-build
         run: conda install conda-build
       - name: Create conda channel
         run: |
-          mkdir -p $GITHUB_WORKSPACE/channel/linux-64
-          mv ${PACKAGE_NAME}-*.conda $GITHUB_WORKSPACE/channel/linux-64
-          conda index $GITHUB_WORKSPACE/channel
+          mkdir -p "$GITHUB_WORKSPACE/channel/linux-64"
+          mv "${PACKAGE_NAME}"-*.conda "$GITHUB_WORKSPACE/channel/linux-64"
+          conda index "$GITHUB_WORKSPACE/channel"
           # Test channel
-          conda search $PACKAGE_NAME -c $GITHUB_WORKSPACE/channel --override-channels
+          conda search "$PACKAGE_NAME" -c "$GITHUB_WORKSPACE/channel" --override-channels
 
       - name: Collect dependencies
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda create -n test_mkl_umath $PACKAGE_NAME python=${{ matrix.python }} $CHANNELS --only-deps --dry-run > lockfile
+          CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
+          conda create -n test_mkl_umath "$PACKAGE_NAME" "python=${{ matrix.python }}" "${CHANNELS[@]}" --only-deps --dry-run > lockfile
       - name: Display lockfile
         run: cat lockfile
 
@@ -124,20 +124,20 @@ jobs:
 
       - name: Install mkl_umath
         run: |
-          CHANNELS="-c $GITHUB_WORKSPACE/channel ${{ env.CHANNELS }}"
-          conda create -n test_mkl_umath python=${{ matrix.python }} $PACKAGE_NAME pytest $CHANNELS
+          CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
+          conda create -n test_mkl_umath "python=${{ matrix.python }}" "$PACKAGE_NAME" pytest "${CHANNELS[@]}"
           # Test installed packages
           conda list -n test_mkl_umath
 
       - name: Smoke test
         run: |
-          source $CONDA/etc/profile.d/conda.sh
+          source "$CONDA/etc/profile.d/conda.sh"
           conda activate test_mkl_umath
           python -c "import mkl_umath, numpy as np; mkl_umath.use_in_numpy(); np.sin(np.linspace(0, 1, num=10**6));"
 
       - name: Run tests
         run: |
-          source $CONDA/etc/profile.d/conda.sh
+          source "$CONDA/etc/profile.d/conda.sh"
           conda activate test_mkl_umath
           pytest -v --pyargs ${{ env.PACKAGE_NAME }}
 
@@ -182,7 +182,7 @@ jobs:
       - name: Store conda paths as envs
         shell: bash -l {0}
         run: |
-          echo "CONDA_BLD=$CONDA/conda-bld/win-64/" | tr "\\\\" '/' >> $GITHUB_ENV
+          echo "CONDA_BLD=$CONDA/conda-bld/win-64/" | tr "\\\\" '/' >> "$GITHUB_ENV"
 
       - name: Install conda build
         run: |

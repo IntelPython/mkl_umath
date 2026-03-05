@@ -34,6 +34,8 @@ requirements:
       - numpy
     run:
       - python
+      - python-gil     # [py>=314]
+      - mkl-service
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
 
 test:

@@ -1,15 +1,14 @@
-{% set version = "0.4.0dev1" %}
-{% set buildnumber = 0 %}
-
 package:
     name: mkl_umath
-    version: {{ version }}
+    version: {{ GIT_DESCRIBE_TAG }}
 
 source:
     path: ../
 
 build:
-    number: {{ buildnumber }}
+    number: {{ GIT_DESCRIBE_NUMBER }}
+    script_env:
+      - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:
       - blas
 
@@ -17,8 +16,8 @@ requirements:
     build:
       - {{ compiler('c') }}
       - {{ compiler('cxx') }}
+      - {{ stdlib('c') }}
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
-      - sysroot_linux-64 >=2.28  # [linux]
     host:
       - meson-python >=0.13.0
       - meson

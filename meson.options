@@ -1,0 +1,2 @@
+option('opt_report', type: 'boolean', value: false,
+    description: 'Whether to generate optimization vectorization report')

@@ -19,18 +19,20 @@ requirements:
       - {{ stdlib('c') }}
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
     host:
-      - setuptools >=77
-      - cmake
+      - meson-python >=0.13.0
+      - meson
+      - pkg-config
       - ninja
       - git
       - cython
-      - scikit-build
       - python
       - python-gil     # [py>=314]
+      - python-build
       - mkl-devel
       - tbb-devel
       - numpy-base
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]

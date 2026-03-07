@@ -35,11 +35,11 @@ Higher-precedence rules override lower-precedence context.
 - Build: `CMakeLists.txt`, `pyproject.toml`, `setup.py`
 - Dependencies/packaging: `conda-recipe*/meta.yaml`
 - CI: `.github/workflows/*.{yml,yaml}`
-- API: `mkl_umath/__init__.py`, `mkl_umath/_patch.pyx`
+- API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch.pyx`
 - Core implementation: `mkl_umath/src/*.c`, `*.c.src`, `*.pyx`
 - Tests: `mkl_umath/tests/`
 
 ## Intel-specific constraints
-- Preferred compiler/toolchain is Intel `icx` + oneMKL.
+- oneMKL is required; `icx` and `clang` toolchains are both valid when compiler-specific flags are gated correctly.
 - Patching behavior must remain compatible with NumPy integration semantics.
 - Performance optimizations must not compromise numerical correctness.

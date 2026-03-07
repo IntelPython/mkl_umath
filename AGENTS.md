@@ -19,7 +19,7 @@ It provides:
 
 ## Build dependencies
 **Required:**
-- Intel® C Compiler (icx)
+- Compiler toolchain: Intel `icx` or `clang` (with Intel-only flags gated when using clang)
 - Intel® OneMKL (mkl-devel)
 - Intel® TBB (tbb-devel)
 - NumPy, Cython, scikit-build, cmake, ninja
@@ -30,7 +30,7 @@ conda install -c https://software.repos.intel.com/python/conda \
   mkl-devel tbb-devel dpcpp_linux-64 numpy-base \
   cmake ninja cython scikit-build
 export MKLROOT=$CONDA_PREFIX
-CC=icx pip install --no-build-isolation --no-deps .
+CC=${CC:-icx} pip install --no-build-isolation --no-deps .  # clang is also supported in CI
 ```
 
 ## CI/CD
@@ -72,9 +72,9 @@ mkl_umath.restore()       # Restore original NumPy loops
 - **NumPy source:** Requires Intel-optimized NumPy from Intel channel (`software.repos.intel.com/python/conda`). PyPI NumPy may cause runtime failures or incorrect results.
 - **Precision flags:** `fp:precise`, `fimf-precision=high` enforce IEEE 754 compliance. Removing them breaks numerical correctness in scientific computing.
 - **Patching order:** If using multiple Intel patches (e.g., `mkl_random` + `mkl_umath`), apply `mkl_umath` last. Verify with `is_patched()` after each.
-- **Compiler:** Intel `icx` is the supported compiler. `build-with-clang.yml` validates compatibility, but icx is recommended for production.
+- **Compiler/toolchain:** `icx` and `clang` are both supported; when using clang, keep Intel-only flags behind compiler guards.
 - **Build validation:**
-  - After setup: `which icx` → should point to conda env or oneAPI location
+  - After setup: `which ${CC:-icx}` → should resolve to the intended compiler toolchain
   - Verify: `echo $MKLROOT` → should be set
   - Check: `python -c "import numpy; print(numpy.__version__)"` → confirm Intel NumPy
 

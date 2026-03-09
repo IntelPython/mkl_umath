@@ -36,7 +36,7 @@ Higher-precedence rules override lower-precedence context.
 - Dependencies/packaging: `conda-recipe*/meta.yaml`
 - CI: `.github/workflows/*.{yml,yaml}`
 - API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch.pyx`
-- Core implementation: `mkl_umath/src/*.c`, `*.c.src`, `*.pyx`
+- Core implementation: `mkl_umath/src/*.{c,c.src,pyx}`
 - Tests: `mkl_umath/tests/`
 
 ## Intel-specific constraints

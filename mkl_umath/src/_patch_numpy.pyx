@@ -26,6 +26,8 @@
 # distutils: language = c
 # cython: language_level=3
 
+import warnings
+
 from contextlib import ContextDecorator
 from threading import Lock, local
 
@@ -124,7 +126,6 @@ cdef class _patch_impl:
             index = self.functions_dict[func]
             function = self.functions[index].patch_function
             signature = self.functions[index].signature
-            # TODO: check res, 0 means success, -1 means error
             res = cnp.PyUFunc_ReplaceLoopBySignature(
                 <cnp.ufunc>np_umath, function, signature, &temp
             )
@@ -166,12 +167,11 @@ class _GlobalPatch:
             if self._patch_count == 0:
                 if verbose:
                     print(
-                        "Now patching NumPy FFT submodule with mkl_fft NumPy "
-                        "interface."
+                        "Now patching NumPy ufuncs with mkl_umath loops."
                     )
                     print(
                         "Please direct bug reports to "
-                        "https://github.com/IntelPython/mkl_fft"
+                        "https://github.com/IntelPython/mkl_umath"
                     )
                 if self._patcher is None:
                     # lazy initialization of the patcher to save memory
@@ -188,7 +188,7 @@ class _GlobalPatch:
                 if verbose:
                     print(
                         "Warning: restore_numpy_umath called more times than "
-                        "patch_numpy_fft in this thread."
+                        "patch_numpy_umath in this thread."
                     )
                 return
             self._tls.local_count -= 1
@@ -230,6 +230,20 @@ def patch_numpy_umath(verbose=False):
     will lead to undefined behavior at best, and segmentation faults at worst.
     For this reason, it is recommended to prefer the `mkl_umath` context
     manager.
+
+    Examples
+    --------
+    >>> import mkl_umath
+    >>> mkl_umath.is_patched()
+    # False
+
+    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # True
+
+    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # False
     """
     _patch.do_patch(verbose=verbose)
 
@@ -258,8 +272,52 @@ def restore_numpy_umath(verbose=False):
     will lead to undefined behavior at best, and segmentation faults at worst.
     For this reason, it is recommended to prefer the `mkl_umath` context
     manager.
+
+    Examples
+    --------
+    >>> import mkl_umath
+    >>> mkl_umath.is_patched()
+    # False
+
+    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # True
+
+    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # False
     """
     _patch.do_restore(verbose=verbose)
+
+
+def use_in_numpy():
+    """
+    Deprecated alias for patch_numpy_umath.
+
+    See patch_numpy_umath for details and examples.
+    """
+    warnings.warn(
+        "use_in_numpy is deprecated since mkl_random 0.4.0 and will be removed "
+        "in a future release. Use `patch_numpy_umath` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    patch_numpy_umath()
+
+
+def restore():
+    """
+    Deprecated alias for restore_numpy_umath.
+
+    See restore_numpy_umath for details and examples.
+    """
+    warnings.warn(
+        "restore is deprecated since mkl_random 0.4.0 and will be "
+        "removed in a future release. Use `restore_numpy_umath` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    restore_numpy_umath()
 
 
 def is_patched():

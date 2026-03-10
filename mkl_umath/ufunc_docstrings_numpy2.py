@@ -23,7 +23,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Adapted from 
+# Adapted from
 # https://github.com/numpy/numpy/blob/maintenance/2.2.x/numpy/_core/code_generators/ufunc_docstrings.py
 
 """
@@ -37,13 +37,14 @@ as a C #definitions for the ufuncs in numpy._core at the C level when the
 ufuncs are created at compile time.
 
 """
+
 import textwrap
 
 docdict = {}
 
 # common parameter text to all ufuncs
 subst = {
-    'PARAMS': textwrap.dedent("""
+    "PARAMS": textwrap.dedent("""
         out : ndarray, None, or tuple of ndarray and None, optional
             A location into which the result is stored. If provided, it must have
             a shape that the inputs broadcast to. If not provided or None,
@@ -60,37 +61,45 @@ subst = {
             For other keyword-only arguments, see the
             :ref:`ufunc docs <ufuncs.kwargs>`.
     """).strip(),
-    'BROADCASTABLE_2': ("If ``x1.shape != x2.shape``, they must be "
-                        "broadcastable to a common\n    shape (which becomes "
-                        "the shape of the output)."),
-    'OUT_SCALAR_1': "This is a scalar if `x` is a scalar.",
-    'OUT_SCALAR_2': "This is a scalar if both `x1` and `x2` are scalars.",
+    "BROADCASTABLE_2": (
+        "If ``x1.shape != x2.shape``, they must be "
+        "broadcastable to a common\n    shape (which becomes "
+        "the shape of the output)."
+    ),
+    "OUT_SCALAR_1": "This is a scalar if `x` is a scalar.",
+    "OUT_SCALAR_2": "This is a scalar if both `x1` and `x2` are scalars.",
 }
+
 
 def add_newdoc(place, name, doc):
     doc = textwrap.dedent(doc).strip()
 
     skip = (
         # gufuncs do not use the OUT_SCALAR replacement strings
-        'matmul', 'vecdot', 'matvec', 'vecmat',
+        "matmul",
+        "vecdot",
+        "matvec",
+        "vecmat",
         # clip has 3 inputs, which is not handled by this
-        'clip',
+        "clip",
     )
-    if name[0] != '_' and name not in skip:
-        if '\nx :' in doc:
-            assert '$OUT_SCALAR_1' in doc, f"in {name}"
-        elif '\nx2 :' in doc or '\nx1, x2 :' in doc:
-            assert '$OUT_SCALAR_2' in doc, f"in {name}"
+    if name[0] != "_" and name not in skip:
+        if "\nx :" in doc:
+            assert "$OUT_SCALAR_1" in doc, f"in {name}"
+        elif "\nx2 :" in doc or "\nx1, x2 :" in doc:
+            assert "$OUT_SCALAR_2" in doc, f"in {name}"
         else:
-            assert False, f"Could not detect number of inputs in {name}"
+            raise AssertionError(f"Could not detect number of inputs in {name}")
 
     for k, v in subst.items():
-        doc = doc.replace('$' + k, v)
+        doc = doc.replace("$" + k, v)
 
-    docdict[f'{place}.{name}'] = doc
+    docdict[f"{place}.{name}"] = doc
 
 
-add_newdoc('numpy._core.umath', 'absolute',
+add_newdoc(
+    "numpy._core.umath",
+    "absolute",
     """
     Calculate the absolute value element-wise.
 
@@ -140,9 +149,12 @@ add_newdoc('numpy._core.umath', 'absolute',
     >>> abs(x)
     array([1.2, 1.2])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'add',
+add_newdoc(
+    "numpy._core.umath",
+    "add",
     """
     Add arguments element-wise.
 
@@ -183,9 +195,12 @@ add_newdoc('numpy._core.umath', 'add',
     array([[ 0.,  2.,  4.],
            [ 3.,  5.,  7.],
            [ 6.,  8., 10.]])
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arccos',
+add_newdoc(
+    "numpy._core.umath",
+    "arccos",
     """
     Trigonometric inverse cosine, element-wise.
 
@@ -248,9 +263,12 @@ add_newdoc('numpy._core.umath', 'arccos',
     >>> plt.axis('tight')
     >>> plt.show()
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arccosh',
+add_newdoc(
+    "numpy._core.umath",
+    "arccosh",
     """
     Inverse hyperbolic cosine, element-wise.
 
@@ -301,9 +319,12 @@ add_newdoc('numpy._core.umath', 'arccosh',
     >>> np.arccosh(1)
     0.0
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arcsin',
+add_newdoc(
+    "numpy._core.umath",
+    "arcsin",
     """
     Inverse sine, element-wise.
 
@@ -356,9 +377,12 @@ add_newdoc('numpy._core.umath', 'arcsin',
     >>> np.arcsin(0)
     0.0
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arcsinh',
+add_newdoc(
+    "numpy._core.umath",
+    "arcsinh",
     """
     Inverse hyperbolic sine element-wise.
 
@@ -404,9 +428,12 @@ add_newdoc('numpy._core.umath', 'arcsinh',
     >>> np.arcsinh(np.array([np.e, 10.0]))
     array([ 1.72538256,  2.99822295])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arctan',
+add_newdoc(
+    "numpy._core.umath",
+    "arctan",
     """
     Trigonometric inverse tangent, element-wise.
 
@@ -472,9 +499,12 @@ add_newdoc('numpy._core.umath', 'arctan',
     >>> plt.axis('tight')
     >>> plt.show()
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arctan2',
+add_newdoc(
+    "numpy._core.umath",
+    "arctan2",
     """
     Element-wise arc tangent of ``x1/x2`` choosing the quadrant correctly.
 
@@ -553,14 +583,20 @@ add_newdoc('numpy._core.umath', 'arctan2',
     >>> np.arctan2([0., 0., np.inf], [+0., -0., np.inf])
     array([0.        , 3.14159265, 0.78539816])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_arg',
+add_newdoc(
+    "numpy._core.umath",
+    "_arg",
     """
     DO NOT USE, ONLY FOR TESTING
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'arctanh',
+add_newdoc(
+    "numpy._core.umath",
+    "arctanh",
     """
     Inverse hyperbolic tangent element-wise.
 
@@ -610,9 +646,12 @@ add_newdoc('numpy._core.umath', 'arctanh',
     >>> np.arctanh([0, -0.5])
     array([ 0.        , -0.54930614])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'bitwise_and',
+add_newdoc(
+    "numpy._core.umath",
+    "bitwise_and",
     """
     Compute the bit-wise AND of two arrays element-wise.
 
@@ -674,9 +713,12 @@ add_newdoc('numpy._core.umath', 'bitwise_and',
     >>> x1 & x2
     array([ 2,  4, 16])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'bitwise_or',
+add_newdoc(
+    "numpy._core.umath",
+    "bitwise_or",
     """
     Compute the bit-wise OR of two arrays element-wise.
 
@@ -743,9 +785,12 @@ add_newdoc('numpy._core.umath', 'bitwise_or',
     >>> x1 | x2
     array([  6,   5, 255])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'bitwise_xor',
+add_newdoc(
+    "numpy._core.umath",
+    "bitwise_xor",
     """
     Compute the bit-wise XOR of two arrays element-wise.
 
@@ -805,9 +850,12 @@ add_newdoc('numpy._core.umath', 'bitwise_xor',
     >>> x1 ^ x2
     array([ True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'ceil',
+add_newdoc(
+    "numpy._core.umath",
+    "ceil",
     """
     Return the ceiling of the input, element-wise.
 
@@ -838,9 +886,12 @@ add_newdoc('numpy._core.umath', 'ceil',
     >>> np.ceil(a)
     array([-1., -1., -0.,  1.,  2.,  2.,  2.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'trunc',
+add_newdoc(
+    "numpy._core.umath",
+    "trunc",
     """
     Return the truncated value of the input, element-wise.
 
@@ -871,9 +922,12 @@ add_newdoc('numpy._core.umath', 'trunc',
     >>> np.trunc(a)
     array([-1., -1., -0.,  0.,  1.,  1.,  2.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'conjugate',
+add_newdoc(
+    "numpy._core.umath",
+    "conjugate",
     """
     Return the complex conjugate, element-wise.
 
@@ -910,9 +964,12 @@ add_newdoc('numpy._core.umath', 'conjugate',
     array([[ 1.-1.j,  0.-0.j],
            [ 0.-0.j,  1.-1.j]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'cos',
+add_newdoc(
+    "numpy._core.umath",
+    "cos",
     """
     Cosine element-wise.
 
@@ -956,9 +1013,12 @@ add_newdoc('numpy._core.umath', 'cos',
       File "<stdin>", line 1, in <module>
     ValueError: operands could not be broadcast together with shapes (3,3) (2,2)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'cosh',
+add_newdoc(
+    "numpy._core.umath",
+    "cosh",
     """
     Hyperbolic cosine, element-wise.
 
@@ -989,9 +1049,12 @@ add_newdoc('numpy._core.umath', 'cosh',
     >>> plt.plot(x, np.cosh(x))
     >>> plt.show()
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'degrees',
+add_newdoc(
+    "numpy._core.umath",
+    "degrees",
     """
     Convert angles from radians to degrees.
 
@@ -1027,9 +1090,12 @@ add_newdoc('numpy._core.umath', 'degrees',
     >>> np.all(r == out)
     True
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'rad2deg',
+add_newdoc(
+    "numpy._core.umath",
+    "rad2deg",
     """
     Convert angles from radians to degrees.
 
@@ -1060,9 +1126,12 @@ add_newdoc('numpy._core.umath', 'rad2deg',
     >>> np.rad2deg(np.pi/2)
     90.0
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'heaviside',
+add_newdoc(
+    "numpy._core.umath",
+    "heaviside",
     """
     Compute the Heaviside step function.
 
@@ -1101,9 +1170,12 @@ add_newdoc('numpy._core.umath', 'heaviside',
     array([ 0. ,  0.5,  1. ])
     >>> np.heaviside([-1.5, 0, 2.0], 1)
     array([ 0.,  1.,  1.])
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'divide',
+add_newdoc(
+    "numpy._core.umath",
+    "divide",
     """
     Divide arguments element-wise.
 
@@ -1156,9 +1228,12 @@ add_newdoc('numpy._core.umath', 'divide',
            [1.5, 2. , 2.5],
            [3. , 3.5, 4. ]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'equal',
+add_newdoc(
+    "numpy._core.umath",
+    "equal",
     """
     Return (x1 == x2) element-wise.
 
@@ -1200,9 +1275,12 @@ add_newdoc('numpy._core.umath', 'equal',
     >>> a == b
     array([ True,  True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'exp',
+add_newdoc(
+    "numpy._core.umath",
+    "exp",
     """
     Calculate the exponential of all elements in the input array.
 
@@ -1268,9 +1346,12 @@ add_newdoc('numpy._core.umath', 'exp',
     >>> plt.title('Phase (angle) of exp(x)')
     >>> plt.show()
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'exp2',
+add_newdoc(
+    "numpy._core.umath",
+    "exp2",
     """
     Calculate `2**p` for all `p` in the input array.
 
@@ -1296,9 +1377,12 @@ add_newdoc('numpy._core.umath', 'exp2',
     >>> np.exp2([2, 3])
     array([ 4.,  8.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'expm1',
+add_newdoc(
+    "numpy._core.umath",
+    "expm1",
     """
     Calculate ``exp(x) - 1`` for all elements in the array.
 
@@ -1337,9 +1421,12 @@ add_newdoc('numpy._core.umath', 'expm1',
     >>> np.exp(1e-10) - 1
     1.000000082740371e-10
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'fabs',
+add_newdoc(
+    "numpy._core.umath",
+    "fabs",
     """
     Compute the absolute values element-wise.
 
@@ -1372,9 +1459,12 @@ add_newdoc('numpy._core.umath', 'fabs',
     >>> np.fabs([-1.2, 1.2])
     array([ 1.2,  1.2])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'floor',
+add_newdoc(
+    "numpy._core.umath",
+    "floor",
     """
     Return the floor of the input, element-wise.
 
@@ -1411,9 +1501,12 @@ add_newdoc('numpy._core.umath', 'floor',
     >>> np.floor(a)
     array([-2., -2., -1.,  0.,  1.,  1.,  2.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'floor_divide',
+add_newdoc(
+    "numpy._core.umath",
+    "floor_divide",
     """
     Return the largest integer smaller or equal to the division of the inputs.
     It is equivalent to the Python ``//`` operator and pairs with the
@@ -1458,9 +1551,12 @@ add_newdoc('numpy._core.umath', 'floor_divide',
     >>> x1 // 2.5
     array([0., 0., 1., 1.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'fmod',
+add_newdoc(
+    "numpy._core.umath",
+    "fmod",
     """
     Returns the element-wise remainder of division.
 
@@ -1517,9 +1613,12 @@ add_newdoc('numpy._core.umath', 'fmod',
            [-1,  0],
            [ 1,  0]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'greater',
+add_newdoc(
+    "numpy._core.umath",
+    "greater",
     """
     Return the truth value of (x1 > x2) element-wise.
 
@@ -1556,9 +1655,12 @@ add_newdoc('numpy._core.umath', 'greater',
     >>> a > b
     array([ True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'greater_equal',
+add_newdoc(
+    "numpy._core.umath",
+    "greater_equal",
     """
     Return the truth value of (x1 >= x2) element-wise.
 
@@ -1594,9 +1696,12 @@ add_newdoc('numpy._core.umath', 'greater_equal',
     >>> a >= b
     array([ True,  True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'hypot',
+add_newdoc(
+    "numpy._core.umath",
+    "hypot",
     """
     Given the "legs" of a right triangle, return its hypotenuse.
 
@@ -1633,9 +1738,12 @@ add_newdoc('numpy._core.umath', 'hypot',
            [ 5.,  5.,  5.],
            [ 5.,  5.,  5.]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'invert',
+add_newdoc(
+    "numpy._core.umath",
+    "invert",
     """
     Compute bit-wise inversion, or bit-wise NOT, element-wise.
 
@@ -1723,9 +1831,12 @@ add_newdoc('numpy._core.umath', 'invert',
     >>> ~x1
     array([False,  True])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isfinite',
+add_newdoc(
+    "numpy._core.umath",
+    "isfinite",
     """
     Test element-wise for finiteness (not infinity and not Not a Number).
 
@@ -1783,9 +1894,12 @@ add_newdoc('numpy._core.umath', 'isfinite',
     >>> y
     array([0, 1, 0])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isinf',
+add_newdoc(
+    "numpy._core.umath",
+    "isinf",
     """
     Test element-wise for positive or negative infinity.
 
@@ -1836,9 +1950,12 @@ add_newdoc('numpy._core.umath', 'isinf',
     >>> y
     array([1, 0, 1])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isnan',
+add_newdoc(
+    "numpy._core.umath",
+    "isnan",
     """
     Test element-wise for NaN and return result as a boolean array.
 
@@ -1873,9 +1990,12 @@ add_newdoc('numpy._core.umath', 'isnan',
     >>> np.isnan([np.log(-1.),1.,np.log(0)])
     array([ True, False, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isnat',
+add_newdoc(
+    "numpy._core.umath",
+    "isnat",
     """
     Test element-wise for NaT (not a time) and return result as a boolean array.
 
@@ -1905,9 +2025,12 @@ add_newdoc('numpy._core.umath', 'isnat',
     >>> np.isnat(np.array(["NaT", "2016-01-01"], dtype="datetime64[ns]"))
     array([ True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'left_shift',
+add_newdoc(
+    "numpy._core.umath",
+    "left_shift",
     """
     Shift the bits of an integer to the left.
 
@@ -1968,9 +2091,12 @@ add_newdoc('numpy._core.umath', 'left_shift',
     >>> x1 << x2
     array([10, 20, 40])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'less',
+add_newdoc(
+    "numpy._core.umath",
+    "less",
     """
     Return the truth value of (x1 < x2) element-wise.
 
@@ -2005,9 +2131,12 @@ add_newdoc('numpy._core.umath', 'less',
     >>> a < b
     array([ True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'less_equal',
+add_newdoc(
+    "numpy._core.umath",
+    "less_equal",
     """
     Return the truth value of (x1 <= x2) element-wise.
 
@@ -2043,9 +2172,12 @@ add_newdoc('numpy._core.umath', 'less_equal',
     >>> a <= b
     array([False,  True,  True])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'log',
+add_newdoc(
+    "numpy._core.umath",
+    "log",
     """
     Natural logarithm, element-wise.
 
@@ -2101,9 +2233,12 @@ add_newdoc('numpy._core.umath', 'log',
     >>> np.log([1, np.e, np.e**2, 0])
     array([  0.,   1.,   2., -inf])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'log10',
+add_newdoc(
+    "numpy._core.umath",
+    "log10",
     """
     Return the base 10 logarithm of the input array, element-wise.
 
@@ -2156,9 +2291,12 @@ add_newdoc('numpy._core.umath', 'log10',
     >>> np.log10([1e-15, -3.])
     array([-15.,  nan])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'log2',
+add_newdoc(
+    "numpy._core.umath",
+    "log2",
     """
     Base-2 logarithm of `x`.
 
@@ -2208,9 +2346,12 @@ add_newdoc('numpy._core.umath', 'log2',
     >>> np.log2(xi)
     array([ 0.+2.26618007j,  0.+0.j        ,  1.+0.j        ,  2.+2.26618007j])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logaddexp',
+add_newdoc(
+    "numpy._core.umath",
+    "logaddexp",
     """
     Logarithm of the sum of exponentiations of the inputs.
 
@@ -2248,9 +2389,12 @@ add_newdoc('numpy._core.umath', 'logaddexp',
     >>> np.exp(prob12)
     3.5000000000000057e-50
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logaddexp2',
+add_newdoc(
+    "numpy._core.umath",
+    "logaddexp2",
     """
     Logarithm of the sum of exponentiations of the inputs in base-2.
 
@@ -2288,9 +2432,12 @@ add_newdoc('numpy._core.umath', 'logaddexp2',
     >>> 2**prob12
     3.4999999999999914e-50
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'log1p',
+add_newdoc(
+    "numpy._core.umath",
+    "log1p",
     """
     Return the natural logarithm of one plus the input array, element-wise.
 
@@ -2345,9 +2492,12 @@ add_newdoc('numpy._core.umath', 'log1p',
     >>> np.log(1 + 1e-99)
     0.0
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logical_and',
+add_newdoc(
+    "numpy._core.umath",
+    "logical_and",
     """
     Compute the truth value of x1 AND x2 element-wise.
 
@@ -2391,9 +2541,12 @@ add_newdoc('numpy._core.umath', 'logical_and',
     >>> a & b
     array([False, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logical_not',
+add_newdoc(
+    "numpy._core.umath",
+    "logical_not",
     """
     Compute the truth value of NOT x element-wise.
 
@@ -2426,9 +2579,12 @@ add_newdoc('numpy._core.umath', 'logical_not',
     >>> np.logical_not(x<3)
     array([False, False, False,  True,  True])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logical_or',
+add_newdoc(
+    "numpy._core.umath",
+    "logical_or",
     """
     Compute the truth value of x1 OR x2 element-wise.
 
@@ -2471,9 +2627,12 @@ add_newdoc('numpy._core.umath', 'logical_or',
     >>> a | b
     array([ True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'logical_xor',
+add_newdoc(
+    "numpy._core.umath",
+    "logical_xor",
     """
     Compute the truth value of x1 XOR x2, element-wise.
 
@@ -2513,9 +2672,12 @@ add_newdoc('numpy._core.umath', 'logical_xor',
     array([[ True, False],
            [False,  True]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'maximum',
+add_newdoc(
+    "numpy._core.umath",
+    "maximum",
     """
     Element-wise maximum of array elements.
 
@@ -2573,9 +2735,12 @@ add_newdoc('numpy._core.umath', 'maximum',
     >>> np.maximum(np.inf, 1)
     inf
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'minimum',
+add_newdoc(
+    "numpy._core.umath",
+    "minimum",
     """
     Element-wise minimum of array elements.
 
@@ -2633,9 +2798,12 @@ add_newdoc('numpy._core.umath', 'minimum',
     >>> np.minimum(-np.inf, 1)
     -inf
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'fmax',
+add_newdoc(
+    "numpy._core.umath",
+    "fmax",
     """
     Element-wise maximum of array elements.
 
@@ -2690,9 +2858,12 @@ add_newdoc('numpy._core.umath', 'fmax',
     >>> np.fmax([np.nan, 0, np.nan],[0, np.nan, np.nan])
     array([ 0.,  0., nan])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'fmin',
+add_newdoc(
+    "numpy._core.umath",
+    "fmin",
     """
     Element-wise minimum of array elements.
 
@@ -2747,9 +2918,12 @@ add_newdoc('numpy._core.umath', 'fmin',
     >>> np.fmin([np.nan, 0, np.nan],[0, np.nan, np.nan])
     array([ 0.,  0., nan])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'clip',
+add_newdoc(
+    "numpy._core.umath",
+    "clip",
     """
     Clip (limit) the values in an array.
 
@@ -2787,9 +2961,12 @@ add_newdoc('numpy._core.umath', 'clip',
         An array with the elements of `a`, but where values
         < `a_min` are replaced with `a_min`, and those > `a_max`
         with `a_max`.
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'matmul',
+add_newdoc(
+    "numpy._core.umath",
+    "matmul",
     """
     Matrix product of two arrays.
 
@@ -2917,9 +3094,12 @@ add_newdoc('numpy._core.umath', 'matmul',
     >>> x2 = np.array([2j, 3j])
     >>> x1 @ x2
     (-13+0j)
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'vecdot',
+add_newdoc(
+    "numpy._core.umath",
+    "vecdot",
     """
     Vector dot product of two arrays.
 
@@ -2980,9 +3160,12 @@ add_newdoc('numpy._core.umath', 'vecdot',
     >>> np.vecdot(v, n)
     array([ 3.,  8., 10.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'matvec',
+add_newdoc(
+    "numpy._core.umath",
+    "matvec",
     """
     Matrix-vector dot product of two arrays.
 
@@ -3047,9 +3230,12 @@ add_newdoc('numpy._core.umath', 'matvec',
            [ 0.,  0.,  1.],
            [ 6.,  0.,  8.]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'vecmat',
+add_newdoc(
+    "numpy._core.umath",
+    "vecmat",
     """
     Vector-matrix dot product of two arrays.
 
@@ -3111,9 +3297,12 @@ add_newdoc('numpy._core.umath', 'vecmat',
     >>> np.vecmat(v, a)
     array([ 0.,  4., 0.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'modf',
+add_newdoc(
+    "numpy._core.umath",
+    "modf",
     """
     Return the fractional and integral parts of an array, element-wise.
 
@@ -3152,9 +3341,12 @@ add_newdoc('numpy._core.umath', 'modf',
     >>> np.modf(-0.5)
     (-0.5, -0)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'multiply',
+add_newdoc(
+    "numpy._core.umath",
+    "multiply",
     """
     Multiply arguments element-wise.
 
@@ -3198,9 +3390,12 @@ add_newdoc('numpy._core.umath', 'multiply',
            [  0.,   4.,  10.],
            [  0.,   7.,  16.]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'negative',
+add_newdoc(
+    "numpy._core.umath",
+    "negative",
     """
     Numerical negative, element-wise.
 
@@ -3229,9 +3424,12 @@ add_newdoc('numpy._core.umath', 'negative',
     >>> -x1
     array([-1.,  1.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'positive',
+add_newdoc(
+    "numpy._core.umath",
+    "positive",
     """
     Numerical positive, element-wise.
 
@@ -3266,9 +3464,12 @@ add_newdoc('numpy._core.umath', 'positive',
     >>> +x1
     array([ 1., -1.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'not_equal',
+add_newdoc(
+    "numpy._core.umath",
+    "not_equal",
     """
     Return (x1 != x2) element-wise.
 
@@ -3308,9 +3509,12 @@ add_newdoc('numpy._core.umath', 'not_equal',
     array([False,  True])
 
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_ones_like',
+add_newdoc(
+    "numpy._core.umath",
+    "_ones_like",
     """
     This function used to be the numpy.ones_like, but now a specific
     function for that has been written for consistency with the other
@@ -3320,9 +3524,12 @@ add_newdoc('numpy._core.umath', '_ones_like',
     --------
     ones_like
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'power',
+add_newdoc(
+    "numpy._core.umath",
+    "power",
     """
     First array elements raised to powers from second array, element-wise.
 
@@ -3406,9 +3613,12 @@ add_newdoc('numpy._core.umath', 'power',
     >>> np.power(x3, 1.5, dtype=complex)
     array([-1.83697020e-16-1.j, -1.46957616e-15-8.j])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'float_power',
+add_newdoc(
+    "numpy._core.umath",
+    "float_power",
     """
     First array elements raised to powers from second array, element-wise.
 
@@ -3485,9 +3695,12 @@ add_newdoc('numpy._core.umath', 'float_power',
     >>> np.float_power(x3, 1.5, dtype=complex)
     array([-1.83697020e-16-1.j, -1.46957616e-15-8.j])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'radians',
+add_newdoc(
+    "numpy._core.umath",
+    "radians",
     """
     Convert angles from degrees to radians.
 
@@ -3524,9 +3737,12 @@ add_newdoc('numpy._core.umath', 'radians',
     >>> ret is out
     True
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'deg2rad',
+add_newdoc(
+    "numpy._core.umath",
+    "deg2rad",
     """
     Convert angles from degrees to radians.
 
@@ -3557,9 +3773,12 @@ add_newdoc('numpy._core.umath', 'deg2rad',
     >>> np.deg2rad(180)
     3.1415926535897931
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'reciprocal',
+add_newdoc(
+    "numpy._core.umath",
+    "reciprocal",
     """
     Return the reciprocal of the argument, element-wise.
 
@@ -3594,9 +3813,12 @@ add_newdoc('numpy._core.umath', 'reciprocal',
     >>> np.reciprocal([1, 2., 3.33])
     array([ 1.       ,  0.5      ,  0.3003003])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'remainder',
+add_newdoc(
+    "numpy._core.umath",
+    "remainder",
     """
     Returns the element-wise remainder of division.
 
@@ -3658,9 +3880,12 @@ add_newdoc('numpy._core.umath', 'remainder',
     >>> x1 % 5
     array([0, 1, 2, 3, 4, 0, 1])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'divmod',
+add_newdoc(
+    "numpy._core.umath",
+    "divmod",
     """
     Return element-wise quotient and remainder simultaneously.
 
@@ -3706,9 +3931,12 @@ add_newdoc('numpy._core.umath', 'divmod',
     >>> divmod(x, 3)
     (array([0, 0, 0, 1, 1]), array([0, 1, 2, 0, 1]))
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'right_shift',
+add_newdoc(
+    "numpy._core.umath",
+    "right_shift",
     """
     Shift the bits of an integer to the right.
 
@@ -3758,9 +3986,12 @@ add_newdoc('numpy._core.umath', 'right_shift',
     >>> x1 >> x2
     array([5, 2, 1])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'rint',
+add_newdoc(
+    "numpy._core.umath",
+    "rint",
     """
     Round elements of the array to the nearest integer.
 
@@ -3793,9 +4024,12 @@ add_newdoc('numpy._core.umath', 'rint',
     >>> np.rint(a)
     array([-2., -2., -0.,  0.,  2.,  2.,  2.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'sign',
+add_newdoc(
+    "numpy._core.umath",
+    "sign",
     """
     Returns an element-wise indication of the sign of a number.
 
@@ -3838,9 +4072,12 @@ add_newdoc('numpy._core.umath', 'sign',
     >>> np.sign([3-4j, 8j])
     array([0.6-0.8j, 0. +1.j ])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'signbit',
+add_newdoc(
+    "numpy._core.umath",
+    "signbit",
     """
     Returns element-wise True where signbit is set (less than zero).
 
@@ -3864,9 +4101,12 @@ add_newdoc('numpy._core.umath', 'signbit',
     >>> np.signbit(np.array([1, -2.3, 2.1]))
     array([False,  True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'copysign',
+add_newdoc(
+    "numpy._core.umath",
+    "copysign",
     """
     Change the sign of x1 to that of x2, element-wise.
 
@@ -3902,9 +4142,12 @@ add_newdoc('numpy._core.umath', 'copysign',
     >>> np.copysign([-1, 0, 1], np.arange(3)-1)
     array([-1.,  0.,  1.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'nextafter',
+add_newdoc(
+    "numpy._core.umath",
+    "nextafter",
     """
     Return the next floating-point value after x1 towards x2, element-wise.
 
@@ -3932,9 +4175,12 @@ add_newdoc('numpy._core.umath', 'nextafter',
     >>> np.nextafter([1, 2], [2, 1]) == [eps + 1, 2 - eps]
     array([ True,  True])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'spacing',
+add_newdoc(
+    "numpy._core.umath",
+    "spacing",
     """
     Return the distance between x and the nearest adjacent number.
 
@@ -3965,9 +4211,12 @@ add_newdoc('numpy._core.umath', 'spacing',
     >>> np.spacing(1) == np.finfo(np.float64).eps
     True
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'sin',
+add_newdoc(
+    "numpy._core.umath",
+    "sin",
     """
     Trigonometric sine, element-wise.
 
@@ -4025,9 +4274,12 @@ add_newdoc('numpy._core.umath', 'sin',
     >>> plt.axis('tight')
     >>> plt.show()
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'sinh',
+add_newdoc(
+    "numpy._core.umath",
+    "sinh",
     """
     Hyperbolic sine, element-wise.
 
@@ -4079,9 +4331,12 @@ add_newdoc('numpy._core.umath', 'sinh',
       File "<stdin>", line 1, in <module>
     ValueError: operands could not be broadcast together with shapes (3,3) (2,2)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'sqrt',
+add_newdoc(
+    "numpy._core.umath",
+    "sqrt",
     """
     Return the non-negative square-root of an array, element-wise.
 
@@ -4127,9 +4382,12 @@ add_newdoc('numpy._core.umath', 'sqrt',
     >>> np.sqrt([4, -1, np.inf])
     array([ 2., nan, inf])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'cbrt',
+add_newdoc(
+    "numpy._core.umath",
+    "cbrt",
     """
     Return the cube-root of an array, element-wise.
 
@@ -4154,9 +4412,12 @@ add_newdoc('numpy._core.umath', 'cbrt',
     >>> np.cbrt([1,8,27])
     array([ 1.,  2.,  3.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'square',
+add_newdoc(
+    "numpy._core.umath",
+    "square",
     """
     Return the element-wise square of the input.
 
@@ -4184,9 +4445,12 @@ add_newdoc('numpy._core.umath', 'square',
     >>> np.square([-1j, 1])
     array([-1.-0.j,  1.+0.j])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'subtract',
+add_newdoc(
+    "numpy._core.umath",
+    "subtract",
     """
     Subtract arguments, element-wise.
 
@@ -4230,9 +4494,12 @@ add_newdoc('numpy._core.umath', 'subtract',
            [3., 3., 3.],
            [6., 6., 6.]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'tan',
+add_newdoc(
+    "numpy._core.umath",
+    "tan",
     """
     Compute tangent element-wise.
 
@@ -4280,9 +4547,12 @@ add_newdoc('numpy._core.umath', 'tan',
       File "<stdin>", line 1, in <module>
     ValueError: operands could not be broadcast together with shapes (3,3) (2,2)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'tanh',
+add_newdoc(
+    "numpy._core.umath",
+    "tanh",
     """
     Compute hyperbolic tangent element-wise.
 
@@ -4333,9 +4603,12 @@ add_newdoc('numpy._core.umath', 'tanh',
       File "<stdin>", line 1, in <module>
     ValueError: operands could not be broadcast together with shapes (3,3) (2,2)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'frexp',
+add_newdoc(
+    "numpy._core.umath",
+    "frexp",
     """
     Decompose the elements of x into mantissa and twos exponent.
 
@@ -4383,9 +4656,12 @@ add_newdoc('numpy._core.umath', 'frexp',
     >>> y1 * 2**y2
     array([ 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'ldexp',
+add_newdoc(
+    "numpy._core.umath",
+    "ldexp",
     """
     Returns x1 * 2**x2, element-wise.
 
@@ -4428,9 +4704,12 @@ add_newdoc('numpy._core.umath', 'ldexp',
     >>> np.ldexp(*np.frexp(x))
     array([ 0.,  1.,  2.,  3.,  4.,  5.])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'gcd',
+add_newdoc(
+    "numpy._core.umath",
+    "gcd",
     """
     Returns the greatest common divisor of ``|x1|`` and ``|x2|``
 
@@ -4460,9 +4739,12 @@ add_newdoc('numpy._core.umath', 'gcd',
     >>> np.gcd(np.arange(6), 20)
     array([20,  1,  2,  1,  4,  5])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'lcm',
+add_newdoc(
+    "numpy._core.umath",
+    "lcm",
     """
     Returns the lowest common multiple of ``|x1|`` and ``|x2|``
 
@@ -4494,9 +4776,12 @@ add_newdoc('numpy._core.umath', 'lcm',
     >>> np.lcm(np.arange(6), 20)
     array([ 0, 20, 20, 60, 20, 20])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'bitwise_count',
+add_newdoc(
+    "numpy._core.umath",
+    "bitwise_count",
     """
     Computes the number of 1-bits in the absolute value of ``x``.
     Analogous to the builtin `int.bit_count` or ``popcount`` in C++.
@@ -4533,9 +4818,12 @@ add_newdoc('numpy._core.umath', 'bitwise_count',
     array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15],
           dtype=uint8)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'str_len',
+add_newdoc(
+    "numpy._core.umath",
+    "str_len",
     """
     Returns the length of each element. For byte strings,
     this is the number of bytes, while, for Unicode strings,
@@ -4569,9 +4857,12 @@ add_newdoc('numpy._core.umath', 'str_len',
     >>> np.strings.str_len(a)
     array([[5, 5], [1, 1]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isalpha',
+add_newdoc(
+    "numpy._core.umath",
+    "isalpha",
     """
     Returns true for each element if all characters in the data
     interpreted as a string are alphabetic and there is at least
@@ -4609,9 +4900,12 @@ add_newdoc('numpy._core.umath', 'isalpha',
     >>> np.strings.isalpha(a)
     array([[ True,  True, False], [ True, False, False]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isdigit',
+add_newdoc(
+    "numpy._core.umath",
+    "isdigit",
     """
     Returns true for each element if all characters in the string are
     digits and there is at least one character, false otherwise.
@@ -4647,9 +4941,12 @@ add_newdoc('numpy._core.umath', 'isdigit',
     >>> np.strings.isdigit(a)
     array([[False, False,  True], [False,  True,  True]])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isspace',
+add_newdoc(
+    "numpy._core.umath",
+    "isspace",
     r"""
     Returns true for each element if there are only whitespace
     characters in the string and there is at least one character,
@@ -4685,9 +4982,12 @@ add_newdoc('numpy._core.umath', 'isspace',
     >>> np.char.isspace(b'\x0a \x0b \x0c N')
     np.False_
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isalnum',
+add_newdoc(
+    "numpy._core.umath",
+    "isalnum",
     """
     Returns true for each element if all characters in the string are
     alphanumeric and there is at least one character, false otherwise.
@@ -4714,9 +5014,12 @@ add_newdoc('numpy._core.umath', 'isalnum',
     >>> np.strings.isalnum(a)
     array([ True,  True,  True, False, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'islower',
+add_newdoc(
+    "numpy._core.umath",
+    "islower",
     """
     Returns true for each element if all cased characters in the
     string are lowercase and there is at least one cased character,
@@ -4745,9 +5048,12 @@ add_newdoc('numpy._core.umath', 'islower',
     >>> np.strings.islower("ghc")
     array(True)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isupper',
+add_newdoc(
+    "numpy._core.umath",
+    "isupper",
     """
     Return true for each element if all cased characters in the
     string are uppercase and there is at least one character, false
@@ -4777,9 +5083,12 @@ add_newdoc('numpy._core.umath', 'isupper',
     >>> np.strings.isupper(a)
     array([False,  True, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'istitle',
+add_newdoc(
+    "numpy._core.umath",
+    "istitle",
     """
     Returns true for each element if the element is a titlecased
     string and there is at least one character, false otherwise.
@@ -4808,9 +5117,12 @@ add_newdoc('numpy._core.umath', 'istitle',
     >>> np.strings.istitle("Numpy is great")
     array(False)
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isdecimal',
+add_newdoc(
+    "numpy._core.umath",
+    "isdecimal",
     """
     For each element, return True if there are only decimal
     characters in the element.
@@ -4840,9 +5152,12 @@ add_newdoc('numpy._core.umath', 'isdecimal',
     >>> np.strings.isdecimal(['12345', '4.99', '123ABC', ''])
     array([ True, False, False, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'isnumeric',
+add_newdoc(
+    "numpy._core.umath",
+    "isnumeric",
     """
     For each element, return True if there are only numeric
     characters in the element.
@@ -4872,9 +5187,12 @@ add_newdoc('numpy._core.umath', 'isnumeric',
     >>> np.strings.isnumeric(['123', '123abc', '9.0', '1/4', 'VIII'])
     array([ True, False, False, False, False])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'find',
+add_newdoc(
+    "numpy._core.umath",
+    "find",
     """
     For each element, return the lowest index in the string where
     substring `x2` is found, such that `x2` is contained in the
@@ -4910,9 +5228,12 @@ add_newdoc('numpy._core.umath', 'find',
     >>> np.strings.find(a, "Python", 0, None)
     array([11])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'rfind',
+add_newdoc(
+    "numpy._core.umath",
+    "rfind",
     """
     For each element, return the highest index in the string where
     substring `x2` is found, such that `x2` is contained in the
@@ -4941,9 +5262,12 @@ add_newdoc('numpy._core.umath', 'rfind',
     --------
     str.rfind
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'count',
+add_newdoc(
+    "numpy._core.umath",
+    "count",
     """
     Returns an array with the number of non-overlapping occurrences of
     substring `x2` in the range [`x3`, `x4`].
@@ -4987,9 +5311,12 @@ add_newdoc('numpy._core.umath', 'count',
     >>> np.strings.count(c, 'A', start=1, end=3)
     array([1, 0, 0])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'index',
+add_newdoc(
+    "numpy._core.umath",
+    "index",
     """
     Like `find`, but raises :exc:`ValueError` when the substring is not found.
 
@@ -5020,9 +5347,12 @@ add_newdoc('numpy._core.umath', 'index',
     >>> np.strings.index(a, "Science")
     array([9])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'rindex',
+add_newdoc(
+    "numpy._core.umath",
+    "rindex",
     """
     Like `rfind`, but raises :exc:`ValueError` when the substring is not found.
 
@@ -5053,16 +5383,22 @@ add_newdoc('numpy._core.umath', 'rindex',
     >>> np.strings.rindex(a, "Science")
     array([9])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_replace',
+add_newdoc(
+    "numpy._core.umath",
+    "_replace",
     """
     UFunc implementation of ``replace``. This internal function
     is called by ``replace`` with ``out`` set, so that the
     size of the resulting string buffer is known.
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'startswith',
+add_newdoc(
+    "numpy._core.umath",
+    "startswith",
     """
     Returns a boolean array which is `True` where the string element
     in `x1` starts with `x2`, otherwise `False`.
@@ -5090,9 +5426,12 @@ add_newdoc('numpy._core.umath', 'startswith',
     --------
     str.startswith
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', 'endswith',
+add_newdoc(
+    "numpy._core.umath",
+    "endswith",
     """
     Returns a boolean array which is `True` where the string element
     in `x1` ends with `x2`, otherwise `False`.
@@ -5131,19 +5470,22 @@ add_newdoc('numpy._core.umath', 'endswith',
     >>> np.strings.endswith(s, 'a', start=1, end=2)
     array([False,  True])
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_strip_chars', '')
-add_newdoc('numpy._core.umath', '_lstrip_chars', '')
-add_newdoc('numpy._core.umath', '_rstrip_chars', '')
-add_newdoc('numpy._core.umath', '_strip_whitespace', '')
-add_newdoc('numpy._core.umath', '_lstrip_whitespace', '')
-add_newdoc('numpy._core.umath', '_rstrip_whitespace', '')
+add_newdoc("numpy._core.umath", "_strip_chars", "")
+add_newdoc("numpy._core.umath", "_lstrip_chars", "")
+add_newdoc("numpy._core.umath", "_rstrip_chars", "")
+add_newdoc("numpy._core.umath", "_strip_whitespace", "")
+add_newdoc("numpy._core.umath", "_lstrip_whitespace", "")
+add_newdoc("numpy._core.umath", "_rstrip_whitespace", "")
 
-add_newdoc('numpy._core.umath', '_expandtabs_length', '')
-add_newdoc('numpy._core.umath', '_expandtabs', '')
+add_newdoc("numpy._core.umath", "_expandtabs_length", "")
+add_newdoc("numpy._core.umath", "_expandtabs", "")
 
-add_newdoc('numpy._core.umath', '_center',
+add_newdoc(
+    "numpy._core.umath",
+    "_center",
     """
     Return a copy of `x1` with its elements centered in a string of
     length `x2`.
@@ -5181,9 +5523,12 @@ add_newdoc('numpy._core.umath', '_center',
     >>> np.strings.center(c, width=1)
     array(['a1b2', '1b2a', 'b2a1', '2a1b'], dtype='<U4')
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_ljust',
+add_newdoc(
+    "numpy._core.umath",
+    "_ljust",
     """
     Return an array with the elements of `x1` left-justified in a
     string of length `x2`.
@@ -5218,9 +5563,12 @@ add_newdoc('numpy._core.umath', '_ljust',
     >>> np.strings.ljust(c, width=9)
     array(['aAaAaA   ', '  aA     ', 'abBABba  '], dtype='<U9')
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_rjust',
+add_newdoc(
+    "numpy._core.umath",
+    "_rjust",
     """
     Return an array with the elements of `x1` right-justified in a
     string of length `x2`.
@@ -5255,9 +5603,12 @@ add_newdoc('numpy._core.umath', '_rjust',
     >>> np.strings.rjust(a, width=9)
     array(['   aAaAaA', '     aA  ', '  abBABba'], dtype='<U9')
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_zfill',
+add_newdoc(
+    "numpy._core.umath",
+    "_zfill",
     """
     Return the numeric string left-filled with zeros. A leading
     sign prefix (``+``/``-``) is handled by inserting the padding
@@ -5288,9 +5639,12 @@ add_newdoc('numpy._core.umath', '_zfill',
     >>> np.strings.zfill(['1', '-1', '+1'], 3)
     array(['001', '-01', '+01'], dtype='<U3')
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_partition_index',
+add_newdoc(
+    "numpy._core.umath",
+    "_partition_index",
     """
     Partition each element in ``x1`` around ``x2``, at precomputed
     index ``x3``.
@@ -5338,9 +5692,12 @@ add_newdoc('numpy._core.umath', '_partition_index',
      array([' '], dtype='<U1'),
      array(['is nice!'], dtype='<U8'))
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_rpartition_index',
+add_newdoc(
+    "numpy._core.umath",
+    "_rpartition_index",
     """
     Partition each element in ``x1`` around the right-most separator,
     ``x2``, at precomputed index ``x3``.
@@ -5388,9 +5745,12 @@ add_newdoc('numpy._core.umath', '_rpartition_index',
      array(['A', 'A', 'A'], dtype='<U1'),
      array(['', '  ', 'Bba'], dtype='<U3'))
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_partition',
+add_newdoc(
+    "numpy._core.umath",
+    "_partition",
     """
     Partition each element in ``x1`` around ``x2``.
 
@@ -5432,9 +5792,12 @@ add_newdoc('numpy._core.umath', '_partition',
      array([' '], dtype=StringDType()),
      array(['is nice!'], dtype=StringDType()))
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_rpartition',
+add_newdoc(
+    "numpy._core.umath",
+    "_rpartition",
     """
     Partition each element in ``x1`` around the right-most separator,
     ``x2``.
@@ -5477,9 +5840,12 @@ add_newdoc('numpy._core.umath', '_rpartition',
      array(['A', 'A', 'A'], dtype=StringDType()),
      array(['', '  ', 'Bba'], dtype=StringDType()))
 
-    """)
+    """,
+)
 
-add_newdoc('numpy._core.umath', '_slice',
+add_newdoc(
+    "numpy._core.umath",
+    "_slice",
     """
     Slice the strings in `a` by slices specified by `start`, `stop`, `step`.
     Like in the regular Python `slice` object, if only `start` is
@@ -5516,4 +5882,5 @@ add_newdoc('numpy._core.umath', '_slice',
     >>> np.strings.slice(a, 2)
     array(['he', 'wo'], dtype='<U5')
 
-    """)
+    """,
+)

@@ -44,7 +44,7 @@
 
 // NPY_2_0_API_VERSION 0x00000012 is defined in numpy-2
 // inside numpy/_core/include/numpy/numpyconfig.h
-#if NPY_API_VERSION >= 0x00000012 
+#if NPY_API_VERSION >= 0x00000012
     #define USE_NUMPY_2
 #endif
 
@@ -158,8 +158,8 @@ static inline npy_float spacingf(npy_float x) {
 }
 
 #if defined(_MSC_VER) && defined(__INTEL_COMPILER)
-extern __inline float __cdecl ldexpf( float _X, int _Y) { 
-    return (float)ldexp(_X, _Y); 
+extern __inline float __cdecl ldexpf( float _X, int _Y) {
+    return (float)ldexp(_X, _Y);
 }
 #endif
 
@@ -228,7 +228,7 @@ divmod@c@(@type@ a, @type@ b, @type@ *modulus)
  * Float types
  * #type = npy_float, npy_double#
  * #TYPE = FLOAT, DOUBLE#
- * #c = f, # 
+ * #c = f, #
  * #s = s, d#
  */
 
@@ -356,7 +356,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
                         for(j = 0; j < j_max; j++) {
                             op1_shifted[j] = ip1_aligned[j] @OP@ ip2_shifted[j];
                         }
-                    } 
+                    }
                     else {
                         NPY_ASSUME_ALIGNED(ip1_aligned, 64)
                         for(j = 0; j < j_max; j++) {
@@ -372,12 +372,12 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
                 op1[i] = ip1[i] @OP@ ip2[i];
             }
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S1(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same2) {
             CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], @OP@1.0, *(@type@*)args[0], 0.0, 1.0);
             /* v@s@LinearFrac(dimensions[0], (@type@*) args[1], (@type@*) args[1], @OP@1.0, *(@type@*)args[0], 0.0, 1.0, (@type@*) args[2]); */
-        } 
+        }
         else {
             @type@ *ip1 = (@type@*)args[0];
             @type@ *ip2 = (@type@*)args[1];
@@ -412,7 +412,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
                 op1[i] = ip1c @OP@ ip2[i];
             }
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S2(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1) {
             CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], 1.0, @OP@(*(@type@*)args[1]), 0.0, 1.0);
@@ -452,7 +452,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
                 op1[i] = ip1[i] @OP@ ip2c;
             }
         }
-    } 
+    }
     else if (IS_BINARY_REDUCE) {
 #if @PW@
         @type@ * iop1 = (@type@ *)args[0];
@@ -465,7 +465,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
         }
         *((@type@ *)iop1) = io1;
 #endif
-    } 
+    }
     else {
         BINARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
@@ -515,7 +515,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
                         for(j = 0; j < j_max; j++) {
                             op1_shifted[j] = ip1_aligned[j] * ip2_shifted[j];
                         }
-                    } 
+                    }
                     else {
                         NPY_ASSUME_ALIGNED(ip1_aligned, 64)
                         for(j = 0; j < j_max; j++) {
@@ -531,7 +531,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
                 op1[i] = ip1[i] * ip2[i];
             }
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S1(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same2) {
             CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[1], args[2], *(@type@*)args[0], 0.0, 0.0, 1.0);
@@ -571,7 +571,7 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
                 op1[i] = ip1c * ip2[i];
             }
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S2(@type@, @type@)) {
         if (dimensions[0] > VML_ASM_THRESHOLD && disjoint_or_same1) {
             CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, dimensions[0], @type@, args[0], args[2], *(@type@*)args[1], 0.0, 0.0, 1.0);
@@ -611,13 +611,13 @@ mkl_umath_@TYPE@_multiply(char **args, const npy_intp *dimensions, const npy_int
                 op1[i] = ip1[i] * ip2c;
             }
         }
-    } 
+    }
     else if (IS_BINARY_REDUCE) {
         BINARY_REDUCE_LOOP(@type@) {
             io1 *= *(@type@ *)ip2;
         }
         *((@type@ *)iop1) = io1;
-    } 
+    }
     else {
         BINARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
@@ -669,7 +669,7 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
                         for(j = 0; j < j_max; j++) {
                             op1_shifted[j] = ip1_aligned[j] / ip2_shifted[j];
                         }
-                    } 
+                    }
                     else {
                         NPY_ASSUME_ALIGNED(ip1_aligned, 64)
                         for(j = 0; j < j_max; j++) {
@@ -686,7 +686,7 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
                 op1[i] = ip1[i] / ip2[i];
             }
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S1(@type@, @type@)) {
         @type@ *ip1 = (@type@*)args[0];
         @type@ *ip2 = (@type@*)args[1];
@@ -721,7 +721,7 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
         for(; i < n; i++) {
             op1[i] = ip1c / ip2[i];
         }
-    } 
+    }
     else if (IS_BINARY_CONT_S2(@type@, @type@)) {
         @type@ *ip1 = (@type@*)args[0];
         @type@ *ip2 = (@type@*)args[1];
@@ -756,13 +756,13 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
         for(; i < n; i++) {
             op1[i] = ip1[i] / ip2c;
         }
-    } 
+    }
     else if (IS_BINARY_REDUCE) {
         BINARY_REDUCE_LOOP(@type@) {
             io1 /= *(@type@ *)ip2;
         }
         *((@type@ *)iop1) = io1;
-    } 
+    }
     else {
         BINARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
@@ -884,7 +884,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
         ignore_fpstatus = 1;
         CHUNKED_VML_CALL2(v@s@@VML@, dimensions[0], @type@, @type@, @type@, args[0], args[1]);
         /* v@s@Exp(dimensions[0], (@type@*) args[0], (@type@*) args[1]); */
-    } 
+    }
     else {
         UNARY_LOOP_DISPATCH(
             @type@, @type@
@@ -1193,7 +1193,7 @@ mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_i
  * #mkl_type = MKL_Complex8, MKL_Complex16#
  * #mkl_ftype = float, double#
  * #c = f, #
- * #C = F, # 
+ * #C = F, #
  * #s = c, z#
  */
 
@@ -1280,7 +1280,7 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n, npy_intp st
  * #kind = add, subtract#
  * #OP = +, -#
  * #PW = 1, 0#
- * #VML = Add, Sub# 
+ * #VML = Add, Sub#
  */
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
@@ -1294,7 +1294,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
         CHUNKED_VML_CALL3(v@s@@VML@, dimensions[0], @type@, @mkl_type@, args[0], args[1], args[2]);
         /* v@s@@VML@(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1], (@mkl_type@*) args[2]); */
     }
-    else { 
+    else {
         if (IS_BINARY_REDUCE && @PW@) {
             npy_intp n = dimensions[0];
             @ftype@ * or = ((@ftype@ *)args[0]);
@@ -1305,7 +1305,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
             *or @OP@= rr;
             *oi @OP@= ri;
             return;
-        } 
+        }
         else {
             BINARY_LOOP {
                 const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -1350,13 +1350,13 @@ mkl_umath_@TYPE@_divide(char **args, const npy_intp *dimensions, const npy_intp 
     const int contig = IS_BINARY_CONT(@mkl_type@, @mkl_type@);
     const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], dimensions[0], sizeof(@type@));
     const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], dimensions[0], sizeof(@type@));
-    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;    
+    const int can_vectorize = contig && disjoint_or_same1 && disjoint_or_same2;
 
     if (can_vectorize && dimensions[0] > VML_D_THRESHOLD) {
         CHUNKED_VML_CALL3(v@s@Div, dimensions[0], @type@, @mkl_type@, args[0], args[1], args[2]);
         /* v@s@Div(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1], (@mkl_type@*) args[2]); */
     }
-    else {       
+    else {
         BINARY_LOOP {
             const @ftype@ in1r = ((@ftype@ *)ip1)[0];
             const @ftype@ in1i = ((@ftype@ *)ip1)[1];
@@ -1485,7 +1485,7 @@ mkl_umath_@TYPE@_reciprocal(char **args, const npy_intp *dimensions, const npy_i
             const @ftype@ d = in1r + in1i*r;
             ((@ftype@ *)op1)[0] = 1/d;
             ((@ftype@ *)op1)[1] = -r/d;
-        } 
+        }
         else {
             const @ftype@ r = in1r/in1i;
             const @ftype@ d = in1r*r + in1i;
@@ -1504,7 +1504,7 @@ mkl_umath_@TYPE@_conjugate(char **args, const npy_intp *dimensions, const npy_in
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
         CHUNKED_VML_CALL2(v@s@Conj, dimensions[0], @type@, @mkl_type@, @mkl_type@, args[0], args[1]);
         /* v@s@Conj(dimensions[0], (@mkl_type@*) args[0], (@mkl_type@*) args[1]); */
-    } 
+    }
     else {
         UNARY_LOOP {
             const @ftype@ in1r = ((@ftype@ *)ip1)[0];
@@ -1531,12 +1531,12 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     const int disjoint_or_same = DISJOINT_OR_SAME_TWO_DTYPES(args[0], args[1], dimensions[0], sizeof(@type@), sizeof(@ftype@));
     const int can_vectorize = contig && disjoint_or_same;
     int ignore_fpstatus = 0;
-    
+
     if (can_vectorize && dimensions[0] > VML_TRANSCEDENTAL_THRESHOLD) {
         ignore_fpstatus = 1;
         CHUNKED_VML_CALL2(v@s@Abs, dimensions[0], @type@, @mkl_type@, @mkl_ftype@, args[0], args[1]);
         /* v@s@Abs(dimensions[0], (@mkl_type@*) args[0], (@mkl_ftype@*) args[1]); */
-    } 
+    }
     else {
         UNARY_LOOP {
             const @ftype@ in1r = ((@ftype@ *)ip1)[0];

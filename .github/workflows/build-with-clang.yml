@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        python: ["3.10", "3.11", "3.12", "3.13"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
         numpy_version: ["numpy'>=2'"]
 
     env:
@@ -65,8 +65,8 @@ jobs:
       - name: Build mkl_umath
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
-          echo $CMPLR_ROOT
-          export CC=$CMPLR_ROOT/bin/icx
+          echo "$CMPLR_ROOT"
+          export CC="$CMPLR_ROOT/bin/icx"
           export CFLAGS="${CFLAGS} -fno-fast-math -O2"
           pip install . --no-build-isolation --no-deps --verbose
 
@@ -74,7 +74,7 @@ jobs:
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
-          # mkl_umath cannot be installed in editable mode, we need 
+          # mkl_umath cannot be installed in editable mode, we need
           # to change directory before importing it and running tests
           cd ..
           python -m pytest -sv --pyargs mkl_umath/mkl_umath/tests

@@ -1,0 +1,7 @@
+# $ git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# Added pre-commit hooks
+60f34a1214507aa3ebde022849ec617405764847
+
+# added more linters
+3a3df3fae1574558973e3829368dc8a7b9c76ad9

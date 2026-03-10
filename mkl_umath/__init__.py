@@ -33,7 +33,9 @@ from ._patch_numpy import (
     is_patched,
     mkl_umath,
     patch_numpy_umath,
+    restore,
     restore_numpy_umath,
+    use_in_numpy,
 )
 from ._ufuncs import *
 from ._version import __version__

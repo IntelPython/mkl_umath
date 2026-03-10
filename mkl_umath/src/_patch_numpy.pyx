@@ -27,7 +27,6 @@
 # cython: language_level=3
 
 import warnings
-
 from contextlib import ContextDecorator
 from threading import Lock, local
 

@@ -7,13 +7,13 @@ Entry point for agent context in this repo.
 
 It provides:
 - `mkl_umath._ufuncs` — OneMKL-backed NumPy ufunc loops
-- `mkl_umath._patch` — runtime patching interface (`use_in_numpy()`, `restore()`, `is_patched()`)
+- `mkl_umath._patch_numpy` — runtime patching interface (`patch_numpy_umath` `restore_numpy_umath`, `is_patched()`)
 - Performance-optimized math operations (sin, cos, exp, log, etc.) using Intel MKL VM
 
 ## Key components
 - **Python interface:** `mkl_umath/__init__.py`, `_init_helper.py`
 - **Core C implementation:** `mkl_umath/src/` (ufuncsmodule.c, mkl_umath_loops.c.src)
-- **Cython patch layer:** `mkl_umath/src/_patch.pyx`
+- **Cython patch layer:** `mkl_umath/src/_patch_numpy.pyx`
 - **Code generation:** `generate_umath.py`, `generate_umath_doc.py`
 - **Build system:** CMake (CMakeLists.txt) + scikit-build
 
@@ -49,9 +49,9 @@ CC=${CC:-icx} pip install --no-build-isolation --no-deps .  # clang is also supp
 ## Usage
 ```python
 import mkl_umath
-mkl_umath.use_in_numpy()  # Patch NumPy to use MKL loops
+mkl_umath.patch_numpy_umath()    # Patch NumPy to use MKL loops
 # ... perform NumPy operations (now accelerated) ...
-mkl_umath.restore()       # Restore original NumPy loops
+mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 ```
 
 ## How to work in this repo

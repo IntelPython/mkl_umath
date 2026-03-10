@@ -26,7 +26,7 @@
 import numpy as np
 import pytest
 
-import mkl_umath._patch as mp  # pylint: disable=no-name-in-module
+import mkl_umath
 import mkl_umath._ufuncs as mu  # pylint: disable=no-name-in-module
 
 np.random.seed(42)
@@ -63,8 +63,8 @@ umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
 mkl_cases = {}
 fall_back_cases = {}
 for umath in umaths:
-    mkl_umath = getattr(mu, umath)
-    types = mkl_umath.types
+    _mkl_umath = getattr(mu, umath)
+    types = _mkl_umath.types
     size_mkl = 8192 + 1
     for type_ in types:
         args_str = type_[: type_.find("->")]
@@ -102,10 +102,10 @@ def get_id(val):
 def test_mkl_umath(case):
     umath, _ = case
     args = test_mkl[case]
-    mkl_umath = getattr(mu, umath)
+    _mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
 
-    mkl_res = mkl_umath(*args)
+    mkl_res = _mkl_umath(*args)
     np_res = np_umath(*args)
 
     assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"
@@ -115,10 +115,10 @@ def test_mkl_umath(case):
 def test_fall_back_umath(case):
     umath, _ = case
     args = test_fall_back[case]
-    mkl_umath = getattr(mu, umath)
+    _mkl_umath = getattr(mu, umath)
     np_umath = getattr(np, umath)
 
-    mkl_res = mkl_umath(*args)
+    mkl_res = _mkl_umath(*args)
     np_res = np_umath(*args)
 
     assert np.allclose(mkl_res, np_res), f"Results for '{umath}' do not match"
@@ -193,11 +193,11 @@ def test_reduce_complex(func, dtype):
 
 
 def test_patch():
-    mp.restore()
-    assert not mp.is_patched()
+    mkl_umath.restore_numpy_umath()
+    assert not mkl_umath.is_patched()
 
-    mp.use_in_numpy()  # Enable mkl_umath in Numpy
-    assert mp.is_patched()
+    mkl_umath.patch_numpy_umath()  # Enable mkl_umath in Numpy
+    assert mkl_umath.is_patched()
 
-    mp.restore()  # Disable mkl_umath in Numpy
-    assert not mp.is_patched()
+    mkl_umath.restore_numpy_umath()  # Disable mkl_umath in Numpy
+    assert not mkl_umath.is_patched()

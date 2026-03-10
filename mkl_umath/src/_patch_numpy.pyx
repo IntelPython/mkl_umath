@@ -26,6 +26,9 @@
 # distutils: language = c
 # cython: language_level=3
 
+from contextlib import ContextDecorator
+from threading import Lock, local
+
 import mkl_umath._ufuncs as mu
 
 cimport numpy as cnp
@@ -36,30 +39,26 @@ from libc.stdlib cimport free, malloc
 
 cnp.import_umath()
 
-
 ctypedef struct function_info:
     cnp.PyUFuncGenericFunction original_function
     cnp.PyUFuncGenericFunction patch_function
     int* signature
 
 
-cdef class patch:
+cdef class _patch_impl:
     cdef int functions_count
     cdef function_info* functions
-    cdef bint _is_patched
 
     functions_dict = dict()
 
     def __cinit__(self):
         cdef int pi, oi
 
-        self._is_patched = False
-
         umaths = [i for i in dir(mu) if isinstance(getattr(mu, i), np.ufunc)]
         self.functions_count = 0
         for umath in umaths:
-            mkl_umath = getattr(mu, umath)
-            self.functions_count += mkl_umath.ntypes
+            mkl_umath_func = getattr(mu, umath)
+            self.functions_count += mkl_umath_func.ntypes
 
         self.functions = <function_info *> malloc(
             self.functions_count * sizeof(function_info)
@@ -115,7 +114,7 @@ cdef class patch:
         free(self.functions)
 
     def do_patch(self):
-        cdef int _res
+        cdef int res
         cdef cnp.PyUFuncGenericFunction temp
         cdef cnp.PyUFuncGenericFunction function
         cdef int* signature
@@ -126,14 +125,16 @@ cdef class patch:
             function = self.functions[index].patch_function
             signature = self.functions[index].signature
             # TODO: check res, 0 means success, -1 means error
-            _res = cnp.PyUFunc_ReplaceLoopBySignature(
+            res = cnp.PyUFunc_ReplaceLoopBySignature(
                 <cnp.ufunc>np_umath, function, signature, &temp
             )
-
-        self._is_patched = True
+            if res != 0:
+                raise RuntimeError(
+                    f"Failed to patch {func[0]} with signature {func[1]}"
+                )
 
     def do_unpatch(self):
-        cdef int _res
+        cdef int res
         cdef cnp.PyUFuncGenericFunction temp
         cdef cnp.PyUFuncGenericFunction function
         cdef int* signature
@@ -143,109 +144,143 @@ cdef class patch:
             index = self.functions_dict[func]
             function = self.functions[index].original_function
             signature = self.functions[index].signature
-            # TODO: check res, 0 means success, -1 means error
-            _res = cnp.PyUFunc_ReplaceLoopBySignature(
+            res = cnp.PyUFunc_ReplaceLoopBySignature(
                 <cnp.ufunc>np_umath, function, signature, &temp
             )
+            if res != 0:
+                raise RuntimeError(
+                    f"Failed to restore {func[0]} with signature {func[1]}"
+                )
 
-        self._is_patched = False
+
+class _GlobalPatch:
+    def __init__(self):
+        self._lock = Lock()
+        self._patch_count = 0
+        self._tls = local()
+        self._patcher = None
+
+    def do_patch(self, verbose=False):
+        with self._lock:
+            local_count = getattr(self._tls, "local_count", 0)
+            if self._patch_count == 0:
+                if verbose:
+                    print(
+                        "Now patching NumPy FFT submodule with mkl_fft NumPy "
+                        "interface."
+                    )
+                    print(
+                        "Please direct bug reports to "
+                        "https://github.com/IntelPython/mkl_fft"
+                    )
+                if self._patcher is None:
+                    # lazy initialization of the patcher to save memory
+                    self._patcher = _patch_impl()
+                self._patcher.do_patch()
+
+            self._patch_count += 1
+            self._tls.local_count = local_count + 1
+
+    def do_restore(self, verbose=False):
+        with self._lock:
+            local_count = getattr(self._tls, "local_count", 0)
+            if local_count <= 0:
+                if verbose:
+                    print(
+                        "Warning: restore_numpy_umath called more times than "
+                        "patch_numpy_fft in this thread."
+                    )
+                return
+            self._tls.local_count -= 1
+            self._patch_count -= 1
+            if self._patch_count == 0:
+                if verbose:
+                    print("Now restoring original NumPy loops.")
+                self._patcher.do_unpatch()
 
     def is_patched(self):
-        return self._is_patched
-
-from threading import local as threading_local
-
-_tls = threading_local()
+        with self._lock:
+            return self._patch_count > 0
 
 
-def _is_tls_initialized():
-    return getattr(_tls, "initialized", False)
+_patch = _GlobalPatch()
 
 
-def _initialize_tls():
-    _tls.patch = patch()
-    _tls.initialized = True
-
-
-def use_in_numpy():
+def patch_numpy_umath(verbose=False):
     """
-    Enables using of mkl_umath in Numpy.
+    Patch NumPy's ufuncs with mkl_umath's loops.
 
-    Examples
-    --------
-    >>> import mkl_umath
-    >>> mkl_umath.is_patched()
-    # False
+    Parameters
+    ----------
+    verbose : bool, optional
+        print message when starting the patching process.
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # True
+    Notes
+    -----
+    This function uses reference-counted semantics. Each call increments a
+    global patch counter. Restoration requires a matching number of calls
+    between `patch_numpy_umath` and `restore_numpy_umath`.
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # False
-
+    ⚠️ Warning
+    -------------------------
+    If used in a multi-threaded program, ALL concurrent threads executing NumPy
+    operations must either have applied the patch prior to execution, or run
+    entirely within the `mkl_umath` context manager. Executing standard NumPy
+    calls in one thread while another thread is actively patching or unpatching
+    will lead to undefined behavior at best, and segmentation faults at worst.
+    For this reason, it is recommended to prefer the `mkl_umath` context
+    manager.
     """
-    if not _is_tls_initialized():
-        _initialize_tls()
-    _tls.patch.do_patch()
+    _patch.do_patch(verbose=verbose)
 
 
-def restore():
+def restore_numpy_umath(verbose=False):
     """
-    Disables using of mkl_umath in Numpy.
+    Restore NumPy's ufuncs to the original loops.
 
-    Examples
-    --------
-    >>> import mkl_umath
-    >>> mkl_umath.is_patched()
-    # False
+    Parameters
+    ----------
+    verbose : bool, optional
+        print message when starting restoration process.
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # True
+    Notes
+    -----
+    This function uses reference-counted semantics. Each call decrements a
+    global patch counter. Restoration requires a matching number of calls
+    between `patch_numpy_umath` and `restore_numpy_umath`.
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # False
-
+    ⚠️ Warning
+    -------------------------
+    If used in a multi-threaded program, ALL concurrent threads executing NumPy
+    operations must either have applied the patch prior to execution, or run
+    entirely within the `mkl_umath` context manager. Executing standard NumPy
+    calls in one thread while another thread is actively patching or unpatching
+    will lead to undefined behavior at best, and segmentation faults at worst.
+    For this reason, it is recommended to prefer the `mkl_umath` context
+    manager.
     """
-    if not _is_tls_initialized():
-        _initialize_tls()
-    _tls.patch.do_unpatch()
+    _patch.do_restore(verbose=verbose)
 
 
 def is_patched():
-    """
-    Returns whether Numpy has been patched with mkl_umath.
-
-    Examples
-    --------
-    >>> import mkl_umath
-    >>> mkl_umath.is_patched()
-    # False
-
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # True
-
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
-    >>> mkl_umath.is_patched()
-    # False
-
-    """
-    if not _is_tls_initialized():
-        _initialize_tls()
-    return _tls.patch.is_patched()
-
-
-from contextlib import ContextDecorator
+    """Return True if NumPy umath loops have been patched by mkl_umath."""
+    return _patch.is_patched()
 
 
 class mkl_umath(ContextDecorator):
     """
     Context manager and decorator to temporarily patch NumPy ufuncs
     with MKL-based implementations.
+
+    ⚠️ Warning
+    -------------------------
+    If used in a multi-threaded program, ALL concurrent threads executing NumPy
+    operations must either have applied the patch prior to execution, or run
+    entirely within the `mkl_umath` context manager. Executing standard NumPy
+    calls in one thread while another thread is actively patching or unpatching
+    will lead to undefined behavior at best, and segmentation faults at worst.
+    For this reason, it is recommended to prefer the `mkl_umath` context
+    manager.
 
     Examples
     --------
@@ -259,12 +294,11 @@ class mkl_umath(ContextDecorator):
 
     >>> mkl_umath.is_patched()
     # False
-
     """
     def __enter__(self):
-        use_in_numpy()
+        patch_numpy_umath()
         return self
 
     def __exit__(self, *exc):
-        restore()
+        restore_numpy_umath()
         return False

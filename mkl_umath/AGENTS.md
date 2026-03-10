@@ -14,9 +14,9 @@ Core MKL-backed ufunc implementation: Python interface, Cython patching, and C/M
 
 ## Patching API
 ```python
-mkl_umath.use_in_numpy()  # Replace NumPy loops with MKL
-mkl_umath.restore()       # Restore original NumPy loops
-mkl_umath.is_patched()    # Check patch status
+mkl_umath.patch_numpy_umath()    # Replace NumPy loops with MKL
+mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
+mkl_umath.is_patched()           # Check patch status
 ```
 
 ## Development guardrails
@@ -31,6 +31,6 @@ mkl_umath.is_patched()    # Check patch status
 - Docstrings: dual NumPy 1.x/2.x support via separate docstring modules
 
 ## Notes
-- `_patch.pyx` is Cython; changes require Cython rebuild
+- `_patch_numpy.pyx` is Cython; changes require Cython rebuild
 - MKL VM loops in `src/mkl_umath_loops.c.src`
 - `src/ufuncsmodule.c` — NumPy ufunc registration and dispatch

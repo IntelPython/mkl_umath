@@ -7,7 +7,7 @@ Unit tests for MKL-backed ufuncs and NumPy patching.
 
 ## Test coverage
 - Ufunc correctness: compare MKL loops vs NumPy reference
-- Patching: `use_in_numpy()`, `restore()`, `is_patched()` state transitions
+- Patching: `patch_numpy_umath()`, `restore_numpy_umath()`, `is_patched()` state transitions
 - Edge cases: NaN, Inf, empty arrays, large arrays
 - Dtype coverage: float32, float64, complex64, complex128
 

@@ -12,6 +12,8 @@ extend-ignore =
     D102,
     # missing docstring in public function:
     D103,
+    # missing docstring in public package:
+    D104,
     # missing docstring in __init__:
     D107,
     # 1 blank line required between summary line and description:

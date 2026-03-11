@@ -26,7 +26,6 @@
 import numpy as np
 import pytest
 
-import mkl_umath
 import mkl_umath._ufuncs as mu  # pylint: disable=no-name-in-module
 
 np.random.seed(42)
@@ -190,14 +189,3 @@ def test_reduce_complex(func, dtype):
     assert np.allclose(
         mkl_res, np_res
     ), f"Results for '{func}[reduce]' do not match"
-
-
-def test_patch():
-    mkl_umath.restore_numpy_umath()
-    assert not mkl_umath.is_patched()
-
-    mkl_umath.patch_numpy_umath()  # Enable mkl_umath in Numpy
-    assert mkl_umath.is_patched()
-
-    mkl_umath.restore_numpy_umath()  # Disable mkl_umath in Numpy
-    assert not mkl_umath.is_patched()

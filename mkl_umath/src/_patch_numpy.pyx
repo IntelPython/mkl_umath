@@ -114,42 +114,47 @@ cdef class _patch_impl:
             free(self.functions[i].signature)
         free(self.functions)
 
-    def do_patch(self):
+    cdef int _replace_loop(
+        self,
+        object func,
+        cnp.PyUFuncGenericFunction function,
+    ) except -1:
         cdef int res
         cdef cnp.PyUFuncGenericFunction temp
-        cdef cnp.PyUFuncGenericFunction function
         cdef int* signature
 
+        np_umath = getattr(np, func[0])
+        index = self.functions_dict[func]
+        signature = self.functions[index].signature
+        res = cnp.PyUFunc_ReplaceLoopBySignature(
+            <cnp.ufunc>np_umath, function, signature, &temp
+        )
+        return res
+
+    def do_patch(self):
+        cdef int index
+
         for func in self.functions_dict:
-            np_umath = getattr(np, func[0])
             index = self.functions_dict[func]
-            function = self.functions[index].patch_function
-            signature = self.functions[index].signature
-            res = cnp.PyUFunc_ReplaceLoopBySignature(
-                <cnp.ufunc>np_umath, function, signature, &temp
-            )
-            if res != 0:
+            if self._replace_loop(
+                func, self.functions[index].patch_function
+            ) != 0:
                 raise RuntimeError(
-                    f"Failed to patch {func[0]} with signature {func[1]}"
+                    f"Failed to patch {func[0]} with signature {func[1]}. "
+                    "NumPy may be partially restored or in an invalid state."
                 )
 
     def do_unpatch(self):
-        cdef int res
-        cdef cnp.PyUFuncGenericFunction temp
-        cdef cnp.PyUFuncGenericFunction function
-        cdef int* signature
+        cdef int index
 
         for func in self.functions_dict:
-            np_umath = getattr(np, func[0])
             index = self.functions_dict[func]
-            function = self.functions[index].original_function
-            signature = self.functions[index].signature
-            res = cnp.PyUFunc_ReplaceLoopBySignature(
-                <cnp.ufunc>np_umath, function, signature, &temp
-            )
-            if res != 0:
+            if self._replace_loop(
+                func, self.functions[index].original_function
+            ) != 0:
                 raise RuntimeError(
-                    f"Failed to restore {func[0]} with signature {func[1]}"
+                    f"Failed to restore {func[0]} with signature {func[1]}. "
+                    "NumPy may be partially restored or in an invalid state."
                 )
 
 
@@ -190,12 +195,15 @@ class _GlobalPatch:
                         "patch_numpy_umath in this thread."
                     )
                 return
-            self._tls.local_count -= 1
-            self._patch_count -= 1
-            if self._patch_count == 0:
+
+            next_patch_count = self._patch_count - 1
+            if next_patch_count == 0:
                 if verbose:
                     print("Now restoring original NumPy loops.")
                 self._patcher.do_unpatch()
+
+            self._tls.local_count -= 1
+            self._patch_count = next_patch_count
 
     def is_patched(self):
         with self._lock:

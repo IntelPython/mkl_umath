@@ -23,7 +23,6 @@ cmake_print_variables(Python_NumPy_INCLUDE_DIRS)
 set(CYTHON_FLAGS "-t -w \"${CMAKE_SOURCE_DIR}\"")
 find_package(Cython REQUIRED)
 
-find_package(OpenMP REQUIRED)
 set(MKL_ARCH "intel64")
 set(MKL_LINK "dynamic")
 set(MKL_THREADING "intel_thread")

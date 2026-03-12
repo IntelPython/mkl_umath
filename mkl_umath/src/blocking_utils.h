@@ -42,14 +42,15 @@
 static NPY_INLINE npy_intp npy_aligned_block_offset(const void *addr,
                                                     const npy_uintp esize,
                                                     const npy_uintp alignment,
-                                                    const npy_uintp nvals) {
-  npy_uintp offset, peel;
+                                                    const npy_uintp nvals)
+{
+    npy_uintp offset, peel;
 
-  offset = (npy_uintp)addr & (alignment - 1);
-  peel = offset ? (alignment - offset) / esize : 0;
-  peel = (peel <= nvals) ? peel : nvals;
-  assert(peel <= NPY_MAX_INTP);
-  return (npy_intp)peel;
+    offset = (npy_uintp)addr & (alignment - 1);
+    peel = offset ? (alignment - offset) / esize : 0;
+    peel = (peel <= nvals) ? peel : nvals;
+    assert(peel <= NPY_MAX_INTP);
+    return (npy_intp)peel;
 }
 
 /*
@@ -75,11 +76,12 @@ static NPY_INLINE npy_intp npy_aligned_block_offset(const void *addr,
 static NPY_INLINE npy_intp npy_blocked_end(const npy_uintp peel,
                                            const npy_uintp esize,
                                            const npy_uintp vsz,
-                                           const npy_uintp nvals) {
-  npy_uintp ndiff = nvals - peel;
-  npy_uintp res = (ndiff - ndiff % (vsz / esize));
+                                           const npy_uintp nvals)
+{
+    npy_uintp ndiff = nvals - peel;
+    npy_uintp res = (ndiff - ndiff % (vsz / esize));
 
-  assert(nvals >= peel);
-  assert(res <= NPY_MAX_INTP);
-  return (npy_intp)(res);
+    assert(nvals >= peel);
+    assert(res <= NPY_MAX_INTP);
+    return (npy_intp)(res);
 }

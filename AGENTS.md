@@ -21,13 +21,12 @@ It provides:
 **Required:**
 - Compiler toolchain: Intel `icx` or `clang` (with Intel-only flags gated when using clang)
 - Intel® OneMKL (mkl-devel)
-- Intel® TBB (tbb-devel)
 - NumPy, Cython, scikit-build, cmake, ninja
 
 **Conda environment:**
 ```bash
 conda install -c https://software.repos.intel.com/python/conda \
-  mkl-devel tbb-devel dpcpp_linux-64 numpy-base \
+  mkl-devel dpcpp_linux-64 numpy-base \
   cmake ninja cython scikit-build
 export MKLROOT=$CONDA_PREFIX
 CC=${CC:-icx} pip install --no-build-isolation --no-deps .  # clang is also supported in CI

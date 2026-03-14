@@ -28,7 +28,6 @@ requirements:
       - scikit-build
       - python
       - mkl-devel
-      - tbb-devel
       - numpy
     run:
       - python

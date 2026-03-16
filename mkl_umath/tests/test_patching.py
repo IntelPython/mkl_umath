@@ -97,3 +97,14 @@ def test_patch_verbose():
 
     mkl_umath.restore_numpy_umath()
     assert not mkl_umath.is_patched()
+
+
+def test_patch_legacy_basic():
+    mkl_umath.restore()
+    assert not mkl_umath.is_patched()
+
+    mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    assert mkl_umath.is_patched()
+
+    mkl_umath.restore()  # Disable mkl_umath in Numpy
+    assert not mkl_umath.is_patched()

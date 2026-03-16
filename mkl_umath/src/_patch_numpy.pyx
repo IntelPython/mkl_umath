@@ -244,11 +244,11 @@ def patch_numpy_umath(verbose=False):
     >>> mkl_umath.is_patched()
     # False
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.patch_numpy_umath()  # Enable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
     # True
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.restore_numpy_umath()  # Disable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
     # False
     """
@@ -286,11 +286,11 @@ def restore_numpy_umath(verbose=False):
     >>> mkl_umath.is_patched()
     # False
 
-    >>> mkl_umath.use_in_numpy()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.patch_numpy_umath()  # Enable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
     # True
 
-    >>> mkl_umath.restore()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.restore_numpy_umath()  # Disable mkl_umath in Numpy
     >>> mkl_umath.is_patched()
     # False
     """
@@ -304,7 +304,7 @@ def use_in_numpy():
     See patch_numpy_umath for details and examples.
     """
     warnings.warn(
-        "use_in_numpy is deprecated since mkl_random 0.4.0 and will be removed "
+        "use_in_numpy is deprecated since mkl_umath 0.4.0 and will be removed "
         "in a future release. Use `patch_numpy_umath` instead.",
         DeprecationWarning,
         stacklevel=2,
@@ -319,7 +319,7 @@ def restore():
     See restore_numpy_umath for details and examples.
     """
     warnings.warn(
-        "restore is deprecated since mkl_random 0.4.0 and will be "
+        "restore is deprecated since mkl_umath 0.4.0 and will be "
         "removed in a future release. Use `restore_numpy_umath` instead.",
         DeprecationWarning,
         stacklevel=2,

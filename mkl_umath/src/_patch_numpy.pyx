@@ -328,7 +328,23 @@ def restore():
 
 
 def is_patched():
-    """Return True if NumPy umath loops have been patched by mkl_umath."""
+    """
+    Return True if NumPy umath loops have been patched by mkl_umath.
+
+    Examples
+    --------
+    >>> import mkl_umath
+    >>> mkl_umath.is_patched()
+    # False
+
+    >>> mkl_umath.patch_numpy_umath()  # Enable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # True
+
+    >>> mkl_umath.restore_numpy_umath()  # Disable mkl_umath in Numpy
+    >>> mkl_umath.is_patched()
+    # False
+    """
     return _patch.is_patched()
 
 

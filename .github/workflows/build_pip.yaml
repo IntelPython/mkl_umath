@@ -58,4 +58,4 @@ jobs:
           # mkl_umath cannot be installed in editable mode, we need
           # to change directory before importing it and running tests
           cd ..
-          python -m pytest -v mkl_umath/mkl_umath/tests
+          python -m pytest -v --pyargs mkl_umath

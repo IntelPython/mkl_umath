@@ -47,7 +47,7 @@ test:
     imports:
       - mkl_umath
       - mkl_umath._ufuncs
-      - mkl_umath._patch
+      - mkl_umath._patch_numpy
 
 about:
     home: http://github.com/IntelPython/mkl_umath

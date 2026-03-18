@@ -5,8 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [dev] - YYYY-MM-DD
+### Added
+* Added `patch_numpy_umath` and `restore_numpy_umath` functions for patching NumPy, and improved the patching implementation [gh-170](https://github.com/IntelPython/mkl_umath/pull/170)
+
 ### Fixed
 * Build with ICX compiler from 2026.0 release [gh-155](https://github.com/IntelPython/mkl_umath/pull/155)
+* `mkl_umath` now uses `intel_thread` for MKL threading to fix transient crashes during Python teardown when used in an environment with PyPI NumPy [gh-171](https://github.com/IntelPython/mkl_umath/pull/171)
+
+### Deprecated
+* Deprecated `use_in_numpy` and `restore` patching functions, to be removed in a future version. Using `patch_numpy_umath` and `restore_numpy_umath` is recommended instead [gh-170](https://github.com/IntelPython/mkl_umath/pull/170)
 
 ### Removed
 * Dropped support for Python 3.9 [gh-125](https://github.com/IntelPython/mkl_umath/pull/125)

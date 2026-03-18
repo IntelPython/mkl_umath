@@ -7,7 +7,7 @@ C/Cython implementation layer: MKL VM integration, ufunc loops, and NumPy patchi
 - **ufuncsmodule.h** — ufunc module public headers
 - **mkl_umath_loops.c.src** — MKL VM loop implementations (template, ~60k LOC)
 - **mkl_umath_loops.h.src** — loop function declarations (template)
-- **_patch.pyx** — Cython patching layer (runtime NumPy loop replacement)
+- **_patch_numpy.pyx** — Cython patching layer (runtime NumPy loop replacement)
 - **fast_loop_macros.h** — loop generation macros
 - **blocking_utils.h** — blocking/chunking utilities for large arrays
 
@@ -21,15 +21,16 @@ C/Cython implementation layer: MKL VM integration, ufunc loops, and NumPy patchi
 - Blocking strategy: chunk large arrays for cache efficiency
 - Error handling: MKL VM status → NumPy error state
 
-## Patching mechanism (_patch.pyx)
-- Cython extension exposing `use_in_numpy()`, `restore()`, `is_patched()`
+## Patching mechanism (_patch_numpy.pyx)
+- Cython extension exposing `patch_numpy_umath()`, `restore_numpy_umath()`,
+  `is_patched()`
 - Replaces function pointers in NumPy's ufunc loop tables
 - Thread-safe: guards against concurrent patching
 - Reversible: stores original pointers for restoration
 
 ## Build output
 - `mkl_umath_loops.c` → shared library (libmkl_umath_loops.so/.dll)
-- `_patch.pyx` → Python extension (_patch.*.so)
+- `_patch_numpy.pyx` → Python extension (_patch.*.so)
 - `ufuncsmodule.c` + `__umath_generated.c` → `_ufuncs` extension
 
 ## Development notes

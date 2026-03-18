@@ -189,11 +189,12 @@ class _GlobalPatch:
         with self._lock:
             local_count = getattr(self._tls, "local_count", 0)
             if local_count <= 0:
-                if verbose:
-                    print(
-                        "Warning: restore_numpy_umath called more times than "
-                        "patch_numpy_umath in this thread."
-                    )
+                warnings.warn(
+                    "restore_numpy_umath called more times than "
+                    "patch_numpy_umath in this thread.",
+                    RuntimeWarning,
+                    stacklevel=1,  # Cython does not add a stacklevel
+                )
                 return
 
             next_patch_count = self._patch_count - 1

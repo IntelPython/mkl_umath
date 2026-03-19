@@ -142,7 +142,7 @@ jobs:
         run: |
           CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
           PACKAGE_VERSION="$(python -c "${VER_SCRIPT1} ${VER_SCRIPT2}")"
-          conda create -n "${{ env.TEST_ENV_NAME }}" "${PACKAGE_NAME}=${PACKAGE_VERSION}" "python=${{ matrix.python }}" ${{ matrix.numpy }} "${CHANNELS[@]}" --only-deps --dry-run > lockfile
+          conda create -n "${{ env.TEST_ENV_NAME }}" "${PACKAGE_NAME}=${PACKAGE_VERSION}" "python=${{ matrix.python }}" "${{ matrix.numpy }}" "${CHANNELS[@]}" --only-deps --dry-run > lockfile
       - name: Display lockfile
         run: cat lockfile
 
@@ -166,7 +166,7 @@ jobs:
         run: |
           CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
           PACKAGE_VERSION="$(python -c "${VER_SCRIPT1} ${VER_SCRIPT2}")"
-          conda create -n "${{ env.TEST_ENV_NAME }}" "python=${{ matrix.python }}" ${{ matrix.numpy }} "$PACKAGE_NAME=${PACKAGE_VERSION}" pytest "${CHANNELS[@]}"
+          conda create -n "${{ env.TEST_ENV_NAME }}" "python=${{ matrix.python }}" "${{ matrix.numpy }}" "$PACKAGE_NAME=${PACKAGE_VERSION}" pytest "${CHANNELS[@]}"
           # Test installed packages
           conda list -n "${{ env.TEST_ENV_NAME }}"
 
@@ -184,7 +184,9 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
-
+    defaults:
+      run:
+        shell: cmd /C CALL {0}
     strategy:
       matrix:
         include:
@@ -237,13 +239,11 @@ jobs:
 
       - name: Install conda build
         run: |
-          conda activate
-          conda install -y conda-build
+          conda install -n base -y conda-build
           conda list -n base
 
       - name: Build conda package
         run: |
-          conda activate
           conda build --no-test --python ${{ matrix.python }} --numpy ${{ matrix.numpy }} -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels conda-recipe
 
       - name: Upload artifact
@@ -281,7 +281,6 @@ jobs:
           miniforge-version: latest
           activate-environment: ${{ env.TEST_ENV_NAME }}
           channels: conda-forge
-          conda-remove-defaults: "true"
           python-version: ${{ matrix.python }}
 
       - name: Install conda-index

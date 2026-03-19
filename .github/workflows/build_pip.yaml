@@ -48,14 +48,12 @@ jobs:
 
       - name: Build conda package
         run: |
-          pip install --no-cache-dir scikit-build cmake ninja cython
+          pip install --no-cache-dir meson-python ninja cython
           pip install --no-cache-dir numpy ${{ matrix.use_pre }}
-          echo "CONDA_PREFFIX is '${CONDA_PREFIX}'"
-          export MKLROOT=${CONDA_PREFIX}
           CC=icx pip install . --no-build-isolation --no-deps --verbose
           pip install --no-cache-dir pytest
           pip list
           # mkl_umath cannot be installed in editable mode, we need
           # to change directory before importing it and running tests
           cd ..
-          python -m pytest -v --pyargs mkl_umath
+          python -m pytest -sv --pyargs mkl_umath

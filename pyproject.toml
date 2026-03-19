@@ -24,12 +24,10 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "mesonpy"
 requires = [
-  "cmake",
+  "meson-python>=0.13.0",
   "ninja",
-  "scikit-build",
-  "setuptools>=77",
   "Cython",
   "numpy"
 ]
@@ -61,7 +59,7 @@ dependencies = ["numpy >=1.26.4", "mkl-service"]
 description = "Intel (R) MKL-based universal functions for NumPy arrays"
 dynamic = ["version"]
 keywords = ["mkl_umath"]
-license = "BSD-3-Clause"
+license = {text = "BSD-3-Clause"}
 name = "mkl_umath"
 readme = {file = "README.md", content-type = "text/markdown"}
 requires-python = ">=3.10,<3.15"
@@ -74,7 +72,8 @@ Download = "http://github.com/IntelPython/mkl_umath"
 Homepage = "http://github.com/IntelPython/mkl_umath"
 
 [tool.black]
-exclude = "_vendored/conv_template.py"
+extend-exclude = "(^|/)_vendored/"
+force-exclude = "(^|/)_vendored/"
 line-length = 80
 
 [tool.cython-lint]
@@ -87,12 +86,5 @@ force_grid_wrap = 0
 include_trailing_comma = true
 line_length = 80
 multi_line_output = 3
-skip = ["_vendored/conv_template.py"]
+skip = ["_vendored/conv_template.py", "_vendored/process_src_template.py"]
 use_parentheses = true
-
-[tool.setuptools]
-include-package-data = true
-packages = ["mkl_umath"]
-
-[tool.setuptools.dynamic]
-version = {attr = "mkl_umath._version.__version__"}

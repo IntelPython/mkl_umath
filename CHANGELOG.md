@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 * Added `patch_numpy_umath` and `restore_numpy_umath` functions for patching NumPy, and improved the patching implementation [gh-170](https://github.com/IntelPython/mkl_umath/pull/170)
 
+### Changed
+* Import ufuncs explicitly in `__init__.py` and add `__all__` to module [gh-177](https://github.com/IntelPython/mkl_umath/pull/177)
+
 ### Fixed
 * Build with ICX compiler from 2026.0 release [gh-155](https://github.com/IntelPython/mkl_umath/pull/155)
 * `mkl_umath` now uses `intel_thread` for MKL threading to fix transient crashes during Python teardown when used in an environment with PyPI NumPy [gh-171](https://github.com/IntelPython/mkl_umath/pull/171)

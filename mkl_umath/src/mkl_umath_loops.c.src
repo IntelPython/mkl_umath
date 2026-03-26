@@ -344,6 +344,37 @@ mkl_umath_@TYPE@_add(char **args, const npy_intp *dimensions, const npy_intp *st
     }
 
     /*
+     * Calculate memory overlap checks once - reused by multiple tiers
+     */
+    const int disjoint_or_same1 = DISJOINT_OR_SAME(src0, dst, len, sizeof(@type@));
+    const int disjoint_or_same2 = DISJOINT_OR_SAME(src1, dst, len, sizeof(@type@));
+
+    /*
+     * TIER 3a: Large arrays with scalar broadcast - use MKL VML LinearFrac
+     * For operations like array + scalar or scalar + array
+     * LinearFrac computes: out = scaleA * in + shiftA
+     * For add: out = 1.0 * array + scalar
+     */
+    // Pattern: scalar + array[i] (scalar is first argument with stride=0)
+    if (ssrc0 == 0 && ssrc1 == sizeof(@type@) && sdst == sizeof(@type@)) {
+        if (len >= VML_SIMPLE_OPS_THRESHOLD && disjoint_or_same2) {
+            // scalar + array[i]  →  1.0 * array[i] + scalar
+            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, len, @type@,
+                                       src1, dst, 1.0, *(@type@*)src0, 0.0, 1.0);
+            return;
+        }
+    }
+    // Pattern: array[i] + scalar (scalar is second argument with stride=0)
+    else if (ssrc1 == 0 && ssrc0 == sizeof(@type@) && sdst == sizeof(@type@)) {
+        if (len >= VML_SIMPLE_OPS_THRESHOLD && disjoint_or_same1) {
+            // array[i] + scalar  →  1.0 * array[i] + scalar
+            CHUNKED_VML_LINEARFRAC_CALL(v@s@LinearFrac, len, @type@,
+                                       src0, dst, 1.0, *(@type@*)src1, 0.0, 1.0);
+            return;
+        }
+    }
+
+    /*
      * TIER 3: Large arrays - use MKL VML
      * MKL's overhead is amortized, can use multi-threading
      */
@@ -352,9 +383,6 @@ mkl_umath_@TYPE@_add(char **args, const npy_intp *dimensions, const npy_intp *st
                                 sdst == sizeof(@type@));
 
     if (len >= VML_SIMPLE_OPS_THRESHOLD && is_contiguous) {
-        const int disjoint_or_same1 = DISJOINT_OR_SAME(src0, dst, len, sizeof(@type@));
-        const int disjoint_or_same2 = DISJOINT_OR_SAME(src1, dst, len, sizeof(@type@));
-
         if (disjoint_or_same1 && disjoint_or_same2) {
             CHUNKED_VML_CALL3(v@s@Add, len, @type@, @type@, src0, src1, dst);
             return;

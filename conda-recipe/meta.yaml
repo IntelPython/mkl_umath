@@ -9,7 +9,7 @@ source:
     path: ../
 
 build:
-    number: 4
+    number: 5
     script_env:
       - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:

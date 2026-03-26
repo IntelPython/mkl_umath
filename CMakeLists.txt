@@ -83,11 +83,17 @@ elseif(UNIX)
      "${WARNING_FLAGS}"
      "${SDL_FLAGS}"
    )
-   string(CONCAT PRECISION_FLAGS
-     "-fprotect-parens "
-     "-fimf-precision=high "
-     "-fno-fast-math "
-   )
+   if(CMAKE_C_COMPILER_ID MATCHES "Intel")
+     string(CONCAT PRECISION_FLAGS
+       "-fprotect-parens "
+       "-fimf-precision=high "
+       "-fno-fast-math "
+     )
+   else()
+     string(CONCAT PRECISION_FLAGS
+       "-fno-fast-math "
+     )
+   endif()
    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 ${CFLAGS} ${PRECISION_FLAGS}")
    set(CMAKE_C_FLAGS_DEBUG
      "${CMAKE_C_FLAGS_DEBUG} ${CFLAGS} -fno-fast-math -O0 -g1 -DDEBUG"
@@ -109,14 +115,21 @@ set_target_properties(${_trgt} PROPERTIES
     CMAKE_POSITION_INDEPENDENT_CODE ON
     C_STANDARD 99
 )
-target_include_directories(${_trgt} PUBLIC mkl_umath/src/ ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
+target_include_directories(${_trgt} PUBLIC mkl_umath/src/ mkl_umath/src/npyv/ ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
 target_link_libraries(${_trgt} PUBLIC MKL::MKL ${Python_LIBRARIES})
 target_link_options(${_trgt} PUBLIC ${_linker_options})
-target_compile_options(${_trgt} PUBLIC -fveclib=SVML)
-target_compile_options(${_trgt} PUBLIC -fvectorize)
-if(OPTIMIZATION_REPORT)
-  target_compile_options(${_trgt} PRIVATE -qopt-report=3)
+# Compiler-specific vectorization flags
+if(CMAKE_C_COMPILER_ID MATCHES "Intel")
+  target_compile_options(${_trgt} PUBLIC -fveclib=SVML)
+  target_compile_options(${_trgt} PUBLIC -fvectorize)
+  if(OPTIMIZATION_REPORT)
+    target_compile_options(${_trgt} PRIVATE -qopt-report=3)
+  endif()
 endif()
+# Enable AVX2 for npyv SIMD acceleration
+# -mvzeroupper: Prefer VEX encoding even for scalar ops
+# -mtune=native: Optimize for build machine (can change to -mtune=haswell for generic AVX2)
+target_compile_options(${_trgt} PUBLIC -mavx2 -mfma -mvzeroupper)
 install(TARGETS ${_trgt}
   LIBRARY DESTINATION mkl_umath
   ARCHIVE DESTINATION mkl_umath

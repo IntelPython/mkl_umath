@@ -253,7 +253,7 @@ divmod@c@(@type@ a, @type@ b, @type@ *modulus)
 #pragma intel optimization_level 2
 #endif
 #endif
-static @type@
+static inline @type@
 pairwise_sum_@TYPE@(char *a, npy_intp n, npy_intp stride)
 {
     if (n < 8) {
@@ -329,6 +329,16 @@ mkl_umath_@TYPE@_add(char **args, const npy_intp *dimensions, const npy_intp *st
     npy_intp len = dimensions[0];
     char *src0 = args[0], *src1 = args[1], *dst = args[2];
     npy_intp ssrc0 = steps[0], ssrc1 = steps[1], sdst = steps[2];
+
+    /*
+     * REDUCTION: For np.sum() operations
+     * Check FIRST, before any size-based optimizations
+     * Uses pairwise summation for numerical accuracy (O(log n) error vs O(n))
+     */
+    if (IS_BINARY_REDUCE) {
+        *((@type@*)src0) += pairwise_sum_@TYPE@(src1, len, ssrc1);
+        return;
+    }
 
     /*
      * TIER 1: Tiny arrays - simple scalar loop

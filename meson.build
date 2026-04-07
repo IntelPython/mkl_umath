@@ -83,7 +83,7 @@ mkl_dep = dependency('MKL', method: 'cmake',
         '-DMKL_THREADING=intel_thread',
         '-DMKL_INTERFACE=lp64'
     ],
-    required: false
+    required: true
 )
 
 # generate loops, similar to numpy

@@ -1,6 +1,6 @@
 project(
     'mkl_umath',
-    ['c', 'cpp', 'cython'],
+    ['c', 'cython'],
     version: run_command(
         'python', '-c',
         'import os; exec(open("mkl_umath/_version.py").read()); print(__version__)',

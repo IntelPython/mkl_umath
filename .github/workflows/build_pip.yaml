@@ -48,7 +48,7 @@ jobs:
 
       - name: Build conda package
         run: |
-          pip install --no-cache-dir meson-python ninja cython
+          pip install --no-cache-dir meson-python ninja cmake cython
           pip install --no-cache-dir numpy ${{ matrix.use_pre }}
           CC=icx pip install . --no-build-isolation --no-deps --verbose
           pip install --no-cache-dir pytest

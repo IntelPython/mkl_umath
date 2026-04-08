@@ -55,7 +55,7 @@ jobs:
 
       - name: Install mkl_umath dependencies
         run: |
-          pip install meson-python ninja cython mkl-service
+          pip install meson-python ninja cython cmake mkl-service
           pip install ${{ matrix.numpy_version }}
 
       - name: List oneAPI folder content

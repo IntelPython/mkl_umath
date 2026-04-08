@@ -24,7 +24,7 @@ requirements:
     host:
       - meson-python >=0.13.0
       - meson
-      - pkg-config
+      - cmake
       - ninja
       - git
       - cython

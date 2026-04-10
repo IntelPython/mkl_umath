@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * Import ufuncs explicitly in `__init__.py` and add `__all__` to module [gh-177](https://github.com/IntelPython/mkl_umath/pull/177)
 * Made conda recipe dependency on numpy configurable through `USE_NUMPY_BASE` environment variable [gh-181](https://github.com/IntelPython/mkl_umath/pull/181)
+* Removed `mkl-service` as a dependency in favor of `mkl`, as `mkl-service` is not used in `mkl_umath` directly [gh-188](https://github.com/IntelPython/mkl_umath/pull/188)
 
 ### Fixed
 * Build with ICX compiler from 2026.0 release [gh-155](https://github.com/IntelPython/mkl_umath/pull/155)

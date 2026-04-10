@@ -57,7 +57,7 @@ classifiers = [
   "Operating System :: POSIX",
   "Operating System :: Unix"
 ]
-dependencies = ["numpy >=1.26.4", "mkl-service"]
+dependencies = ["numpy >=1.26.4", "mkl"]
 description = "Intel (R) MKL-based universal functions for NumPy arrays"
 dynamic = ["version"]
 keywords = ["mkl_umath"]

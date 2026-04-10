@@ -40,7 +40,7 @@ requirements:
     run:
       - python
       - python-gil     # [py>=314]
-      - mkl-service
+      - {{ pin_compatible('mkl') }}
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
       {% if use_numpy_base %}
       - numpy-base

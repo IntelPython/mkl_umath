@@ -8,3 +8,6 @@
 
 # Move to clang-format-22
 85e977ffa438851fda6f9d2314810bca278998b1
+
+# fix linting in conda-package-cf
+2d492495f37b5c3a7f7f1c9fe12bf9025aeb22e7

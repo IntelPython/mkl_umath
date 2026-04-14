@@ -9,7 +9,7 @@ source:
     path: ../
 
 build:
-    number: 6
+    number: {{ GIT_DESCRIBE_NUMBER }}
     script_env:
       - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:
@@ -20,7 +20,7 @@ requirements:
       - {{ compiler('c') }}
       - {{ compiler('cxx') }}
       - {{ stdlib('c') }}
-      - {{ compiler('dpcpp') }} 2025.3.0  # [not osx]
+      - {{ compiler('dpcpp') }} >=2024.2 # [not osx]
     host:
       - setuptools >=77
       - cmake

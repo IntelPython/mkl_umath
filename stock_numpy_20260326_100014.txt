@@ -1,0 +1,812 @@
+=====================================
+Environment: stock_numpy (npbench_numpy)
+Timestamp: 20260326_100014
+Total benchmarks: 53
+=====================================
+
+
+======================================
+Benchmark: adi (1/53)
+Started at: Thu Mar 26 10:00:14 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with adi on the L dataset *****
+NumPy - default - first/validation: 698ms
+NumPy - default - median: 688ms
+SUCCESS: adi completed
+Completed at: Thu Mar 26 10:00:23 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: arc_distance (2/53)
+Started at: Thu Mar 26 10:00:23 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with arc_distance on the L dataset *****
+NumPy - default - first/validation: 481ms
+NumPy - default - median: 482ms
+SUCCESS: arc_distance completed
+Completed at: Thu Mar 26 10:00:31 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: atax (3/53)
+Started at: Thu Mar 26 10:00:31 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with atax on the L dataset *****
+NumPy - default - first/validation: 100ms
+NumPy - default - median: 86ms
+SUCCESS: atax completed
+Completed at: Thu Mar 26 10:00:56 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: azimint_hist (4/53)
+Started at: Thu Mar 26 10:00:56 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with azimint_hist on the L dataset *****
+NumPy - default - first/validation: 654ms
+NumPy - default - median: 654ms
+SUCCESS: azimint_hist completed
+Completed at: Thu Mar 26 10:01:07 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: bicg (5/53)
+Started at: Thu Mar 26 10:01:07 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with bicg on the L dataset *****
+NumPy - default - first/validation: 87ms
+NumPy - default - median: 86ms
+SUCCESS: bicg completed
+Completed at: Thu Mar 26 10:01:32 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: cavity_flow (6/53)
+Started at: Thu Mar 26 10:01:32 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with cavity_flow on the L dataset *****
+NumPy - default - first/validation: 462ms
+NumPy - default - median: 470ms
+SUCCESS: cavity_flow completed
+Completed at: Thu Mar 26 10:01:38 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: channel_flow (7/53)
+Started at: Thu Mar 26 10:01:38 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with channel_flow on the L dataset *****
+NumPy - default - first/validation: 5000ms
+NumPy - default - median: 5044ms
+SUCCESS: channel_flow completed
+Completed at: Thu Mar 26 10:02:44 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: cholesky (8/53)
+Started at: Thu Mar 26 10:02:44 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with cholesky on the L dataset *****
+NumPy - default - first/validation: 445ms
+NumPy - default - median: 442ms
+SUCCESS: cholesky completed
+Completed at: Thu Mar 26 10:02:50 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: cholesky2 (9/53)
+Started at: Thu Mar 26 10:02:50 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with cholesky2 on the L dataset *****
+NumPy - default - first/validation: 1865ms
+NumPy - default - median: 1888ms
+SUCCESS: cholesky2 completed
+Completed at: Thu Mar 26 10:03:19 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: compute (10/53)
+Started at: Thu Mar 26 10:03:19 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with compute on the L dataset *****
+NumPy - default - first/validation: 1697ms
+NumPy - default - median: 1696ms
+SUCCESS: compute completed
+Completed at: Thu Mar 26 10:03:57 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: contour_integral (11/53)
+Started at: Thu Mar 26 10:03:57 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with contour_integral on the L dataset *****
+NumPy - default - first/validation: 3120ms
+NumPy - default - median: 3031ms
+SUCCESS: contour_integral completed
+Completed at: Thu Mar 26 10:04:40 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: conv2d_bias (12/53)
+Started at: Thu Mar 26 10:04:40 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with conv2d_bias on the L dataset *****
+NumPy - default - first/validation: 781ms
+NumPy - default - median: 772ms
+SUCCESS: conv2d_bias completed
+Completed at: Thu Mar 26 10:04:50 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: correlation (13/53)
+Started at: Thu Mar 26 10:04:50 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with correlation on the L dataset *****
+NumPy - default - first/validation: 859ms
+NumPy - default - median: 910ms
+SUCCESS: correlation completed
+Completed at: Thu Mar 26 10:05:03 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: covariance (14/53)
+Started at: Thu Mar 26 10:05:03 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with covariance on the L dataset *****
+NumPy - default - first/validation: 707ms
+NumPy - default - median: 838ms
+SUCCESS: covariance completed
+Completed at: Thu Mar 26 10:05:15 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: covariance2 (15/53)
+Started at: Thu Mar 26 10:05:15 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with covariance2 on the L dataset *****
+NumPy - default - first/validation: 133ms
+NumPy - default - median: 134ms
+SUCCESS: covariance2 completed
+Completed at: Thu Mar 26 10:05:18 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: crc16 (16/53)
+Started at: Thu Mar 26 10:05:18 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with crc16 on the L dataset *****
+NumPy - default - first/validation: 189ms
+NumPy - default - median: 191ms
+SUCCESS: crc16 completed
+Completed at: Thu Mar 26 10:05:21 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: deriche (17/53)
+Started at: Thu Mar 26 10:05:21 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with deriche on the L dataset *****
+NumPy - default - first/validation: 637ms
+NumPy - default - median: 625ms
+SUCCESS: deriche completed
+Completed at: Thu Mar 26 10:05:30 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: doitgen (18/53)
+Started at: Thu Mar 26 10:05:30 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with doitgen on the L dataset *****
+NumPy - default - first/validation: 2078ms
+NumPy - default - median: 1612ms
+SUCCESS: doitgen completed
+Completed at: Thu Mar 26 10:05:53 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: durbin (19/53)
+Started at: Thu Mar 26 10:05:53 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with durbin on the L dataset *****
+NumPy - default - first/validation: 1514ms
+NumPy - default - median: 1634ms
+SUCCESS: durbin completed
+Completed at: Thu Mar 26 10:06:17 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: fdtd_2d (20/53)
+Started at: Thu Mar 26 10:06:17 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with fdtd_2d on the L dataset *****
+NumPy - default - first/validation: 775ms
+NumPy - default - median: 739ms
+SUCCESS: fdtd_2d completed
+Completed at: Thu Mar 26 10:06:27 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: floyd_warshall (21/53)
+Started at: Thu Mar 26 10:06:27 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with floyd_warshall on the L dataset *****
+NumPy - default - first/validation: 691ms
+NumPy - default - median: 691ms
+SUCCESS: floyd_warshall completed
+Completed at: Thu Mar 26 10:06:36 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: gemm (22/53)
+Started at: Thu Mar 26 10:06:36 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with gemm on the L dataset *****
+NumPy - default - first/validation: 536ms
+NumPy - default - median: 532ms
+SUCCESS: gemm completed
+Completed at: Thu Mar 26 10:06:52 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: gemver (23/53)
+Started at: Thu Mar 26 10:06:52 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with gemver on the L dataset *****
+NumPy - default - first/validation: 766ms
+NumPy - default - median: 775ms
+SUCCESS: gemver completed
+Completed at: Thu Mar 26 10:07:07 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: gesummv (24/53)
+Started at: Thu Mar 26 10:07:07 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with gesummv on the L dataset *****
+NumPy - default - first/validation: 885ms
+NumPy - default - median: 909ms
+SUCCESS: gesummv completed
+Completed at: Thu Mar 26 10:07:36 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: go_fast (25/53)
+Started at: Thu Mar 26 10:07:36 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with go_fast on the L dataset *****
+NumPy - default - first/validation: 883ms
+NumPy - default - median: 863ms
+SUCCESS: go_fast completed
+Completed at: Thu Mar 26 10:08:01 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: gramschmidt (26/53)
+Started at: Thu Mar 26 10:08:01 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with gramschmidt on the L dataset *****
+NumPy - default - first/validation: 452ms
+NumPy - default - median: 450ms
+SUCCESS: gramschmidt completed
+Completed at: Thu Mar 26 10:08:07 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: hdiff (27/53)
+Started at: Thu Mar 26 10:08:07 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with hdiff on the L dataset *****
+NumPy - default - first/validation: 837ms
+NumPy - default - median: 828ms
+SUCCESS: hdiff completed
+Completed at: Thu Mar 26 10:08:20 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: heat_3d (28/53)
+Started at: Thu Mar 26 10:08:20 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with heat_3d on the L dataset *****
+NumPy - default - first/validation: 626ms
+NumPy - default - median: 589ms
+SUCCESS: heat_3d completed
+Completed at: Thu Mar 26 10:08:28 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: jacobi_1d (29/53)
+Started at: Thu Mar 26 10:08:28 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with jacobi_1d on the L dataset *****
+NumPy - default - first/validation: 587ms
+NumPy - default - median: 604ms
+SUCCESS: jacobi_1d completed
+Completed at: Thu Mar 26 10:08:37 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: jacobi_2d (30/53)
+Started at: Thu Mar 26 10:08:37 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with jacobi_2d on the L dataset *****
+NumPy - default - first/validation: 700ms
+NumPy - default - median: 696ms
+SUCCESS: jacobi_2d completed
+Completed at: Thu Mar 26 10:08:46 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: k2mm (31/53)
+Started at: Thu Mar 26 10:08:46 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with k2mm on the L dataset *****
+NumPy - default - first/validation: 544ms
+NumPy - default - median: 556ms
+SUCCESS: k2mm completed
+Completed at: Thu Mar 26 10:09:02 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: k3mm (32/53)
+Started at: Thu Mar 26 10:09:02 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with k3mm on the L dataset *****
+NumPy - default - first/validation: 432ms
+NumPy - default - median: 370ms
+SUCCESS: k3mm completed
+Completed at: Thu Mar 26 10:09:16 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: lenet (33/53)
+Started at: Thu Mar 26 10:09:16 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with lenet on the L dataset *****
+NumPy - default - first/validation: 530ms
+NumPy - default - median: 514ms
+SUCCESS: lenet completed
+Completed at: Thu Mar 26 10:09:23 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: lu (34/53)
+Started at: Thu Mar 26 10:09:23 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with lu on the L dataset *****
+NumPy - default - first/validation: 561ms
+NumPy - default - median: 561ms
+SUCCESS: lu completed
+Completed at: Thu Mar 26 10:09:30 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: ludcmp (35/53)
+Started at: Thu Mar 26 10:09:30 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with ludcmp on the L dataset *****
+NumPy - default - first/validation: 475ms
+NumPy - default - median: 480ms
+SUCCESS: ludcmp completed
+Completed at: Thu Mar 26 10:09:37 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: mandelbrot1 (36/53)
+Started at: Thu Mar 26 10:09:37 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with mandelbrot1 on the L dataset *****
+NumPy - default - first/validation: 635ms
+NumPy - default - median: 622ms
+SUCCESS: mandelbrot1 completed
+Completed at: Thu Mar 26 10:09:46 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: mandelbrot2 (37/53)
+Started at: Thu Mar 26 10:09:46 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with mandelbrot2 on the L dataset *****
+NumPy - default - first/validation: 248ms
+NumPy - default - median: 224ms
+SUCCESS: mandelbrot2 completed
+Completed at: Thu Mar 26 10:09:49 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: mlp (38/53)
+Started at: Thu Mar 26 10:09:49 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with mlp on the L dataset *****
+NumPy - default - first/validation: 84ms
+NumPy - default - median: 73ms
+SUCCESS: mlp completed
+Completed at: Thu Mar 26 10:10:20 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: mvt (39/53)
+Started at: Thu Mar 26 10:10:20 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with mvt on the L dataset *****
+NumPy - default - first/validation: 117ms
+NumPy - default - median: 84ms
+SUCCESS: mvt completed
+Completed at: Thu Mar 26 10:10:44 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: nbody (40/53)
+Started at: Thu Mar 26 10:10:44 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with nbody on the L dataset *****
+NumPy - default - first/validation: 185ms
+NumPy - default - median: 195ms
+SUCCESS: nbody completed
+Completed at: Thu Mar 26 10:10:47 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: nussinov (41/53)
+Started at: Thu Mar 26 10:10:47 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with nussinov on the L dataset *****
+NumPy - default - first/validation: 392ms
+NumPy - default - median: 392ms
+SUCCESS: nussinov completed
+Completed at: Thu Mar 26 10:10:52 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: resnet (42/53)
+Started at: Thu Mar 26 10:10:52 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with resnet on the L dataset *****
+NumPy - default - first/validation: 523ms
+NumPy - default - median: 551ms
+SUCCESS: resnet completed
+Completed at: Thu Mar 26 10:11:00 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: scattering_self_energies (43/53)
+Started at: Thu Mar 26 10:11:00 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with scattering_self_energies on the L dataset *****
+NumPy - default - first/validation: 347ms
+NumPy - default - median: 350ms
+SUCCESS: scattering_self_energies completed
+Completed at: Thu Mar 26 10:11:05 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: seidel_2d (44/53)
+Started at: Thu Mar 26 10:11:05 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with seidel_2d on the L dataset *****
+NumPy - default - first/validation: 533ms
+NumPy - default - median: 535ms
+SUCCESS: seidel_2d completed
+Completed at: Thu Mar 26 10:11:12 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: softmax (45/53)
+Started at: Thu Mar 26 10:11:12 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with softmax on the L dataset *****
+NumPy - default - first/validation: 995ms
+NumPy - default - median: 960ms
+SUCCESS: softmax completed
+Completed at: Thu Mar 26 10:11:28 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: spmv (46/53)
+Started at: Thu Mar 26 10:11:28 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with spmv on the L dataset *****
+Traceback (most recent call last):
+  File "/localdisk/work/antonvol/code/npbench/run_benchmark.py", line 57, in <module>
+    test.run(args["preset"], args["validate"], args["repeat"], args["timeout"])
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/localdisk/work/antonvol/code/npbench/npbench/infrastructure/test.py", line 63, in run
+    bdata = self.bench.get_data(preset)
+  File "/localdisk/work/antonvol/code/npbench/npbench/infrastructure/benchmark.py", line 62, in get_data
+    exec(init_str, data)
+    ~~~~^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+  File "/localdisk/work/antonvol/code/npbench/npbench/benchmarks/spmv/spmv.py", line 12, in initialize
+    from scipy.sparse import random
+ModuleNotFoundError: No module named 'scipy'
+ERROR: spmv failed with exit code 1
+Completed at: Thu Mar 26 10:11:28 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: stockham_fft (47/53)
+Started at: Thu Mar 26 10:11:28 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with stockham_fft on the L dataset *****
+NumPy - default - first/validation: 962ms
+NumPy - default - median: 972ms
+SUCCESS: stockham_fft completed
+Completed at: Thu Mar 26 10:11:42 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: symm (48/53)
+Started at: Thu Mar 26 10:11:42 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with symm on the L dataset *****
+NumPy - default - first/validation: 453ms
+NumPy - default - median: 444ms
+SUCCESS: symm completed
+Completed at: Thu Mar 26 10:11:48 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: syr2k (49/53)
+Started at: Thu Mar 26 10:11:48 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with syr2k on the L dataset *****
+NumPy - default - first/validation: 478ms
+NumPy - default - median: 475ms
+SUCCESS: syr2k completed
+Completed at: Thu Mar 26 10:11:55 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: syrk (50/53)
+Started at: Thu Mar 26 10:11:55 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with syrk on the L dataset *****
+NumPy - default - first/validation: 439ms
+NumPy - default - median: 447ms
+SUCCESS: syrk completed
+Completed at: Thu Mar 26 10:12:01 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: trisolv (51/53)
+Started at: Thu Mar 26 10:12:01 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with trisolv on the L dataset *****
+NumPy - default - first/validation: 233ms
+NumPy - default - median: 223ms
+SUCCESS: trisolv completed
+Completed at: Thu Mar 26 10:12:13 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: trmm (52/53)
+Started at: Thu Mar 26 10:12:13 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with trmm on the L dataset *****
+NumPy - default - first/validation: 465ms
+NumPy - default - median: 465ms
+SUCCESS: trmm completed
+Completed at: Thu Mar 26 10:12:19 AM PDT 2026
+======================================
+
+
+======================================
+Benchmark: vadv (53/53)
+Started at: Thu Mar 26 10:12:19 AM PDT 2026
+======================================
+/localdisk/work/antonvol/code/npbench/npbench/infrastructure/framework.py:6: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+WARNING: JAX is not installed. Please install JAX to run benchmarks with the JAX framework.
+***** Testing NumPy with vadv on the L dataset *****
+NumPy - default - first/validation: 798ms
+NumPy - default - median: 785ms
+SUCCESS: vadv completed
+Completed at: Thu Mar 26 10:12:30 AM PDT 2026
+======================================
+

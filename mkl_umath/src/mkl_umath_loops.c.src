@@ -640,7 +640,6 @@ mkl_umath_@TYPE@_subtract(char **args, const npy_intp *dimensions, const npy_int
             }
         }
     }
-    }
     else if (IS_BINARY_REDUCE) {
         BINARY_REDUCE_LOOP(@type@) {
             io1 -= *(@type@ *)ip2;

@@ -22,14 +22,15 @@ requirements:
       - {{ stdlib('c') }}
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
     host:
-      - setuptools >=77
+      - meson-python >=0.13.0
+      - meson
       - cmake
       - ninja
       - git
       - cython
-      - scikit-build
       - python
       - python-gil     # [py>=314]
+      - python-build
       - mkl-devel
       {% if use_numpy_base %}
       - numpy-base
@@ -37,6 +38,7 @@ requirements:
       - numpy
       {% endif %}
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]

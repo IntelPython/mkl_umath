@@ -1,7 +1,7 @@
 """npbench wrapper: Cholesky decomposition v2 — mkl_umath ops: linalg.cholesky.
 
 Preset sizes from npbench bench_info/cholesky2.json:
-  S: N=1000
+  M: N=2200
   L: N=8000
 
 The kernel mutates A in-place (A[:] = cholesky(A) + triu(A, k=1)), so
@@ -35,14 +35,16 @@ def _kernel(A):
 
 
 _PRESETS = {
-    "S": {"N": 1000},
+    "M": {"N": 2200},
     "L": {"N": 8000},
 }
 
 
 class BenchCholesky2:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

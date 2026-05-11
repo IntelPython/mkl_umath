@@ -1,7 +1,7 @@
 """npbench wrapper: GEMM (general matrix-matrix multiply) — mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/gemm.json:
-  S: NI=1000, NJ=1100, NK=1200
+  M: NI=2500, NJ=2750, NK=3000
   L: NI=7000, NJ=7500, NK=8000
 
 The kernel mutates C in-place (C[:] = alpha * A @ B + beta * C), so
@@ -29,14 +29,16 @@ def _kernel(alpha, beta, C, A, B):
 
 
 _PRESETS = {
-    "S": {"NI": 1000, "NJ": 1100, "NK": 1200},
+    "M": {"NI": 2500, "NJ": 2750, "NK": 3000},
     "L": {"NI": 7000, "NJ": 7500, "NK": 8000},
 }
 
 
 class BenchGemm:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

@@ -1,7 +1,7 @@
 """npbench wrapper: Mandelbrot set (two variants) — mkl_umath ops: abs, multiply, add.
 
 Preset sizes from npbench bench_info/mandelbrot1.json and mandelbrot2.json:
-  S: XN=YN=125/200, maxiter=60/40
+  M: XN=YN=250/500, maxiter=150/80
   L: XN=YN=833/1000, maxiter=200/100
 
 mandelbrot1 (slow): uses np.less mask + index-based update loop.
@@ -63,31 +63,35 @@ def _mandelbrot2(xmin, xmax, ymin, ymax, xn, yn, itermax, horizon=2.0):
 
 
 _PRESETS_M1 = {
-    "S": {"xmin": -1.75, "xmax": 0.25, "ymin": -1.00, "ymax": 1.00,
-          "xn": 125, "yn": 125, "maxiter": 60,  "horizon": 2.0},
+    "M": {"xmin": -1.75, "xmax": 0.25, "ymin": -1.00, "ymax": 1.00,
+          "xn": 250, "yn": 250, "maxiter": 150, "horizon": 2.0},
     "L": {"xmin": -2.00, "xmax": 0.50, "ymin": -1.25, "ymax": 1.25,
           "xn": 833, "yn": 833, "maxiter": 200, "horizon": 2.0},
 }
 
 _PRESETS_M2 = {
-    "S": {"xmin": -2.00, "xmax": 0.50, "ymin": -1.25, "ymax": 1.25,
-          "xn": 200, "yn": 200, "itermax": 40,  "horizon": 2.0},
+    "M": {"xmin": -2.00, "xmax": 0.50, "ymin": -1.25, "ymax": 1.25,
+          "xn": 500, "yn": 500, "itermax": 80,  "horizon": 2.0},
     "L": {"xmin": -2.25, "xmax": 0.75, "ymin": -1.50, "ymax": 1.50,
           "xn": 1000, "yn": 1000, "itermax": 100, "horizon": 2.0},
 }
 
 
 class BenchMandelbrot1:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def time_mandelbrot1(self, preset):
         _mandelbrot1(**_PRESETS_M1[preset])
 
 
 class BenchMandelbrot2:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def time_mandelbrot2(self, preset):
         _mandelbrot2(**_PRESETS_M2[preset])

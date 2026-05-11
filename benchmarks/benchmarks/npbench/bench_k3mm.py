@@ -1,7 +1,7 @@
 """npbench wrapper: 3MM (three matrix multiplications) — mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/k3mm.json:
-  S: NI=800,  NJ=850,  NK=900,  NL=950,  NM=1000
+  M: NI=2000, NJ=2200, NK=2400, NL=2600, NM=2800
   L: NI=5500, NJ=6000, NK=6500, NL=7000, NM=7500
 """
 
@@ -25,14 +25,16 @@ def _kernel(A, B, C, D):
 
 
 _PRESETS = {
-    "S": {"NI": 800,  "NJ": 850,  "NK": 900,  "NL": 950,  "NM": 1000},
+    "M": {"NI": 2000, "NJ": 2200, "NK": 2400, "NL": 2600, "NM": 2800},
     "L": {"NI": 5500, "NJ": 6000, "NK": 6500, "NL": 7000, "NM": 7500},
 }
 
 
 class BenchK3mm:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

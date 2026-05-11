@@ -1,7 +1,7 @@
 """npbench wrapper: GoFast — mkl_umath ops: tanh.
 
 Preset sizes from npbench bench_info/go_fast.json:
-  S: N=2_000
+  M: N=6_000
   L: N=20_000
 
 Note: the npbench ``go_fast`` kernel iterates diagonals in a Python loop
@@ -31,7 +31,7 @@ def _go_fast(a):
 
 
 _PRESETS = {
-    "S": {"N": 2_000},
+    "M": {"N": 6_000},
     "L": {"N": 20_000},
 }
 
@@ -39,8 +39,10 @@ _PRESETS = {
 class BenchGoFastLoop:
     """Original npbench kernel — diagonal Python loop calling np.tanh per element."""
 
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}
@@ -55,8 +57,10 @@ class BenchGoFastLoop:
 class BenchGoFastVec:
     """Vectorized variant — np.tanh on the full diagonal array at once."""
 
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

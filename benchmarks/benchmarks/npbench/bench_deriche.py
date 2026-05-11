@@ -1,7 +1,7 @@
 """npbench wrapper: Deriche Edge Detector — mkl_umath ops: exp.
 
 Preset sizes from npbench bench_info/deriche.json:
-  S: W=400,  H=200
+  M: W=1500, H=1000
   L: W=6000, H=3000
 
 Warning: this kernel contains Python for-loops over rows/columns.
@@ -89,7 +89,7 @@ def _kernel(alpha, imgIn):
 
 
 _PRESETS = {
-    "S": {"W": 400,  "H": 200},
+    "M": {"W": 1500, "H": 1000},
     "L": {"W": 6000, "H": 3000},
 }
 
@@ -98,8 +98,10 @@ class BenchDeriche:
     # L preset has Python loops over 6000 rows — allow extra time
     timeout = 600
 
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

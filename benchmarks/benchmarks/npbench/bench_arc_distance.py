@@ -1,7 +1,7 @@
 """npbench wrapper: Arc Distance — mkl_umath ops: sin, cos, arctan2, sqrt.
 
 Preset sizes from npbench bench_info/arc_distance.json:
-  S: N=100_000
+  M: N=1_000_000
   L: N=10_000_000
 """
 
@@ -31,14 +31,16 @@ def _arc_distance(theta_1, phi_1, theta_2, phi_2):
 
 
 _PRESETS = {
-    "S": {"N": 100_000},
+    "M": {"N": 1_000_000},
     "L": {"N": 10_000_000},
 }
 
 
 class BenchArcDistance:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

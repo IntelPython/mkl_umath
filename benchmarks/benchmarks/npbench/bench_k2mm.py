@@ -1,7 +1,7 @@
 """npbench wrapper: 2MM (two matrix multiplications) — mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/k2mm.json:
-  S: NI=800,  NJ=850,  NK=900,  NL=950
+  M: NI=2000, NJ=2250, NK=2500, NL=2750
   L: NI=6000, NJ=6500, NK=7000, NL=7500
 
 The kernel mutates D in-place (D[:] = alpha * A @ B @ C + beta * D), so
@@ -30,14 +30,16 @@ def _kernel(alpha, beta, A, B, C, D):
 
 
 _PRESETS = {
-    "S": {"NI": 800,  "NJ": 850,  "NK": 900,  "NL": 950},
+    "M": {"NI": 2000, "NJ": 2250, "NK": 2500, "NL": 2750},
     "L": {"NI": 6000, "NJ": 6500, "NK": 7000, "NL": 7500},
 }
 
 
 class BenchK2mm:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

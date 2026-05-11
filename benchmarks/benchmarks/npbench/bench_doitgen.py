@@ -1,7 +1,7 @@
 """npbench wrapper: Doitgen (multiresolution analysis) — mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/doitgen.json:
-  S: NR=60,  NQ=60,  NP=128
+  M: NR=110, NQ=125, NP=256
   L: NR=220, NQ=250, NP=512
 
 The kernel mutates ``A`` in-place (A[:] = ...), so setup() copies from cache.
@@ -29,14 +29,16 @@ def _kernel(NR, NQ, NP, A, C4):
 
 
 _PRESETS = {
-    "S": {"NR": 60,  "NQ": 60,  "NP": 128},
+    "M": {"NR": 110, "NQ": 125, "NP": 256},
     "L": {"NR": 220, "NQ": 250, "NP": 512},
 }
 
 
 class BenchDoitgen:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

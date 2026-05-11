@@ -1,7 +1,7 @@
 """npbench wrapper: GEMVER (vector multiplication and matrix addition) — mkl_umath ops: outer.
 
 Preset sizes from npbench bench_info/gemver.json:
-  S: N=1_000
+  M: N=3_000
   L: N=10_000
 
 The kernel mutates A, x, and w in-place, so setup() copies those from cache.
@@ -37,14 +37,16 @@ def _kernel(alpha, beta, A, u1, v1, u2, v2, w, x, y, z):
 
 
 _PRESETS = {
-    "S": {"N": 1_000},
+    "M": {"N": 3_000},
     "L": {"N": 10_000},
 }
 
 
 class BenchGemver:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

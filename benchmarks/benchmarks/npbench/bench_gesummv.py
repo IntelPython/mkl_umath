@@ -1,7 +1,7 @@
 """npbench wrapper: GESUMMV (scalar, vector and matrix multiplication) — mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/gesummv.json:
-  S: N=2_000
+  M: N=4_000
   L: N=14_000
 """
 
@@ -26,14 +26,16 @@ def _kernel(alpha, beta, A, B, x):
 
 
 _PRESETS = {
-    "S": {"N": 2_000},
+    "M": {"N": 4_000},
     "L": {"N": 14_000},
 }
 
 
 class BenchGesummv:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

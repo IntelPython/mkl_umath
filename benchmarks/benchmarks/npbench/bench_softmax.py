@@ -1,7 +1,7 @@
 """npbench wrapper: Softmax — mkl_umath ops: exp, max, sum.
 
 Preset sizes from npbench bench_info/softmax.json:
-  S: N=16,  H=16,  SM=128   (float32)
+  M: N=32,  H=8,   SM=256   (float32)
   L: N=64,  H=16,  SM=448   (float32)
 
 npbench initializes this benchmark with float32 explicitly.
@@ -29,14 +29,16 @@ def _softmax(x):
 
 
 _PRESETS = {
-    "S": {"N": 16,  "H": 16, "SM": 128},
-    "L": {"N": 64,  "H": 16, "SM": 448},
+    "M": {"N": 32, "H": 8,  "SM": 256},
+    "L": {"N": 64, "H": 16, "SM": 448},
 }
 
 
 class BenchSoftmax:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

@@ -1,7 +1,7 @@
 """npbench wrapper: Correlation — mkl_umath ops: sqrt, std, mean.
 
 Preset sizes from npbench bench_info/correlation.json:
-  S: M=500,  N=600
+  M: M=1400, N=1800
   L: M=3200, N=4000
 
 The kernel mutates ``data`` in-place (data -= mean; data /= ...), so
@@ -34,14 +34,16 @@ def _kernel(M, float_n, data):
 
 
 _PRESETS = {
-    "S": {"M": 500,  "N": 600},
+    "M": {"M": 1400, "N": 1800},
     "L": {"M": 3200, "N": 4000},
 }
 
 
 class BenchCorrelation:
-    params = (["S", "L"],)
+    params = (["M", "L"],)
     param_names = ["preset"]
+    number = 1
+    repeat = 20
 
     def setup_cache(self):
         return {p: _initialize(**kw) for p, kw in _PRESETS.items()}

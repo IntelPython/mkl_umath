@@ -38,10 +38,12 @@ requirements:
 
 test:
     requires:
+      - pip
       - pytest
     source_files:
       - mkl_umath/tests/test_basic.py
     commands:
+      - pip check
       - pytest mkl_umath/tests/test_basic.py
     imports:
       - mkl_umath

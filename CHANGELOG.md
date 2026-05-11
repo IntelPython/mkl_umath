@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-## [1.4.1] - 2026-05-11
+## [0.4.1] - 2026-05-11
 
 ### Fixed
 * Removed `mkl` as runtime dependency to avoid possible `pip check` failures [gh-202](https://github.com/IntelPython/mkl_umath/pull/202)

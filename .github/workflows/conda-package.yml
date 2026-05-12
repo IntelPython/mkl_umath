@@ -134,7 +134,10 @@ jobs:
           conda index "$GITHUB_WORKSPACE/channel"
           # Test channel
           conda search "$PACKAGE_NAME" -c "$GITHUB_WORKSPACE/channel" --override-channels
-
+      - name: Test conda channel
+        run: |
+          conda search "$PACKAGE_NAME" -c "$GITHUB_WORKSPACE"/channel --override-channels --info --json > "$GITHUB_WORKSPACE"/ver.json
+          cat "$GITHUB_WORKSPACE"/ver.json
       - name: Collect dependencies
         run: |
           CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)

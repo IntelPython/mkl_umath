@@ -102,7 +102,8 @@ jobs:
       - name: Collect dependencies
         run: |
           CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
-          conda create -n test_mkl_umath "$PACKAGE_NAME" "python=${{ matrix.python }}" "${CHANNELS[@]}" --only-deps --dry-run > lockfile
+          PACKAGE_VERSION="$(python -c "${VER_SCRIPT1} ${VER_SCRIPT2}")"
+          conda create -n test_mkl_umath "${PACKAGE_NAME}=${PACKAGE_VERSION}" "python=${{ matrix.python }}" "${CHANNELS[@]}" --only-deps --dry-run > lockfile
       - name: Display lockfile
         run: cat lockfile
 
@@ -125,7 +126,8 @@ jobs:
       - name: Install mkl_umath
         run: |
           CHANNELS=(-c "$GITHUB_WORKSPACE/channel" -c "https://software.repos.intel.com/python/conda" -c "conda-forge" --override-channels)
-          conda create -n test_mkl_umath "python=${{ matrix.python }}" "$PACKAGE_NAME" pytest "${CHANNELS[@]}"
+          PACKAGE_VERSION="$(python -c "${VER_SCRIPT1} ${VER_SCRIPT2}")"
+          conda create -n test_mkl_umath "python=${{ matrix.python }}" "$PACKAGE_NAME=${PACKAGE_VERSION}" pytest "${CHANNELS[@]}"
           # Test installed packages
           conda list -n test_mkl_umath
 

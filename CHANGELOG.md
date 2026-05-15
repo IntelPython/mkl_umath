@@ -9,10 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+* Removed `numpy-base` dependency and `USE_NUMPY_BASE` environment variable from conda recipe [gh-200](https://github.com/IntelPython/mkl_umath/pull/200)
 
 ### Fixed
 
+## [0.4.1] - 2026-05-11
+
+### Fixed
+* Removed `mkl` as runtime dependency to avoid possible `pip check` failures [gh-202](https://github.com/IntelPython/mkl_umath/pull/202)
+
 ## [0.4.0] - 2026-04-16
+
 ### Added
 * Added `patch_numpy_umath` and `restore_numpy_umath` functions for patching NumPy, and improved the patching implementation [gh-170](https://github.com/IntelPython/mkl_umath/pull/170)
 
@@ -63,7 +70,6 @@ This release updates `mkl_umath` to be aligned with both numpy-1.26.x and numpy-
 
 ### Fixed
 * Fixed a bug for `mkl_umath.is_patched` function [gh-66](https://github.com/IntelPython/mkl_umath/pull/66)
-
 
 ## [0.1.5] - 2025-04-09
 

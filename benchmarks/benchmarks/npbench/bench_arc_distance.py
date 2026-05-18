@@ -12,6 +12,7 @@ import numpy as np
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/pythran/arc_distance/arc_distance.py
 def _initialize(N):
     from numpy.random import default_rng
+
     rng = default_rng(42)
     t0 = rng.random((N,))
     p0 = rng.random((N,))

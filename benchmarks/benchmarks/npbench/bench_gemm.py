@@ -1,4 +1,6 @@
-"""npbench wrapper: GEMM (general matrix-matrix multiply) — mkl_umath ops: matmul.
+"""npbench wrapper: GEMM (general matrix-matrix multiply).
+
+mkl_umath ops: matmul.
 
 Preset sizes from npbench bench_info/gemm.json:
   M: NI=2500, NJ=2750, NK=3000
@@ -15,10 +17,16 @@ import numpy as np
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/polybench/gemm/gemm.py
 def _initialize(NI, NJ, NK, datatype=np.float64):
     alpha = datatype(1.5)
-    beta  = datatype(1.2)
-    C = np.fromfunction(lambda i, j: ((i * j + 1) % NI) / NI, (NI, NJ), dtype=datatype)
-    A = np.fromfunction(lambda i, k: (i * (k + 1) % NK) / NK, (NI, NK), dtype=datatype)
-    B = np.fromfunction(lambda k, j: (k * (j + 2) % NJ) / NJ, (NK, NJ), dtype=datatype)
+    beta = datatype(1.2)
+    C = np.fromfunction(
+        lambda i, j: ((i * j + 1) % NI) / NI, (NI, NJ), dtype=datatype
+    )
+    A = np.fromfunction(
+        lambda i, k: (i * (k + 1) % NK) / NK, (NI, NK), dtype=datatype
+    )
+    B = np.fromfunction(
+        lambda k, j: (k * (j + 2) % NJ) / NJ, (NK, NJ), dtype=datatype
+    )
     return alpha, beta, C, A, B
 
 
@@ -46,7 +54,7 @@ class BenchGemm:
     def setup(self, cache, preset):
         alpha, beta, C, A, B = cache[preset]
         self.alpha = alpha
-        self.beta  = beta
+        self.beta = beta
         self.C = C.copy()  # mutated in-place
         self.A = A
         self.B = B

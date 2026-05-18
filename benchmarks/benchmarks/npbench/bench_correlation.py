@@ -29,7 +29,9 @@ def _kernel(M, float_n, data):
     data /= np.sqrt(float_n) * stddev
     corr = np.eye(M, dtype=data.dtype)
     for i in range(M - 1):
-        corr[i + 1:M, i] = corr[i, i + 1:M] = data[:, i] @ data[:, i + 1:M]
+        corr[i + 1 : M, i] = corr[i, i + 1 : M] = (
+            data[:, i] @ data[:, i + 1 : M]
+        )
     return corr
 
 

@@ -16,6 +16,7 @@ import numpy as np
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/go_fast/go_fast.py
 def _initialize(N):
     from numpy.random import default_rng
+
     rng = default_rng(42)
     a = rng.random((N, N))
     return (a,)
@@ -37,7 +38,7 @@ _PRESETS = {
 
 
 class BenchGoFastLoop:
-    """Original npbench kernel — diagonal Python loop calling np.tanh per element."""
+    """Original npbench kernel — Python loop calling np.tanh per element."""
 
     params = (["M", "L"],)
     param_names = ["preset"]

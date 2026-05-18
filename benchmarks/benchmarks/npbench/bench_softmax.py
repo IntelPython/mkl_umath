@@ -14,6 +14,7 @@ import numpy as np
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/deep_learning/softmax/softmax.py
 def _initialize(N, H, SM):
     from numpy.random import default_rng
+
     rng = default_rng(42)
     x = rng.random((N, H, SM, SM), dtype=np.float32)
     return (x,)
@@ -29,7 +30,7 @@ def _softmax(x):
 
 
 _PRESETS = {
-    "M": {"N": 32, "H": 8,  "SM": 256},
+    "M": {"N": 32, "H": 8, "SM": 256},
     "L": {"N": 64, "H": 16, "SM": 448},
 }
 

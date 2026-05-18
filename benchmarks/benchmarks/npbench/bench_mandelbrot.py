@@ -1,4 +1,6 @@
-"""npbench wrapper: Mandelbrot set (two variants) — mkl_umath ops: abs, multiply, add.
+"""npbench wrapper: Mandelbrot set (two variants).
+
+mkl_umath ops: abs, multiply, add.
 
 Preset sizes from npbench bench_info/mandelbrot1.json and mandelbrot2.json:
   M: XN=YN=250/500, maxiter=150/80
@@ -13,8 +15,8 @@ np.abs() on complex arrays at each iteration step.
 
 import numpy as np
 
-
 # --- mandelbrot1 ---
+
 
 # Inlined from spcl/npbench @ main
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/mandelbrot1/mandelbrot1_numpy.py
@@ -25,14 +27,15 @@ def _mandelbrot1(xmin, xmax, ymin, ymax, xn, yn, maxiter, horizon=2.0):
     N = np.zeros(C.shape, dtype=np.int64)
     Z = np.zeros(C.shape, dtype=np.complex128)
     for n in range(maxiter):
-        I = np.less(abs(Z), horizon)
-        N[I] = n
-        Z[I] = Z[I] ** 2 + C[I]
+        mask = np.less(abs(Z), horizon)
+        N[mask] = n
+        Z[mask] = Z[mask] ** 2 + C[mask]
     N[N == maxiter - 1] = 0
     return Z, N
 
 
 # --- mandelbrot2 ---
+
 
 # Inlined from spcl/npbench @ main
 # https://github.com/spcl/npbench/blob/main/npbench/benchmarks/mandelbrot2/mandelbrot2_numpy.py
@@ -63,17 +66,49 @@ def _mandelbrot2(xmin, xmax, ymin, ymax, xn, yn, itermax, horizon=2.0):
 
 
 _PRESETS_M1 = {
-    "M": {"xmin": -1.75, "xmax": 0.25, "ymin": -1.00, "ymax": 1.00,
-          "xn": 250, "yn": 250, "maxiter": 150, "horizon": 2.0},
-    "L": {"xmin": -2.00, "xmax": 0.50, "ymin": -1.25, "ymax": 1.25,
-          "xn": 833, "yn": 833, "maxiter": 200, "horizon": 2.0},
+    "M": {
+        "xmin": -1.75,
+        "xmax": 0.25,
+        "ymin": -1.00,
+        "ymax": 1.00,
+        "xn": 250,
+        "yn": 250,
+        "maxiter": 150,
+        "horizon": 2.0,
+    },
+    "L": {
+        "xmin": -2.00,
+        "xmax": 0.50,
+        "ymin": -1.25,
+        "ymax": 1.25,
+        "xn": 833,
+        "yn": 833,
+        "maxiter": 200,
+        "horizon": 2.0,
+    },
 }
 
 _PRESETS_M2 = {
-    "M": {"xmin": -2.00, "xmax": 0.50, "ymin": -1.25, "ymax": 1.25,
-          "xn": 500, "yn": 500, "itermax": 80,  "horizon": 2.0},
-    "L": {"xmin": -2.25, "xmax": 0.75, "ymin": -1.50, "ymax": 1.50,
-          "xn": 1000, "yn": 1000, "itermax": 100, "horizon": 2.0},
+    "M": {
+        "xmin": -2.00,
+        "xmax": 0.50,
+        "ymin": -1.25,
+        "ymax": 1.25,
+        "xn": 500,
+        "yn": 500,
+        "itermax": 80,
+        "horizon": 2.0,
+    },
+    "L": {
+        "xmin": -2.25,
+        "xmax": 0.75,
+        "ymin": -1.50,
+        "ymax": 1.50,
+        "xn": 1000,
+        "yn": 1000,
+        "itermax": 100,
+        "horizon": 2.0,
+    },
 }
 
 

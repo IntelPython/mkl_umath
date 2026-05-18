@@ -19,10 +19,10 @@ import numpy as np
 def _initialize(N, datatype=np.float64):
     A = np.empty((N, N), dtype=datatype)
     for i in range(N):
-        A[i, :i + 1] = np.fromfunction(
+        A[i, : i + 1] = np.fromfunction(
             lambda j: (-j % N) / N + 1, (i + 1,), dtype=datatype
         )
-        A[i, i + 1:] = 0.0
+        A[i, i + 1 :] = 0.0
         A[i, i] = 1.0
     A[:] = A @ np.transpose(A)
     return A

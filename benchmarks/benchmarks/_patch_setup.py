@@ -3,11 +3,7 @@
 Patches NumPy with Intel MKL implementations for fft, random, and umath.
 Hard-fails with a descriptive RuntimeError if any package is missing or the
 patch does not take effect, so benchmarks never silently run on stock NumPy.
-
-Visible output goes to stderr; pass --show-stderr to ``asv run`` to see it.
 """
-
-import sys
 
 _PATCH_MAP = [
     ("mkl_fft", "patch_numpy_fft"),
@@ -17,6 +13,8 @@ _PATCH_MAP = [
 
 
 def _apply_patches():
+    import numpy as np
+
     patched = {}
 
     for mod_name, patch_fn_name in _PATCH_MAP:
@@ -56,9 +54,6 @@ def _apply_patches():
 
         patched[mod_name] = mod
 
-    # Verbose attribution — verify numpy-level dispatch changed hands
-    import numpy as np
-
     _attr_checks = {
         "mkl_fft": lambda: np.fft.fft.__module__,
         "mkl_random": lambda: np.random.random.__module__,
@@ -69,12 +64,6 @@ def _apply_patches():
             attr = _attr_checks[mod_name]()
         except Exception:
             attr = "unknown"
-        sys.stderr.write(f"[mkl-patch] {mod_name}: numpy dispatch → {attr}\n")
+        print(f"[mkl-patch] {mod_name}: numpy dispatch -> {attr}")
 
-    sys.stderr.write(
-        "[mkl-patch] ALL OK — mkl_fft, mkl_random, mkl_umath active\n"
-    )
-    sys.stderr.flush()
-
-
-_apply_patches()
+    print("[mkl-patch] ALL OK -- mkl_fft, mkl_random, mkl_umath active")

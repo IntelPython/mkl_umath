@@ -10,7 +10,6 @@ Patching is applied once at package import via benchmarks._patch_setup.
 
 import numpy as np
 
-
 _UFUNC_CONFIGS = {
     "exp": {"func": np.exp, "low": -10.0, "high": 10.0},
     "exp2": {"func": np.exp2, "low": -10.0, "high": 10.0},

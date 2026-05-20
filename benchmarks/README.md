@@ -14,21 +14,39 @@ The `npbench/` suite uses kernels from [npbench](https://github.com/spcl/npbench
 | `npbench/bench_go_fast.py` | `tanh` | float64 | M (6k x 6k), L (20k x 20k) |
 | `npbench/bench_mandelbrot.py` | `abs`, `multiply`, `add` | complex128 | M (250/500), L (833/1000) |
 
+## Running Benchmarks
+
+Prerequisites:
+
+```bash
+pip install asv psutil
+```
+
+Run benchmarks against the current commit:
+
+```bash
+asv run --python=same --quick HEAD^!
+```
+
+Compare two commits:
+
+```bash
+asv continuous --python=same HEAD~1 HEAD
+```
+
+View results in a browser:
+
+```bash
+asv publish
+asv preview
+```
+
 ## Threading
 
-Set `MKL_NUM_THREADS` in the environment before running ASV to control the thread count used by MKL:
+Set `MKL_NUM_THREADS` to control the thread count used by MKL:
 
 ```bash
 MKL_NUM_THREADS=8 asv run --python=same --quick HEAD^!
 ```
 
 If `MKL_NUM_THREADS` is not set, `__init__.py` applies a default: **4** threads when the machine has 4 or more physical cores, or **1** (single-threaded) otherwise. This keeps results comparable across CI machines in the shared pool regardless of their total core count. Physical cores are detected via `psutil.cpu_count(logical=False)` (hyperthreads excluded per MKL recommendation).
-
-## Quick Start
-
-```bash
-cd benchmarks
-asv run --python=same --quick HEAD^!   # time the current commit
-asv compare main HEAD                  # compare against main
-asv publish && asv preview             # view HTML report locally
-```

@@ -109,6 +109,14 @@ set_target_properties(${_trgt} PROPERTIES
     CMAKE_POSITION_INDEPENDENT_CODE ON
     C_STANDARD 99
 )
+if(WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "IntelLLVM")
+  # ICX 2026 on Windows strictly enforces that C99 _Complex double (npy_cdouble as defined
+  # by numpy for IntelLLVM) cannot be passed to UCRT's creal/cimag which expect _Dcomplex.
+  # This is triggered by the -Qstd:c99 flag injected via C_STANDARD 99 above.
+  # Removing the C standard constraint for ICX on Windows leaves the compiler in its
+  # default clang-cl compatibility mode, which does not enforce this type mismatch.
+  set_property(TARGET ${_trgt} PROPERTY C_STANDARD)
+endif()
 target_include_directories(${_trgt} PUBLIC mkl_umath/src/ ${Python_NumPy_INCLUDE_DIRS} ${Python_INCLUDE_DIRS})
 target_link_libraries(${_trgt} PUBLIC MKL::MKL ${Python_LIBRARIES})
 target_link_options(${_trgt} PUBLIC ${_linker_options})
@@ -129,6 +137,9 @@ target_compile_definitions(_ufuncs PUBLIC NPY_NO_DEPRECATED_API=NPY_1_7_API_VERS
 target_link_options(_ufuncs PRIVATE ${_linker_options})
 target_link_libraries(_ufuncs PRIVATE mkl_umath_loops)
 set_target_properties(_ufuncs PROPERTIES C_STANDARD 99)
+if(WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "IntelLLVM")
+  set_property(TARGET _ufuncs PROPERTY C_STANDARD)
+endif()
 if (UNIX)
   set_target_properties(_ufuncs PROPERTIES INSTALL_RPATH "$ORIGIN/../..;$ORIGIN/../../..;$ORIGIN")
 endif()
@@ -140,6 +151,9 @@ target_include_directories(_patch_numpy PRIVATE "mkl_umath/src/" ${Python_NumPy_
 target_compile_definitions(_patch_numpy PUBLIC NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION)
 target_link_libraries(_patch_numpy PRIVATE mkl_umath_loops)
 set_target_properties(_patch_numpy PROPERTIES C_STANDARD 99)
+if(WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "IntelLLVM")
+  set_property(TARGET _patch_numpy PROPERTY C_STANDARD)
+endif()
 if (UNIX)
   set_target_properties(_patch_numpy PROPERTIES INSTALL_RPATH "$ORIGIN/../..;$ORIGIN/../../..;$ORIGIN")
 endif()

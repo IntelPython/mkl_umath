@@ -191,13 +191,13 @@ jobs:
           - python: "3.10"
             numpy: "2.2"
           - python: "3.11"
-            numpy: "2.4.5"
+            numpy: "2.4.4"
           - python: "3.12"
-            numpy: "2.4.5"
+            numpy: "2.4.4"
           - python: "3.13"
-            numpy: "2.4.5"
+            numpy: "2.4.4"
           - python: "3.14"
-            numpy: "2.4.5"
+            numpy: "2.4.4"
     env:
       conda-bld: C:\Miniconda\conda-bld\win-64\
     steps:

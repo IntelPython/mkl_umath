@@ -17,8 +17,8 @@ requirements:
     build:
       - {{ compiler('c') }}
       - {{ compiler('cxx') }}
+      - {{ stdlib('c') }}
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
-      - sysroot_linux-64 >=2.28  # [linux]
     host:
       - setuptools >=77
       - cmake

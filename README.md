@@ -34,6 +34,31 @@ Where `<numpy_version>` should be the latest version from https://software.repos
 
 ---
 
+# Patching Mechanisms
+
+`mkl_umath` provides a convenient programmatic patch method to enable MKL-accelerated umath operations in NumPy.
+
+## Programmatic Quickstart
+
+```python
+import mkl_umath
+import numpy
+
+mkl_umath.patch_numpy_umath()
+print(mkl_umath.is_patched())
+# run your accelerated numpy workloads here!
+mkl_umath.restore_numpy_umath()
+```
+
+```python
+import mkl_umath
+import numpy
+with mkl_umath.mkl_umath():
+   # run your accelerated workloads here!
+   pass
+```
+---
+
 ## Building
 
 Intel(R) C compiler and Intel(R) OneAPI Math Kernel Library (OneMKL) are required to build `mkl_umath` from source.

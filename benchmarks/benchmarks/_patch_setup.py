@@ -1,13 +1,11 @@
 """MKL patch setup — executed once per ASV worker process at import time.
 
-Patches NumPy with Intel MKL implementations for fft, random, and umath.
-Hard-fails with a descriptive RuntimeError if any package is missing or the
+Patches NumPy with the Intel MKL umath implementation.
+Hard-fails with a descriptive RuntimeError if mkl_umath is missing or the
 patch does not take effect, so benchmarks never silently run on stock NumPy.
 """
 
 _PATCH_MAP = [
-    ("mkl_fft", "patch_numpy_fft"),
-    ("mkl_random", "patch_numpy_random"),
     ("mkl_umath", "patch_numpy_umath"),
 ]
 
@@ -55,8 +53,6 @@ def _apply_patches():
         patched[mod_name] = mod
 
     _attr_checks = {
-        "mkl_fft": lambda: np.fft.fft.__module__,
-        "mkl_random": lambda: np.random.random.__module__,
         "mkl_umath": lambda: np.exp.__module__,
     }
     for mod_name in patched:
@@ -66,4 +62,4 @@ def _apply_patches():
             attr = "unknown"
         print(f"[mkl-patch] {mod_name}: numpy dispatch -> {attr}")
 
-    print("[mkl-patch] ALL OK -- mkl_fft, mkl_random, mkl_umath active")
+    print("[mkl-patch] ALL OK -- mkl_umath active")

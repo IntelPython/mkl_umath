@@ -8,7 +8,7 @@ The `npbench/` suite uses kernels from [npbench](https://github.com/spcl/npbench
 
 | File | Ufuncs | Dtypes | Sizes/Presets |
 |------|--------|--------|---------------|
-| `micro/bench_micro.py` | 24 unary (`exp`, `log`, `sin`, `cos`, `sqrt`, `cbrt`, etc.) + `arctan2`, `power` | float32, float64 | 10k, 100k, 1M |
+| `micro/bench_micro.py` | 25 unary (`exp`, `log`, `sin`, `cos`, `sqrt`, `cbrt`, etc.) + `arctan2`, `power` | float32, float64 | 10k, 100k, 1M |
 | `npbench/bench_softmax.py` | `exp`, `max`, `sum` | float32 | M (32x8x256x256), L (64x16x448x448) |
 | `npbench/bench_arc_distance.py` | `sin`, `cos`, `arctan2`, `sqrt` | float64 | M (1M), L (10M) |
 | `npbench/bench_go_fast.py` | `tanh` | float64 | M (6k x 6k), L (20k x 20k) |

@@ -21,6 +21,7 @@ requirements:
       - sysroot_linux-64 >=2.28  # [linux]
     host:
       - setuptools >=77
+      - pip
       - cmake
       - ninja
       - git
@@ -28,7 +29,10 @@ requirements:
       - scikit-build
       - python
       - mkl-devel
-      - numpy
+      - numpy  # [not win]
+      - numpy <2.4  # [win]
+      # TODO: remove win numpy pin when numpy 2.5 is released, see https://github.com/numpy/numpy/issues/31337
+      - llvm-openmp  # [linux]
     run:
       - python
       - python-gil     # [py>=314]

@@ -99,7 +99,7 @@ def test_patch_status_check_function(mock_pth_path):
 
 
 def test_install_patch_enables_runtime_patch_via_pth(mock_pth_path):
-    """Test that .pth activation results in patched NumPy umath runtime state."""
+    """Test that .pth activation yields patched NumPy umath runtime state."""
     install_patch()
 
     preexisting_patch_state = mkl_umath.is_patched()

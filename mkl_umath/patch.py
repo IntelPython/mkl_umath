@@ -66,9 +66,7 @@ def install_patch(verbose=False):
         if verbose:
             print(f"Persistent patch installed at {pth_path}")
             print()
-            print(
-                "NumPy umath will now use MKL-accelerated implementations in"
-            )
+            print("NumPy umath will now use MKL-accelerated implementations in")
             print("all Python sessions. To disable, run:")
             print("  python -m mkl_umath --patch uninstall")
     except OSError as e:

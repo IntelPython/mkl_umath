@@ -36,7 +36,45 @@ Where `<numpy_version>` should be the latest version from https://software.repos
 
 # Patching Mechanisms
 
-`mkl_umath` provides a convenient programmatic patch method to enable MKL-accelerated umath operations in NumPy.
+`mkl_umath` provides convenient patch methods to enable MKL-accelerated
+umath operations in NumPy with or without modifying your code.
+
+## CLI Quickstart
+
+### Persistent patch (all Python sessions)
+
+```bash
+# Install
+python -m mkl_umath --patch install
+
+# Status (exit code: 0 = installed, 1 = not installed)
+python -m mkl_umath --patch status
+
+# Remove
+python -m mkl_umath --patch uninstall
+```
+
+### Verify patch state
+
+```bash
+python -c "import mkl_umath; print(f'mkl_umath.is_patched(): {mkl_umath.is_patched()}')"
+```
+
+### One-shot patch (single command only)
+
+```bash
+# Script
+python -m mkl_umath --with-numpy-patch my_script.py
+
+# Pytest
+python -m mkl_umath --with-numpy-patch -m pytest tests/
+
+# One-liner
+python -m mkl_umath --with-numpy-patch -c "import mkl_umath; print(f\"mkl_umath.is_patched(): {mkl_umath.is_patched()}\")"
+
+# Non-Python command
+python -m mkl_umath --with-numpy-patch -- <command> [args...]
+```
 
 ## Programmatic Quickstart
 

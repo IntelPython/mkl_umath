@@ -52,6 +52,7 @@ class BenchMicro:
         rng = np.random.default_rng(42)
         self.x = rng.uniform(cfg["low"], cfg["high"], size).astype(dtype)
         self._func = cfg["func"]
+        self._func(self.x)
 
     def time_micro(self, ufunc, dtype, size):
         self._func(self.x)
@@ -67,6 +68,7 @@ class BenchArctan2:
         rng = np.random.default_rng(42)
         self.y = rng.uniform(-1.0, 1.0, size).astype(dtype)
         self.x = rng.uniform(-1.0, 1.0, size).astype(dtype)
+        np.arctan2(self.y, self.x)
 
     def time_arctan2(self, dtype, size):
         np.arctan2(self.y, self.x)
@@ -82,6 +84,7 @@ class BenchPower:
         rng = np.random.default_rng(42)
         self.base = rng.uniform(0.1, 10.0, size).astype(dtype)
         self.exp = rng.uniform(0.5, 3.0, size).astype(dtype)
+        np.power(self.base, self.exp)
 
     def time_power(self, dtype, size):
         np.power(self.base, self.exp)

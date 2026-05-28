@@ -118,6 +118,9 @@ class BenchMandelbrot1:
     number = 1
     repeat = 20
 
+    def setup(self, preset):
+        _mandelbrot1(**_PRESETS_M1[preset])
+
     def time_mandelbrot1(self, preset):
         _mandelbrot1(**_PRESETS_M1[preset])
 
@@ -127,6 +130,9 @@ class BenchMandelbrot2:
     param_names = ["preset"]
     number = 1
     repeat = 20
+
+    def setup(self, preset):
+        _mandelbrot2(**_PRESETS_M2[preset])
 
     def time_mandelbrot2(self, preset):
         _mandelbrot2(**_PRESETS_M2[preset])

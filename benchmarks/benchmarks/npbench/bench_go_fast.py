@@ -50,6 +50,7 @@ class BenchGoFastLoop:
 
     def setup(self, cache, preset):
         (self.a,) = cache[preset]
+        np.tanh(self.a[0, 0])
 
     def time_go_fast_loop(self, cache, preset):
         _go_fast(self.a)
@@ -69,6 +70,7 @@ class BenchGoFastVec:
     def setup(self, cache, preset):
         (self.a,) = cache[preset]
         self.diag = np.copy(np.diag(self.a))
+        np.tanh(self.diag)
 
     def time_go_fast_vec(self, cache, preset):
         np.tanh(self.diag)

@@ -46,6 +46,7 @@ class BenchSoftmax:
 
     def setup(self, cache, preset):
         (self.x,) = cache[preset]
+        _softmax(self.x)
 
     def time_softmax(self, cache, preset):
         _softmax(self.x)

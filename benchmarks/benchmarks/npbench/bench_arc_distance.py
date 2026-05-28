@@ -48,6 +48,7 @@ class BenchArcDistance:
 
     def setup(self, cache, preset):
         self.theta_1, self.phi_1, self.theta_2, self.phi_2 = cache[preset]
+        _arc_distance(self.theta_1, self.phi_1, self.theta_2, self.phi_2)
 
     def time_arc_distance(self, cache, preset):
         _arc_distance(self.theta_1, self.phi_1, self.theta_2, self.phi_2)

@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [0.4.2] - 2026-05-28
+
+### Added
+* Added build option to set `MKL_THREADING` in CMake [gh-217](https://github.com/IntelPython/mkl_umath/pull/217)
+
 ## [0.4.1] - 2026-05-11
 
 ### Fixed

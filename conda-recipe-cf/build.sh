@@ -16,6 +16,7 @@ SKBUILD_ARGS=(
     "--"
     "-DCMAKE_C_COMPILER:PATH=icx"
     "-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+    "-DMKL_THREADING=gnu_thread"
 )
 
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then

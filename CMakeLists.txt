@@ -12,6 +12,14 @@ option(OPTIMIZATION_REPORT
   OFF
 )
 
+set(MKL_THREADING_OPTIONS "intel_thread" "gnu_thread" "tbb_thread" "sequential")
+set(MKL_THREADING "intel_thread" CACHE STRING "MKL threading layer")
+set_property(CACHE MKL_THREADING PROPERTY STRINGS ${MKL_THREADING_OPTIONS})
+
+if(NOT MKL_THREADING IN_LIST MKL_THREADING_OPTIONS)
+  message(FATAL_ERROR "Invalid MKL_THREADING value: ${MKL_THREADING}. Must be one of: ${MKL_THREADING_OPTIONS}")
+endif()
+
 find_package(Python COMPONENTS Interpreter Development NumPy REQUIRED)
 
 # Print out the discovered paths
@@ -25,7 +33,6 @@ find_package(Cython REQUIRED)
 
 set(MKL_ARCH "intel64")
 set(MKL_LINK "dynamic")
-set(MKL_THREADING "intel_thread")
 set(MKL_INTERFACE "lp64")
 find_package(MKL REQUIRED)
 

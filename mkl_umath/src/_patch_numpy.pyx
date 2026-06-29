@@ -59,10 +59,10 @@ ctypedef struct function_info:
 cdef class _patch_impl:
     cdef int functions_count
     cdef function_info* functions
-
-    functions_dict = dict()
+    cdef dict functions_dict
 
     def __cinit__(self):
+        self.functions_dict = {}
         cdef int pi, oi, i, nargs
         cdef int expected_count
         cdef char* patch_types
@@ -77,15 +77,25 @@ cdef class _patch_impl:
             mkl_umath_func = getattr(mu, umath)
             expected_count += mkl_umath_func.ntypes
 
-        self.functions = <function_info *> malloc(
-            expected_count * sizeof(function_info)
-        )
+        if expected_count > 0:
+            self.functions = <function_info *> malloc(
+                expected_count * sizeof(function_info)
+            )
+            if self.functions is NULL:
+                raise MemoryError(
+                    "Failed to allocate memory for function_info array"
+                )
 
         for umath in umaths:
             patch_umath = getattr(mu, umath)
             c_patch_umath = <cnp.ufunc>patch_umath
             c_orig_umath = <cnp.ufunc>getattr(np, umath)
+            # nargs must be >=0 as no ufuncs have no arguments
             nargs = c_patch_umath.nargs
+            if nargs <= 0:
+                raise RuntimeError(
+                    f"Invalid number of arguments for ufunc {umath}: {nargs}"
+                )
             patch_types = _get_ufunc_types(c_patch_umath)
             orig_types = _get_ufunc_types(c_orig_umath)
             for pi in range(c_patch_umath.ntypes):
@@ -129,7 +139,8 @@ cdef class _patch_impl:
     def __dealloc__(self):
         if self.functions is not NULL:
             for i in range(self.functions_count):
-                free(self.functions[i].signature)
+                if self.functions[i].signature is not NULL:
+                    free(self.functions[i].signature)
             free(self.functions)
 
     cdef int _replace_loop(

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Removed `numpy-base` dependency and `USE_NUMPY_BASE` environment variable from conda recipe [gh-200](https://github.com/IntelPython/mkl_umath/pull/200)
+* Updated `mkl_umath` patching to work with changes to NumPy Cython API present in NumPy 2.5 [gh-226](https://github.com/IntelPython/mkl_umath/pull/226)
 
 ### Fixed
 

@@ -1,8 +1,7 @@
 """Micro-benchmarks for mkl_umath unary ufuncs.
 
-Times each ufunc over a Cartesian product of
-  dtype  in [float32, float64]
-  size   in [10_000, 100_000, 1_000_000]
+Each ufunc gets its own benchmark class (Bench_<name>) so ASV renders a
+separate grid tile per ufunc. Params are dtype x size only.
 
 Arrays are pre-allocated in setup() and reused across timing calls.
 Patching is applied once at package import via benchmarks._patch_setup.
@@ -39,23 +38,34 @@ _UFUNC_CONFIGS = {
 }
 
 
-class BenchMicro:
-    params = (
-        sorted(_UFUNC_CONFIGS.keys()),
-        ["float32", "float64"],
-        [10_000, 100_000, 1_000_000],
-    )
-    param_names = ["ufunc", "dtype", "size"]
-
-    def setup(self, ufunc, dtype, size):
-        cfg = _UFUNC_CONFIGS[ufunc]
+def _make_bench(name, cfg):
+    def setup(self, dtype, size):
         rng = np.random.default_rng(42)
         self.x = rng.uniform(cfg["low"], cfg["high"], size).astype(dtype)
         self._func = cfg["func"]
         self._func(self.x)
 
-    def time_micro(self, ufunc, dtype, size):
+    def time_ufunc(self, dtype, size):
         self._func(self.x)
+
+    return type(
+        f"Bench_{name}",
+        (),
+        {
+            "params": (["float32", "float64"], [10_000, 100_000, 1_000_000]),
+            "param_names": ["dtype", "size"],
+            "setup": setup,
+            "time_ufunc": time_ufunc,
+        },
+    )
+
+
+globals().update(
+    {
+        f"Bench_{name}": _make_bench(name, cfg)
+        for name, cfg in _UFUNC_CONFIGS.items()
+    }
+)
 
 
 class BenchArctan2:

@@ -103,7 +103,7 @@ repos:
         "-rn", # Only display messages
         "-sn", # Don't display the score
         "--errors-only",
-        "--disable=import-error",
+        "--disable=import-error,no-name-in-module",
         ]
 
 - repo: https://github.com/jumanjihouse/pre-commit-hooks

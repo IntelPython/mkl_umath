@@ -163,9 +163,12 @@ py.extension_module(
 py.install_sources(
     [
         'mkl_umath/__init__.py',
+        'mkl_umath/__main__.py',
         'mkl_umath/_init_helper.py',
+        'mkl_umath/_patch_startup.py',
         'mkl_umath/_version.py',
-        'mkl_umath/generate_umath.py'
+        'mkl_umath/patch.py',
+        'mkl_umath/with_patch.py',
     ],
     subdir: 'mkl_umath'
 )

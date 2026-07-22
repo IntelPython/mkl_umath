@@ -73,9 +73,6 @@ else
     error('Unsupported system.')
 endif
 
-# vectorization flags
-c_args += ['-fveclib=SVML', '-fvectorize']
-
 mkl_dep = dependency('MKL', method: 'cmake',
     modules: ['MKL::MKL'],
     cmake_args: [
@@ -120,7 +117,7 @@ if host_machine.system() != 'windows'
     else
         origin = '$ORIGIN'
     endif
-    rpath_link_args = ['-Wl,-rpath,' + origin / '../..' + ':' + origin / '../../..' + ':' + origin]
+    rpath_link_args = ['-Wl,-rpath,' + origin / '../..' + ':' + origin / '../../..']
 endif
 
 mkl_umath_loops = shared_library(

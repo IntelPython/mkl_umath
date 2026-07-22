@@ -19,7 +19,7 @@ fi
 export CC=icx
 export CXX=icpx
 
-${PYTHON} -m build -w -n -x
+${PYTHON} -m build -w -n -x -Ccompile-args=-v
 
 ${PYTHON} -m wheel tags --remove \
     --platform "manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64" \

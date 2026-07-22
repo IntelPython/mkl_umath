@@ -21,7 +21,6 @@ requirements:
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
     host:
       - meson-python >=0.13.0
-      - meson
       - cmake
       - ninja
       - git

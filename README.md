@@ -1,4 +1,5 @@
 [![Conda package](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml)
+[![Build using pip and pre-release NumPy](https://github.com/IntelPython/mkl_umath/actions/workflows/build_pip.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/build_pip.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/IntelPython/mkl_umath/badge)](https://securityscorecards.dev/viewer/?uri=github.com/IntelPython/mkl_umath)
 
 # `mkl_umath`
@@ -18,19 +19,19 @@ as a stand-alone package. It can be installed into conda environment using:
 
 ---
 
-To install mkl_umath PyPI package please use following command:
+To install mkl_umath PyPI package please use the following command:
 
 ```
-   python -m pip install --i https://software.repos.intel.com/python/pypi -extra-index-url https://pypi.org/simple mkl_umath
+   python -m pip install --index-url https://software.repos.intel.com/python/pypi --extra-index-url https://pypi.org/simple mkl_umath
 ```
 
 If command above installs NumPy package from the PyPI, please use the following command to install Intel optimized NumPy wheel package from Intel PyPI Cloud:
 
 ```
-   python -m pip install --i https://software.repos.intel.com/python/pypi -extra-index-url https://pypi.org/simple mkl_umath numpy==<numpy_version>
+   python -m pip install --index-url https://software.repos.intel.com/python/pypi --extra-index-url https://pypi.org/simple mkl_umath numpy==<numpy_version>
 ```
 
-Where `<numpy_version>` should be the latest version from https://software.repos.intel.com/python/conda/
+where `<numpy_version>` should be the latest version from https://software.repos.intel.com/python/conda/.
 
 ---
 
@@ -105,7 +106,7 @@ If these are installed as part of a `oneAPI` installation, the following package
 - `cmake`
 - `ninja`
 - `cython`
-- `scikit-build`
+- `meson-python`
 - `numpy`
 
 If build dependencies are to be installed with Conda, the following packages must be installed from the Intel(R) channel
@@ -113,22 +114,11 @@ If build dependencies are to be installed with Conda, the following packages mus
 - `dpcpp_linux-64` (or `dpcpp_win-64` for Windows)
 - `numpy-base`
 
-then the remaining dependencies
+then the remaining build dependencies
 - `cmake`
 - `ninja`
 - `cython`
-- `scikit-build`
-
-and for `mkl-devel` and `dpcpp_linux-64` in a Conda environment, `MKLROOT` environment variable must be set
-On Linux
-```sh
-export MKLROOT=$CONDA_PREFIX
-```
-
-On Windows
-```sh
-set MKLROOT=%CONDA_PREFIX%
-```
+- `meson-python`
 
 If using `oneAPI`, it must be activated in the environment
 

@@ -15,30 +15,39 @@ It provides:
 - **Core C implementation:** `mkl_umath/src/` (ufuncsmodule.c, mkl_umath_loops.c.src)
 - **Cython patch layer:** `mkl_umath/src/_patch_numpy.pyx`
 - **Code generation:** `generate_umath.py`, `generate_umath_doc.py`
-- **Build system:** CMake (CMakeLists.txt) + scikit-build
+- **Build system:** meson-python + Cython
 
 ## Build dependencies
 **Required:**
 - Compiler toolchain: Intel `icx` or `clang` (with Intel-only flags gated when using clang)
-- Intel® OneMKL (mkl-devel)
-- NumPy, Cython, scikit-build, cmake, ninja
+- Intel® oneMKL (`mkl-devel`)
+- meson-python, CMake, Ninja, Cython, NumPy
 
-**Conda environment:**
+**Build against an existing `mkl` installation:**
+
+Install the build dependencies via Conda:
 ```bash
 conda install -c https://software.repos.intel.com/python/conda \
-  mkl-devel dpcpp_linux-64 numpy-base \
-  cmake ninja cython scikit-build
-export MKLROOT=$CONDA_PREFIX
-CC=${CC:-icx} pip install --no-build-isolation --no-deps .  # clang is also supported in CI
+  mkl-devel dpcpp_linux-64 cython meson-python cmake ninja numpy
+```
+or via pip:
+```bash
+pip install mkl-devel cython meson-python cmake ninja numpy
+```
+then build:
+```bash
+CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported in CI
 ```
 
 ## CI/CD
 - **Platforms:** Linux, Windows
 - **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
 - **Workflows:** `.github/workflows/`
-  - `conda-package.yml` — main build/test pipeline
-  - `build_pip.yaml` — PyPI wheel builds
-  - `build-with-clang.yml` — Clang compatibility check
+  - `conda-package.yml` — main conda build/test pipeline
+  - `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+  - `build_pip.yml` — validates pip build with pre-release NumPy
+  - `build-with-clang.yml` — Intel clang compatibility check
+  - `build-with-standard-clang.yml` — standard clang compatibility check
   - `openssf-scorecard.yml` — security scorecard
 
 ## Distribution
@@ -58,7 +67,7 @@ mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 - **Performance:** Changes should maintain or improve MKL VM utilization
 - **Compatibility:** Must work with upstream NumPy APIs (NEP-36 compliance)
 - **Testing:** Add tests to `mkl_umath/tests/test_basic.py`
-- **Build hygiene:** CMake changes → verify Linux + Windows
+- **Build hygiene:** `meson.build` is the source of truth for build config — verify Linux + Windows
 - **Docs:** Update docstrings via `ufunc_docstrings_numpy{1,2}.py`
 
 ## Code structure
@@ -74,12 +83,11 @@ mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 - **Compiler/toolchain:** `icx` and `clang` are both supported; when using clang, keep Intel-only flags behind compiler guards.
 - **Build validation:**
   - After setup: `which ${CC:-icx}` → should resolve to the intended compiler toolchain
-  - Verify: `echo $MKLROOT` → should be set
-  - Check: `python -c "import numpy; print(numpy.__version__)"` → confirm Intel NumPy
+  - Check: `python -c "import numpy; print(numpy.__version__)"` → confirm NumPy is available
 
 ## Notes
 - `_vendored/` contains vendored NumPy code generation utilities
-- Version in `mkl_umath/_version.py` (dynamic via setuptools)
+- Version in `mkl_umath/_version.py` (read dynamically by `meson.build`)
 - Patching is runtime-only; no NumPy source modification
 
 ## Directory map

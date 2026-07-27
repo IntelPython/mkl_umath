@@ -12,6 +12,7 @@ build:
     number: {{ buildnumber }}
     ignore_run_exports:
       - blas
+      - numpy
 
 requirements:
     build:

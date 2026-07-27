@@ -18,10 +18,12 @@ fi
 export CC=icx
 export CXX=icpx
 
+# -wnx flags mean: --wheel --no-isolation --skip-dependency-check
+# -Ccompile-args=-v makes ninja print full compiler commands (verbose build)
 ${PYTHON} -m build -w -n -x -Ccompile-args=-v
 
 ${PYTHON} -m wheel tags --remove \
-    --platform "manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64" \
+    --platform-tag "manylinux_${GLIBC_MAJOR}_${GLIBC_MINOR}_x86_64" \
     dist/mkl_umath*.whl
 
 ${PYTHON} -m pip install dist/mkl_umath*.whl \
@@ -32,6 +34,7 @@ ${PYTHON} -m pip install dist/mkl_umath*.whl \
     --prefix "${PREFIX}" \
     -vv
 
+# Copy wheel package
 if [ -n "${WHEELS_OUTPUT_FOLDER}" ]; then
     mkdir -p "${WHEELS_OUTPUT_FOLDER}"
     cp dist/mkl_umath*.whl "${WHEELS_OUTPUT_FOLDER}"

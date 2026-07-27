@@ -111,13 +111,8 @@ gen_loops_h = custom_target(
 )
 
 rpath_link_args = []
-if host_machine.system() != 'windows'
-    if host_machine.system() == 'darwin'
-        origin = '@loader_path'
-    else
-        origin = '$ORIGIN'
-    endif
-    rpath_link_args = ['-Wl,-rpath,' + origin / '../..' + ':' + origin / '../../..']
+if host_machine.system() == 'linux'
+    rpath_link_args = ['-Wl,-rpath,' + '$ORIGIN' / '../..' + ':' + '$ORIGIN' / '../../..']
 endif
 
 mkl_umath_loops = shared_library(

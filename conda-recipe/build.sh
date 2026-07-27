@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+#!/bin/bash -ex
 
 # This is necessary to help DPC++ find Intel libraries such as SVML, IRNG, etc in build prefix
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${BUILD_PREFIX}/lib"

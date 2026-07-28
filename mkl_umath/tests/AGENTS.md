@@ -3,7 +3,9 @@
 Unit tests for MKL-backed ufuncs and NumPy patching.
 
 ## Test files
-- **test_basic.py** — core functionality, patching API, numerical correctness
+- **test_basic.py** — core functionality, numerical correctness
+- **test_patching.py** — patching API and state transitions
+- **test_cli.py** — `python -m mkl_umath` CLI patch install/uninstall/status
 
 ## Test coverage
 - Ufunc correctness: compare MKL loops vs NumPy reference

@@ -98,41 +98,25 @@ with mkl_umath.mkl_umath():
 ```
 ---
 
-## Building
+## Building from source
 
-Intel(R) C compiler and Intel(R) OneAPI Math Kernel Library (OneMKL) are required to build `mkl_umath` from source.
+A C compiler, Intel® oneAPI Math Kernel Library (oneMKL), and NumPy are required
+to build `mkl_umath` from source.
 
-If these are installed as part of a `oneAPI` installation, the following packages must also be installed into the environment
-- `cmake`
-- `ninja`
-- `cython`
-- `meson-python`
-- `numpy`
-
-If build dependencies are to be installed with Conda, the following packages must be installed from the Intel(R) channel
-- `mkl-devel`
-- `dpcpp_linux-64` (or `dpcpp_win-64` for Windows)
-- `numpy-base`
-
-then the remaining build dependencies
-- `cmake`
-- `ninja`
-- `cython`
-- `meson-python`
-
-If using `oneAPI`, it must be activated in the environment
-
-On Linux
+Executing
+```sh
+python -m pip install .
 ```
-source ${ONEAPI_ROOT}/setvars.sh
+will pull in the required build dependencies, including `mkl-devel` and `numpy`, and build `mkl_umath`.
+
+If you already have `mkl` and `numpy` installed (from your system or a conda environment)
+and want to reuse them instead of pulling fresh copies into an isolated build, first
+install the build dependencies:
+```sh
+pip install meson-python ninja cmake cython numpy mkl-devel
 ```
 
-On Windows
-```
-call "%ONEAPI_ROOT%\setvars.bat"
-```
-
-finally, execute
-```
-CC=icx pip install --no-build-isolation --no-deps .
+then build against the existing installation with:
+```sh
+CC=icx python -m pip install --no-build-isolation --no-deps .
 ```

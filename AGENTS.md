@@ -73,7 +73,8 @@ mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 ## Code structure
 - **Generated code:** `*.src` files are templates (conv_template.py processes them)
 - **Precision flags:** fp:precise, fimf-precision=high, fprotect-parens (non-negotiable)
-- **Security:** Stack protection, FORTIFY_SOURCE, NX/DEP enforced in CMake
+- **Security:** Stack protection, FORTIFY_SOURCE, NX/DEP enforced in `meson.build`
+- **Build options:** `opt_report` and `mkl_threading` are exposed via `meson.options`
 
 
 ## Common pitfalls

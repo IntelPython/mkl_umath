@@ -3,7 +3,7 @@ name: Conda package with conda-forge channel only
 on:
     push:
       branches:
-        - master
+        - main
     pull_request:
 
 permissions: read-all

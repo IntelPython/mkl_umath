@@ -3,7 +3,7 @@ name: Build project with IntelLLVM clang compiler
 on:
   pull_request:
   push:
-    branches: [master]
+    branches: [main]
 
 permissions: read-all
 

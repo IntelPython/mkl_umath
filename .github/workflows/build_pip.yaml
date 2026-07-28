@@ -3,7 +3,7 @@ name: Build using pip and pre-release NumPy
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 permissions: read-all

@@ -1272,7 +1272,11 @@ def make_code(funcdict, filename):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-o", "--outfile", type=str, help="Path to the output directory"
+        "-o",
+        "--outfile",
+        type=str,
+        required=True,
+        help="Path to the output directory",
     )
     args = parser.parse_args()
 
@@ -1280,11 +1284,7 @@ def main():
     filename = __file__
     code = make_code(defdict, filename)
 
-    if not args.outfile:
-        # This is the distutils-based build
-        outfile = "__umath_generated.c"
-    else:
-        outfile = os.path.join(os.getcwd(), args.outfile)
+    outfile = os.path.join(os.getcwd(), args.outfile)
 
     with open(outfile, "w") as f:
         f.write(code)

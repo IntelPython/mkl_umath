@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Removed `numpy-base` dependency and `USE_NUMPY_BASE` environment variable from conda recipe [gh-200](https://github.com/IntelPython/mkl_umath/pull/200)
+* Migrated the build system from `setuptools` to `meson-python`, removing `setup.py` in favor of `meson.build` [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
 
 ### Fixed
 

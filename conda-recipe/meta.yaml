@@ -11,6 +11,7 @@ build:
       - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:
       - blas
+      - numpy
 
 requirements:
     build:
@@ -28,6 +29,7 @@ requirements:
       - python-gil     # [py>=314]
       - python-build >=1.2.2
       - mkl-devel
+      - intel-openmp
       - numpy
       - wheel  >=0.41.3
       - pip
@@ -35,6 +37,7 @@ requirements:
       - python
       - python-gil     # [py>=314]
       - {{ pin_compatible('mkl') }}
+      - {{ pin_compatible('intel-openmp') }}
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
       - numpy >=1.26.4
 

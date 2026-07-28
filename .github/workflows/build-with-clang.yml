@@ -66,13 +66,10 @@ jobs:
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           echo "$CMPLR_ROOT"
           export CC="$CMPLR_ROOT/bin/icx"
-          pip install . --no-build-isolation --no-deps --verbose
+          pip install -e . --no-build-isolation --no-deps --verbose
 
       - name: Run mkl_umath tests
         run: |
           source ${{ env.ONEAPI_ROOT }}/setvars.sh
           pip install pytest
-          # mkl_umath cannot be installed in editable mode, we need
-          # to change directory before importing it and running tests
-          cd ..
           python -m pytest -sv --pyargs mkl_umath

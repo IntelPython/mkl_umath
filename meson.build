@@ -35,7 +35,11 @@ link_args = []
 
 if get_option('opt_report')
     if cc.get_id().startswith('intel')
-        c_args += 'qopt-report=3'
+        if cc.get_argument_syntax() == 'msvc'
+            c_args += '/Qopt-report=3'
+        else
+            c_args += '-qopt-report=3'
+        endif
     else
         warning('Optimization report requested with non-Intel compiler')
     endif
@@ -115,12 +119,13 @@ if host_machine.system() == 'linux'
     rpath_link_args = ['-Wl,-rpath,' + '$ORIGIN' / '../..' + ':' + '$ORIGIN' / '../../..']
 endif
 
+# define <target>_EXPORTS for Windows dllexport
 mkl_umath_loops = shared_library(
     'mkl_umath_loops',
     sources: [gen_loops_c, gen_loops_h],
     include_directories: inc_np,
     dependencies: [mkl_dep, py_dep],
-    c_args: c_args,
+    c_args: c_args + ['-Dmkl_umath_loops_EXPORTS'],
     link_args: link_args + rpath_link_args,
     install: true,
     install_dir: py.get_install_dir() / 'mkl_umath'

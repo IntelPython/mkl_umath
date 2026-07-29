@@ -12,6 +12,7 @@ build:
     ignore_run_exports:
       - blas
       - numpy
+      - intel-openmp   # [win]
 
 requirements:
     build:
@@ -30,6 +31,7 @@ requirements:
       - python-build >=1.2.2
       - mkl-devel
       - intel-openmp
+      - intel-cmplr-lib-rt
       - numpy
       - wheel  >=0.41.3
       - pip

@@ -34,7 +34,7 @@ Higher-precedence rules override lower-precedence context.
 ## Source-of-truth files
 - Build/config: `pyproject.toml`, `meson.build`
 - Dependencies/packaging: `pyproject.toml`, `conda-recipe*/meta.yaml`
-- CI: `.github/workflows/*.{yml,yaml}`
+- CI: `.github/workflows/*.yml`
 - API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch_numpy.pyx`
 - Core implementation: `mkl_umath/src/*.{c,c.src,pyx}`
 - Tests: `mkl_umath/tests/`

@@ -1,3 +1,8 @@
 #!/bin/bash -ex
 
-$PYTHON -m pip install --no-build-isolation --no-deps -Csetup-args="-Dmkl_threading=gnu_thread" .
+# -Ccompile-args=-v makes ninja print full compiler commands (verbose build)
+$PYTHON -m pip install --no-build-isolation --no-deps \
+    -Csetup-args="-Dmkl_threading=gnu_thread" \
+    -Ccompile-args=-v \
+    . \
+    -vv

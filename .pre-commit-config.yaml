@@ -6,7 +6,7 @@ repos:
     - id: check-added-large-files
     - id: no-commit-to-branch
       name: "ensure no direct commit to master/maintenance branches"
-      args: [--branch, "master", --pattern, "maintenance/.*"]
+      args: [--branch, "main", --pattern, "maintenance/.*"]
     - id: check-case-conflict
     - id: check-illegal-windows-names
   # Contents

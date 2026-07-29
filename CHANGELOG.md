@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * Removed `numpy-base` dependency and `USE_NUMPY_BASE` environment variable from conda recipe [gh-200](https://github.com/IntelPython/mkl_umath/pull/200)
 * Migrated the build system from `scikit-build` to `meson-python`, removing `setup.py` and `CMakeLists.txt` in favor of `meson.build` [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
-* Renamed the `OPTIMIZATION_REPORT` and `MKL_THREADING` build options to `opt_report` and `mkl_threading`, now passed as meson setup args (`-Csetup-args=-Dopt_report=true`) [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
+* Renamed the `OPTIMIZATION_REPORT` and `MKL_THREADING` build options to `opt_report` and `mkl_threading`, now passed as meson setup args (e.g. `-Csetup-args=-Dopt_report=true` and `-Csetup-args=-Dmkl_threading=tbb_thread`) [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
 
 ### Fixed
 

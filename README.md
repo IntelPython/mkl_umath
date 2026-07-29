@@ -105,7 +105,7 @@ to build `mkl_umath` from source.
 
 Executing
 ```sh
-python -m pip install .
+CC=icx python -m pip install .
 ```
 will pull in the required build dependencies, including `mkl-devel` and `numpy`, and build `mkl_umath`.
 
@@ -118,5 +118,5 @@ pip install meson-python ninja cmake cython numpy mkl-devel
 
 then build against the existing installation with:
 ```sh
-CC=icx python -m pip install --no-build-isolation --no-deps .
+CC=icx pip install --no-build-isolation --no-deps .
 ```

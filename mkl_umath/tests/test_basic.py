@@ -26,7 +26,7 @@
 import numpy as np
 import pytest
 
-import mkl_umath._ufuncs as mu  # pylint: disable=no-name-in-module
+import mkl_umath._ufuncs as mu
 
 np.random.seed(42)
 

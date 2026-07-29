@@ -47,6 +47,9 @@ endif
 
 if cc.get_argument_syntax() == 'msvc'
     c_args += [
+        '-Wall', '-Wextra', '-Winit-self', '-Wunused-function',
+        '-Wuninitialized', '-Wmissing-declarations', '-Wstrict-prototypes',
+        '-Wno-unused-parameter', '-Wno-implicit-function-declaration',
         '/Ox', '/GS', '/DynamicBase', '/fp:precise'
     ]
     link_args = ['/NXCompat', '/DynamicBase']

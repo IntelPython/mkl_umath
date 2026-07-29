@@ -15,6 +15,9 @@ if [ -d "build" ]; then
     rm -rf build
 fi
 
+export CC=icx
+export CXX=icpx
+
 # -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 # -Ccompile-args=-v makes ninja print full compiler commands (verbose build)
 ${PYTHON} -m build -w -n -x -Ccompile-args=-v

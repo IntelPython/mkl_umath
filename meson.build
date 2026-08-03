@@ -56,7 +56,8 @@ if cc.get_argument_syntax() == 'msvc'
 
     if cc.get_id().startswith('intel')
         c_args += [
-            '/Qimf-precision=high', '/Qprotect-parens', '/clang:-fveclib=SVML'
+            '/Qimf-precision=high', '/Qprotect-parens',
+            '/clang:-fveclib=SVML', '/clang:-fvectorize'
         ]
     endif
 elif cc.get_argument_syntax() == 'gcc'

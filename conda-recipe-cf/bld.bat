@@ -5,5 +5,6 @@ set "INCLUDE=%BUILD_PREFIX%\include;%INCLUDE%"
 set "CC=icx"
 set "CXX=icx"
 
-%PYTHON% -m pip install --no-build-isolation --no-deps .
+REM -Ccompile-args=-v makes ninja print full compiler commands (verbose build)
+%PYTHON% -m pip install --no-build-isolation --no-deps -Ccompile-args=-v . -vv
 if errorlevel 1 exit 1

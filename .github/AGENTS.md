@@ -1,25 +1,16 @@
 # AGENTS.md — .github/
 
-CI/CD workflows, automation, security scanning, and package distribution.
+CI/CD workflows and repo automation.
 
-## Workflows
-- **conda-package.yml** — main build/test pipeline (Linux/Windows, Python 3.10-3.14)
-- **build_pip.yaml** — PyPI wheel builds for Intel channel
-- **build-with-clang.yml** — Clang compatibility validation
-- **openssf-scorecard.yml** — security posture scanning
+## Workflows (source of truth)
+- `conda-package.yml` — Intel channel conda build/test pipeline
+- `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+- `build-with-clang.yml` — Intel clang compatibility checks
+- `build-with-standard-clang.yml` — standard clang compatibility checks
+- `build_pip.yml` — pip build pipeline with pre-release NumPy
+- `pre-commit.yml` — lint/format checks
+- `openssf-scorecard.yml` — security scanning
 
-## CI/CD policy
-- Keep build matrix (Python versions, platforms) in workflow files only
-- Required checks: conda build + test on all supported Python versions
-- Artifact naming: `$PACKAGE_NAME $OS Python $VERSION`
-- Conda channel: `https://software.repos.intel.com/python/conda`
-
-## Security
-- OpenSSF Scorecard runs automatically
-- CODEOWNERS enforces review policy
-- Dependabot monitors dependencies (`.github/dependabot.yml`)
-
-## Notes
-- Workflow/job renames are breaking for downstream tooling
-- Cache key includes `meta.yaml` hash for conda packages
-- Artifacts uploaded per-Python-version for parallel testing
+## Policy
+- Treat workflow YAML as canonical for platform/Python matrices.
+- Avoid doc claims about CI coverage unless present in workflow config.

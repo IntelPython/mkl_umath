@@ -3,9 +3,9 @@
 Core MKL-backed ufunc implementation: Python interface, Cython patching, and C/MKL integration.
 
 ## Structure
-- `__init__.py` — public API surface (`_ufuncs`, `_patch`, version)
+- `__init__.py` — public API surface (`_ufuncs`, `_patch_numpy`, version)
 - `_init_helper.py` — module initialization helpers
-- `_version.py` — version string (dynamic via setuptools)
+- `_version.py` — version string (read dynamically by `meson.build`)
 - `src/` — C implementation and Cython patch layer
 - `tests/` — basic functionality and patching tests
 - `generate_umath.py` — code generation for ufunc loops

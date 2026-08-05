@@ -12,8 +12,9 @@ Conda package build recipe for Intel channel distribution.
 ## Build configuration
 - **Channels:** `https://software.repos.intel.com/python/conda`, `conda-forge`
 - **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
-- **Compilers:** Intel C compiler (icx/icl)
-- **Dependencies:** mkl-devel, dpcpp_{linux,win}-64, numpy-base
+- **Build system:** meson-python (via `python -m build`)
+- **Compilers:** Intel C compiler (icx)
+- **Dependencies:** mkl-devel, intel-openmp, dpcpp_{linux,win}-64, numpy
 
 ## Build outputs
 - Conda package: `mkl_umath-<version>-<build>.conda`

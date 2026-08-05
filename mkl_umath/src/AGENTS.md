@@ -34,7 +34,7 @@ C/Cython implementation layer: MKL VM integration, ufunc loops, and NumPy patchi
 - `ufuncsmodule.c` + `__umath_generated.c` → `_ufuncs` extension
 
 ## Development notes
-- **Precision flags:** fp:precise, fimf-precision=high enforced in CMake
+- **Precision flags:** fp:precise, fimf-precision=high enforced in `meson.build`
 - **Security:** Stack protections, FORTIFY_SOURCE enabled
-- **Vectorization:** `-fveclib=SVML -fvectorize` for SIMD
-- **Optimization reports:** `cmake -DOPTIMIZATION_REPORT=ON` for `-qopt-report=3`
+- **Vectorization:** `-fveclib=SVML -fvectorize` for SIMD (Intel compiler only)
+- **Optimization reports:** `-Dopt_report=true` meson option for `-qopt-report=3`

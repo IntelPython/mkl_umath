@@ -11,10 +11,9 @@ __pycache__/
 *.lib
 *.dll
 
-# CMake build and local install directory
+# Meson build and local install directory
 build
-_skbuild
-build_cmake
+.mesonpy-*
 install
 
 # Code project files
@@ -44,7 +43,6 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-dpctl_conda_pkg
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -84,13 +82,8 @@ target/
 # pyenv python configuration file
 .python-version
 
-_cmake_test_compile
-
 # generated numpy files
 mkl_umath/src/__umath_generated.c
 mkl_umath/src/mkl_umath_loops.c
 mkl_umath/src/mkl_umath_loops.h
 mkl_umath/src/_patch.c
-
-# moved cmake scripts
-dpctl/resources/cmake

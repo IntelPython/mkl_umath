@@ -11,6 +11,8 @@ build:
       - WHEELS_OUTPUT_FOLDER
     ignore_run_exports:
       - blas
+      - numpy
+      - intel-openmp   # [win]
 
 requirements:
     build:
@@ -19,21 +21,25 @@ requirements:
       - {{ stdlib('c') }}
       - {{ compiler('dpcpp') }} >=2024.2  # [not osx]
     host:
-      - setuptools >=77
+      - meson-python >=0.16.0
       - cmake
       - ninja
       - git
       - cython
-      - scikit-build
       - python
       - python-gil     # [py>=314]
+      - python-build >=1.2.2
       - mkl-devel
+      - intel-openmp
+      - intel-cmplr-lib-rt
       - numpy
       - wheel  >=0.41.3
+      - pip
     run:
       - python
       - python-gil     # [py>=314]
       - {{ pin_compatible('mkl') }}
+      - {{ pin_compatible('intel-openmp') }}
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
       - numpy >=1.26.4
 

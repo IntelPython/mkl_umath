@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [dev] - YYYY-MM-DD
+## [0.5.0] - 2026-08-06
 
 ### Added
 * Added CLI patch management for NumPy umath with persistent install/status/uninstall and one-shot command patching via `python -m mkl_umath --patch <command>` and `python -m mkl_umath --with-numpy-patch <command>` [gh-216](https://github.com/IntelPython/mkl_umath/pull/216)
@@ -13,8 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Removed `numpy-base` dependency and `USE_NUMPY_BASE` environment variable from conda recipe [gh-200](https://github.com/IntelPython/mkl_umath/pull/200)
 * Migrated the build system from `scikit-build` to `meson-python`, removing `setup.py` and `CMakeLists.txt` in favor of `meson.build` [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
 * Renamed the `OPTIMIZATION_REPORT` and `MKL_THREADING` build options to `opt_report` and `mkl_threading`, now passed as meson setup args (e.g. `-Csetup-args=-Dopt_report=true` and `-Csetup-args=-Dmkl_threading=tbb_thread`) [gh-166](https://github.com/IntelPython/mkl_umath/pull/166)
-
-### Fixed
 
 ## [0.4.3] - 2026-06-30
 

@@ -1,0 +1,108 @@
+name: Coverity Scan
+
+on:
+  schedule:
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverity-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COVERITY_PROJECT: IntelPython/mkl_umath
+  ONEAPI_ROOT: /opt/intel/oneapi
+
+jobs:
+  coverity-scan:
+    if: github.repository == 'IntelPython/mkl_umath'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          architecture: x64
+
+      - name: Add Intel repository
+        run: |
+          wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          rm GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+          sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+          sudo apt-get update
+
+      - name: Install Intel oneAPI
+        timeout-minutes: 25
+        run: |
+          sudo apt-get install -y intel-oneapi-compiler-dpcpp-cpp
+          sudo apt-get install -y intel-oneapi-mkl-devel
+
+      - name: Install mkl_umath dependencies
+        run: pip install meson-python ninja cmake cython "numpy>=2"
+
+      - name: Download Coverity Build Tool
+        timeout-minutes: 15
+        env:
+          COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+        run: |
+          curl --location --no-progress-meter --fail-with-body \
+               --retry 5 --retry-connrefused --retry-delay 5 \
+               --data-urlencode "token=${COVERITY_SCAN_TOKEN}" \
+               --data-urlencode "project=${COVERITY_PROJECT}" \
+               --output cov-analysis.tar.gz \
+               https://scan.coverity.com/download/linux64
+          mkdir -p cov-analysis
+          tar -xzf cov-analysis.tar.gz --strip 1 -C cov-analysis
+          echo "${PWD}/cov-analysis/bin" >> "$GITHUB_PATH"
+
+      - name: Build under cov-build
+        timeout-minutes: 20
+        run: |
+          # shellcheck disable=SC1091
+          source "${ONEAPI_ROOT}/setvars.sh"
+          # Build with icx to match the shipped conda packages (both
+          # conda-recipe and conda-recipe-cf use CC=icx). meson.build only
+          # applies -fveclib=SVML, -fvectorize, -fimf-precision=high and
+          # -fprotect-parens when the compiler id is Intel, so gcc would not
+          # exercise that branch.
+          export CC="${CMPLR_ROOT}/bin/icx"
+          # icx is clang-based but, unlike gcc, is not auto-configured by the
+          # Coverity front-end, so register it explicitly first.
+          cov-configure --template --comptype clangcc --compiler "${CC}"
+          # meson-python caches its build tree in build/; remove it so the
+          # compiler really runs and Coverity has something to capture.
+          rm -rf build
+          cov-build --dir cov-int pip install . --no-build-isolation --no-deps 2>&1 | tee cov-build.log
+          # The project has 4 C translation units (generated mkl_umath_loops.c,
+          # ufuncsmodule.c, generated __umath_generated.c and Cython
+          # _patch_numpy.c); bail out if none were captured.
+          if ! grep -qE "Emitted [1-9][0-9]* .*compilation unit" cov-build.log; then
+            echo "::error::Coverity captured 0 compilation units — the C build did not run under cov-build."
+            exit 1
+          fi
+
+      - name: Submit results to Coverity Scan
+        timeout-minutes: 15
+        env:
+          COVERITY_SCAN_TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+          COVERITY_SCAN_EMAIL: ${{ secrets.COVERITY_SCAN_EMAIL }}
+        run: |
+          tar -czf cov-int.tgz cov-int
+          curl --no-progress-meter --fail-with-body \
+               --retry 5 --retry-connrefused --retry-delay 5 \
+               --form token="${COVERITY_SCAN_TOKEN}" \
+               --form email="${COVERITY_SCAN_EMAIL}" \
+               --form file=@cov-int.tgz \
+               --form version="${GITHUB_SHA}" \
+               --form description="GitHub Actions ${GITHUB_REF_NAME} (run ${GITHUB_RUN_ID})" \
+               --form project="${COVERITY_PROJECT}" \
+               https://scan.coverity.com/builds

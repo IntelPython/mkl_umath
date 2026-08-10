@@ -22,6 +22,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
 
+    defaults:
+      run:
+        # The implicit default is `bash -e {0}`, which has no pipefail, so the
+        # `| tee` below would report tee's status and hide a cov-build failure.
+        shell: bash -eo pipefail {0}
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -75,16 +81,40 @@ jobs:
           # -fprotect-parens when the compiler id is Intel, so gcc would not
           # exercise that branch.
           export CC="${CMPLR_ROOT}/bin/icx"
-          # icx is clang-based but, unlike gcc, is not auto-configured by the
-          # Coverity front-end, so register it explicitly first.
-          cov-configure --template --comptype clangcc --compiler "${CC}"
-          # meson-python caches its build tree in build/; remove it so the
-          # compiler really runs and Coverity has something to capture.
-          rm -rf build
+          # icx is not auto-configured by the Coverity front-end, so register it
+          # explicitly first. Two constraints on this command:
+          #   * With --template, --compiler takes a bare executable name, never
+          #     a path. Capture matches on the name of the executable being
+          #     spawned, so the bare-name template still covers the absolute
+          #     path meson bakes into build.ninja from ${CC}.
+          #   * icx has a first-class Coverity integration (intel_oneapi_icx).
+          #     The generic clangcc type lacks the Intel switch tables for the
+          #     Intel-only flags above (-fimf-precision=high, -fprotect-parens).
+          # intel_oneapi_icx is current; intel_icx:linux is the older, deprecated
+          # spelling still accepted by pre-2025 build tools.
+          comptypes="$(cov-configure --list-compiler-types | cut -d, -f1)"
+          comptype=""
+          for candidate in intel_oneapi_icx intel_oneapi_icx:linux intel_icx:linux; do
+            # Here-string, not a pipe: `grep -q` exits on the first match and
+            # would SIGPIPE the writer, which pipefail turns into a false miss.
+            if grep -qxF "${candidate}" <<< "${comptypes}"; then
+              comptype="${candidate}"
+              break
+            fi
+          done
+          if [ -z "${comptype}" ]; then
+            echo "::error::No Intel oneAPI compiler type in this cov-analysis; refusing to fall back to the generic Clang configuration."
+            exit 1
+          fi
+          echo "Using Coverity compiler type: ${comptype}"
+          cov-configure --template --comptype "${comptype}" --compiler icx
           cov-build --dir cov-int pip install . --no-build-isolation --no-deps 2>&1 | tee cov-build.log
-          # The project has 4 C translation units (generated mkl_umath_loops.c,
-          # ufuncsmodule.c, generated __umath_generated.c and Cython
-          # _patch_numpy.c); bail out if none were captured.
+          # A non-editable `pip install .` builds in a fresh .mesonpy-* temp tree
+          # (build/ is the editable-install layout only) and pip does not cache
+          # wheels built from a direct path, so all 4 C translation units
+          # (generated mkl_umath_loops.c, ufuncsmodule.c, generated
+          # __umath_generated.c and Cython _patch_numpy.c) are recompiled under
+          # cov-build; bail out if none were captured.
           if ! grep -qE "Emitted [1-9][0-9]* .*compilation unit" cov-build.log; then
             echo "::error::Coverity captured 0 compilation units — the C build did not run under cov-build."
             exit 1

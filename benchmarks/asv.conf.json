@@ -4,7 +4,8 @@
     "project_url": "https://github.com/IntelPython/mkl_umath",
     "repo": "..",
     "branches": [
-        "main"
+        "main",
+        "dev-milestone"
     ],
     "environment_type": "conda",
     "conda_channels": [

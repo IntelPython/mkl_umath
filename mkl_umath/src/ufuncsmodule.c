@@ -40,6 +40,11 @@ PyMODINIT_FUNC PyInit__ufuncs(void)
     PyObject *m;
     PyObject *d;
 
+    /* NumPy C-API init macros: they `return NULL;` on failure, so call them
+     * before PyModule_Create() to avoid leaking the module on early return. */
+    import_array();
+    import_umath();
+
     m = PyModule_Create(&_ufuncs_module);
     if (m == NULL)
         return NULL;
@@ -49,9 +54,6 @@ PyMODINIT_FUNC PyInit__ufuncs(void)
         Py_XDECREF(m);
         return NULL;
     }
-
-    import_array();
-    import_umath();
 
     if (InitOperators(d) < 0) {
         /* d is a borrowed reference from PyModule_GetDict; do not decref it. */

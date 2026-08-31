@@ -28,13 +28,11 @@ import sys
 import sysconfig
 import threading
 
-import numpy as np
-import pytest
-
-# Oversubscription: MKL spawns its own thread pool per calling thread, so
-# running MKL VM calls from many Python threads concurrently can spawn
-# far more OS threads than cores. Cap it before mkl_umath/MKL initialize.
+# Cap MKL threads before numpy import, which can trigger MKL init first.
 os.environ.setdefault("MKL_NUM_THREADS", "1")
+
+import numpy as np  # noqa: E402
+import pytest  # noqa: E402
 
 import mkl_umath  # noqa: E402
 import mkl_umath._patch_numpy  # noqa: E402, F401

@@ -54,7 +54,7 @@ PyMODINIT_FUNC PyInit__ufuncs(void)
     import_umath();
 
     if (InitOperators(d) < 0) {
-        Py_XDECREF(d);
+        /* d is a borrowed reference from PyModule_GetDict; do not decref it. */
         Py_XDECREF(m);
         return NULL;
     }

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)
+* Fixed a leak of the module object when the NumPy C-API import fails during module initialization [gh-263](https://github.com/IntelPython/mkl_umath/pull/263)
 
 ## [0.5.0] - 2026-08-06
 

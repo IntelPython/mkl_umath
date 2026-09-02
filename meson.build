@@ -55,12 +55,36 @@ if cc.get_argument_syntax() == 'msvc'
     link_args = ['/NXCompat', '/DynamicBase']
 
     if cc.get_id() == 'intel-llvm-cl'
-        # icx defines __INTEL_LLVM_COMPILER, which numpy >=2.4.4 excludes from
-        # its _MSC_VER branch in npy_common.h, making npy_cdouble a native
-        # C99 _Complex instead of _Dcomplex but Windows UCRT's complex.h
-        # (creal/cimag/etc) is hard-typed to _Dcomplex regardless of compiler.
-        # Undefine the macro so numpy's header picks _Dcomplex again.
-        c_args += ['/U__INTEL_LLVM_COMPILER']
+        # workaround for icx _Dcomplex regression, see numpy/numpy#31337
+        npy_complex_check = '''
+            #include <Python.h>
+            #include <numpy/npy_math.h>
+            '''
+        undef_llvm = '/U__INTEL_LLVM_COMPILER'
+
+        if not cc.compiles(
+            npy_complex_check,
+            name: 'numpy complex helpers build with icx',
+            dependencies: py_dep,
+            include_directories: inc_np
+        )
+            if cc.compiles(
+                npy_complex_check,
+                name: 'numpy complex helpers build with ' + undef_llvm,
+                args: undef_llvm,
+                dependencies: py_dep,
+                include_directories: inc_np
+            )
+                c_args += undef_llvm
+            else
+                error(
+                    'numpy headers do not compile with icx on Windows: '
+                    + 'npy_cdouble conflicts with UCRT complex.h and '
+                    + undef_llvm + ' does not resolve it. '
+                    + 'See numpy/numpy#31337.'
+                )
+            endif
+        endif
     endif
 
     if cc.get_id().startswith('intel')

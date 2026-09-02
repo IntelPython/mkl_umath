@@ -54,6 +54,15 @@ if cc.get_argument_syntax() == 'msvc'
     ]
     link_args = ['/NXCompat', '/DynamicBase']
 
+    if cc.get_id() == 'intel-llvm-cl'
+        # icx defines __INTEL_LLVM_COMPILER, which numpy >=2.4.4 excludes from
+        # its _MSC_VER branch in npy_common.h, making npy_cdouble a native
+        # C99 _Complex instead of _Dcomplex but Windows UCRT's complex.h
+        # (creal/cimag/etc) is hard-typed to _Dcomplex regardless of compiler.
+        # Undefine the macro so numpy's header picks _Dcomplex again.
+        c_args += ['/U__INTEL_LLVM_COMPILER']
+    endif
+
     if cc.get_id().startswith('intel')
         c_args += [
             '/Qimf-precision=high', '/Qprotect-parens',

@@ -54,7 +54,7 @@ if cc.get_argument_syntax() == 'msvc'
     ]
     link_args = ['/NXCompat', '/DynamicBase']
 
-    if cc.get_id() == 'intel-llvm-cl'
+    if cc.get_id().startswith('intel')
         # workaround for icx _Dcomplex regression, see numpy/numpy#31337
         npy_complex_check = '''
             #include <Python.h>
@@ -85,9 +85,7 @@ if cc.get_argument_syntax() == 'msvc'
                 )
             endif
         endif
-    endif
 
-    if cc.get_id().startswith('intel')
         c_args += [
             '/Qimf-precision=high', '/Qprotect-parens',
             '/clang:-fveclib=SVML', '/clang:-fvectorize'

@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [dev] - YYYY-MM-DD
 
 ### Added
+* Added support for free-threaded (GIL-disabled) CPython builds: the Cython extension is compiled with `freethreading_compatible=True` and `_ufuncs` declares `Py_MOD_GIL_NOT_USED`, so importing `mkl_umath` no longer re-enables the GIL [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 
 ### Changed
+* Raised the minimum build-time `Cython` requirement to `3.1.0`, the first release providing the `freethreading_compatible` directive [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 
 ### Fixed
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)
 * Fixed a leak of the module object when the NumPy C-API import fails during module initialization [gh-263](https://github.com/IntelPython/mkl_umath/pull/263)
+
+### Removed
+* Removed the `python-gil` constraint from the conda recipes, which pinned `mkl_umath` to GIL-enabled Python 3.14 builds [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 
 ## [0.5.0] - 2026-08-06
 

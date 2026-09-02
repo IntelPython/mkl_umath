@@ -21,18 +21,18 @@ It provides:
 **Required:**
 - Compiler toolchain: Intel `icx` or `clang` (with Intel-only flags gated when using clang)
 - Intel® oneMKL (`mkl-devel`)
-- meson-python, CMake, Ninja, Cython, NumPy
+- meson-python, CMake, Ninja, Cython>=3.1.0, NumPy
 
 **Build against an existing `mkl` installation:**
 
 Install the build dependencies via Conda:
 ```bash
 conda install -c https://software.repos.intel.com/python/conda \
-  mkl-devel dpcpp_linux-64 cython meson-python cmake ninja numpy
+  mkl-devel dpcpp_linux-64 "cython>=3.1.0" meson-python cmake ninja numpy
 ```
 or via pip:
 ```bash
-pip install mkl-devel cython meson-python cmake ninja numpy
+pip install mkl-devel "cython>=3.1.0" meson-python cmake ninja numpy
 ```
 then build:
 ```bash

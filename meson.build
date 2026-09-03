@@ -55,6 +55,37 @@ if cc.get_argument_syntax() == 'msvc'
     link_args = ['/NXCompat', '/DynamicBase']
 
     if cc.get_id().startswith('intel')
+        # workaround for icx _Dcomplex regression, see numpy/numpy#31337
+        npy_complex_check = '''
+            #include <Python.h>
+            #include <numpy/npy_math.h>
+            '''
+        undef_llvm = '/U__INTEL_LLVM_COMPILER'
+
+        if not cc.compiles(
+            npy_complex_check,
+            name: 'numpy complex helpers build with icx',
+            dependencies: py_dep,
+            include_directories: inc_np
+        )
+            if cc.compiles(
+                npy_complex_check,
+                name: 'numpy complex helpers build with ' + undef_llvm,
+                args: undef_llvm,
+                dependencies: py_dep,
+                include_directories: inc_np
+            )
+                c_args += undef_llvm
+            else
+                error(
+                    'numpy headers do not compile with icx on Windows: '
+                    + 'npy_cdouble conflicts with UCRT complex.h and '
+                    + undef_llvm + ' does not resolve it. '
+                    + 'See numpy/numpy#31337.'
+                )
+            endif
+        endif
+
         c_args += [
             '/Qimf-precision=high', '/Qprotect-parens',
             '/clang:-fveclib=SVML', '/clang:-fvectorize'

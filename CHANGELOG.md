@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 * Raised the minimum build-time `Cython` requirement to `3.1.0`, the first release providing the `freethreading_compatible` directive [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
+* Pinned Cython in the Coverity Scan workflow so generated code stays stable between scans, and added `coverity/README.md` documenting the known Cython-boilerplate false positives and the scan review checklist [gh-266](https://github.com/IntelPython/mkl_umath/pull/266)
 
 ### Fixed
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)

@@ -55,7 +55,9 @@ jobs:
           sudo apt-get install -y intel-oneapi-mkl-devel
 
       - name: Install mkl_umath dependencies
-        run: pip install meson-python ninja cmake cython "numpy>=2"
+        # Cython is pinned here only (not in pyproject.toml) to keep the generated
+        # code stable between scans, so Coverity CIDs and their triage survive
+        run: pip install meson-python ninja cmake "cython==3.3.0" "numpy>=2"
 
       - name: Download Coverity Build Tool
         timeout-minutes: 15

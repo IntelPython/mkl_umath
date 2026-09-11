@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Pinned Cython in the Coverity Scan workflow so generated code stays stable between scans, and added `coverity/README.md` documenting the known Cython-boilerplate false positives and the scan review checklist [gh-266](https://github.com/IntelPython/mkl_umath/pull/266)
 
 ### Fixed
-* Fixed `absolute` (float32/float64) returning `-NaN` for `+NaN` input on the scalar fallback path (same issue as numpy/numpy@dc478c58b9, gh-31433)
+* Fixed `absolute` (float32/float64) returning `-NaN` for `+NaN` input on the scalar fallback path (same issue as numpy/numpy@dc478c58b9, gh-31433) [gh-269](https://github.com/IntelPython/mkl_umath/pull/269)
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)
 * Fixed a leak of the module object when the NumPy C-API import fails during module initialization [gh-263](https://github.com/IntelPython/mkl_umath/pull/263)
 

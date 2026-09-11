@@ -189,3 +189,16 @@ def test_reduce_complex(func, dtype):
     assert np.allclose(
         mkl_res, np_res
     ), f"Results for '{func}[reduce]' do not match"
+
+
+@pytest.mark.parametrize("size", [100, 8192 + 1])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_absolute_nan_signbit(size, dtype):
+    # size 100 takes the fallback loop, 8193 takes MKL's vAbs
+    for nan in (np.nan, -np.nan):
+        a = np.full(size, nan, dtype=dtype)
+        sign = "-" if np.signbit(nan) else "+"
+        assert not np.signbit(mu.absolute(a)).any(), (
+            f"absolute({sign}nan) must be +nan for "
+            f"{dtype.__name__} at size {size}"
+        )

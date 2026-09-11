@@ -917,9 +917,6 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     else {
         UNARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
-            /* in1 > 0 ? in1 : -in1 flips sign of +NaN (NaN > 0 is false);
-               fabs clears the sign bit unconditionally instead.
-               numpy/numpy@dc478c58b9 (gh-31433) fixed the same bug. */
             const @type@ tmp = fabs@c@(in1);
             /* add 0 to clear -0.0 */
             *((@type@ *)op1) = tmp + 0;

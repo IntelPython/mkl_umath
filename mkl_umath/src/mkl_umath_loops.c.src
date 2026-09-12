@@ -917,7 +917,7 @@ mkl_umath_@TYPE@_absolute(char **args, const npy_intp *dimensions, const npy_int
     else {
         UNARY_LOOP {
             const @type@ in1 = *(@type@ *)ip1;
-            const @type@ tmp = in1 > 0 ? in1 : -in1;
+            const @type@ tmp = fabs@c@(in1);
             /* add 0 to clear -0.0 */
             *((@type@ *)op1) = tmp + 0;
         }

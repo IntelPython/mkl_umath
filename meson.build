@@ -149,7 +149,16 @@ gen_loops_h = custom_target(
     depends: gen_umath_c
 )
 
-rpath_link_args = []
+# Runtime library search paths for the installed targets, relative to each
+# target's own location:
+#   - origin           -> the mkl_umath package directory, where
+#                         libmkl_umath_loops.so is installed alongside the
+#                         extension modules that link against it
+#   - origin/../..      \ the environment's library directory, where the MKL
+#   - origin/../../..   / runtime libraries live
+# These are applied via the install_rpath argument. Empty on Windows,
+# which has no RPATH concept.
+install_rpath_dirs = ''
 if host_machine.system() != 'windows'
     if host_machine.system() == 'darwin'
         origin = '@loader_path'
@@ -157,10 +166,13 @@ if host_machine.system() != 'windows'
         origin = '$ORIGIN'
     endif
 
-    rpath_link_args = [
-        '-Wl,-rpath,' + origin / '../..',
-        '-Wl,-rpath,' + origin / '../../..',
-    ]
+    install_rpath_dirs = ':'.join(
+        [
+            origin,
+            origin / '../..',
+            origin / '../../..',
+        ]
+    )
 endif
 
 # define <target>_EXPORTS for Windows dllexport
@@ -170,7 +182,8 @@ mkl_umath_loops = shared_library(
     include_directories: inc_np,
     dependencies: [mkl_dep, py_dep],
     c_args: c_args + ['-Dmkl_umath_loops_EXPORTS'],
-    link_args: link_args + rpath_link_args,
+    link_args: link_args,
+    install_rpath: install_rpath_dirs,
     install: true,
     install_dir: py.get_install_dir() / 'mkl_umath'
 )
@@ -185,7 +198,8 @@ py.extension_module(
     include_directories: inc_np,
     dependencies: [mkl_dep, loops_dep],
     c_args: c_args + ['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],
-    link_args: link_args + rpath_link_args,
+    link_args: link_args,
+    install_rpath: install_rpath_dirs,
     install: true,
     subdir: 'mkl_umath'
 )
@@ -197,7 +211,8 @@ py.extension_module(
     dependencies: [loops_dep],
     c_args: c_args + ['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],
     cython_args: ['-3', '--fast-fail'],
-    link_args: link_args + rpath_link_args,
+    link_args: link_args,
+    install_rpath: install_rpath_dirs,
     install: true,
     subdir: 'mkl_umath'
 )

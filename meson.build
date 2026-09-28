@@ -149,6 +149,13 @@ gen_loops_h = custom_target(
     depends: gen_umath_c
 )
 
+# RPATHs for the installed targets, relative to each target's location:
+#   origin          -> the package dir holding libmkl_umath_loops.so, which the
+#                      extension modules link against
+#   origin/../..     \ the environment library dir, where the MKL runtime lives
+#   origin/../../..  /
+# Passed as raw link_args (not install_rpath) so meson-python preserves them on
+# every supported version. Empty on Windows, which has no RPATH concept.
 rpath_link_args = []
 if host_machine.system() != 'windows'
     if host_machine.system() == 'darwin'
@@ -158,6 +165,7 @@ if host_machine.system() != 'windows'
     endif
 
     rpath_link_args = [
+        '-Wl,-rpath,' + origin,
         '-Wl,-rpath,' + origin / '../..',
         '-Wl,-rpath,' + origin / '../../..',
     ]

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 * Raised the minimum build-time `Cython` requirement to `3.1.0`, the first release providing the `freethreading_compatible` directive [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 * Pinned Cython in the Coverity Scan workflow so generated code stays stable between scans, and added `coverity/README.md` documenting the known Cython-boilerplate false positives and the scan review checklist [gh-266](https://github.com/IntelPython/mkl_umath/pull/266)
+* Migrated the installed RPATH handling to `meson-python`'s `install_rpath` argument, replacing the previous `-Wl,-rpath` `link_args` workaround, and raised the minimum build-time `meson-python` requirement to `0.22.0` [gh-274](https://github.com/IntelPython/mkl_umath/pull/274)
 
 ### Fixed
 * Fixed `absolute` (float32/float64) returning `-NaN` for `+NaN` input on the scalar fallback path (same issue as numpy/numpy@dc478c58b9, gh-31433) [gh-269](https://github.com/IntelPython/mkl_umath/pull/269)

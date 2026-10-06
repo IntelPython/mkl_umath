@@ -33,6 +33,12 @@ jobs:
           - python: "3.14"
             python_spec: "3.14.* *_cp314t"
             use_pre: "--pre"
+          - python: "3.15"
+            python_spec: "3.15.* *_cp315"
+            use_pre: ""
+          - python: "3.15"
+            python_spec: "3.15.* *_cp315"
+            use_pre: "--pre"
 
     steps:
       - name: Checkout repo
@@ -45,7 +51,8 @@ jobs:
         with:
           use-mamba: true
           miniforge-version: latest
-          channels: https://software.repos.intel.com/python/conda, conda-forge
+          # conda-forge/label/python_rc carries the 3.15 release candidate
+          channels: https://software.repos.intel.com/python/conda, conda-forge, conda-forge/label/python_rc
           conda-remove-defaults: true
           activate-environment: test
           python-version: ${{ matrix.python }}

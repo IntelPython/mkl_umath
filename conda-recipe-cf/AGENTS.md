@@ -1,22 +1,18 @@
 # AGENTS.md — conda-recipe-cf/
 
-Conda-forge compatible build recipe (alternative to Intel channel recipe).
+conda-forge variant of the conda recipe.
 
-## Difference from conda-recipe/
-- No `conda_build_config.yaml` (uses conda-forge defaults)
-- May use different compiler toolchain
-- For conda-forge feedstock integration (if upstreamed)
+## Differences from `conda-recipe/`
+- Resolves dependencies from conda-forge only
+- Installs with `pip install` directly; no wheel build or retag
+- Links MKL's GNU threading layer (`-Dmkl_threading=gnu_thread` in `build.sh`)
+  and uses `llvm-openmp` instead of `intel-openmp`
+- Sets its version by hand in `meta.yaml` instead of reading git tags
 
-## Files
-- **meta.yaml** — conda-forge compatible metadata
-- **build.sh** / **bld.bat** — platform build scripts
-- **run_tests.{sh,bat}** — test invocation
+Both recipes build with `icx` and use the same `conda_build_config.yaml`.
 
-## Status
-- Not currently used in main CI workflows
-- Maintained for potential conda-forge submission
-- Use `conda-recipe/` for Intel channel builds
-
-## Notes
-- If upstreaming to conda-forge, this recipe should be preferred
-- Compiler requirements may differ (Clang/GCC vs Intel icx)
+## Guardrails
+- Keep conda-forge recipe semantics separate from the Intel-channel recipe.
+- Keep the `meta.yaml` version equal to `mkl_umath/_version.py`.
+- Keep changes in step with `.github/workflows/conda-package-cf.yml`, which
+  builds this recipe and runs the full test suite against the result.

@@ -19,7 +19,8 @@ Higher-precedence rules override lower-precedence context.
 
 ## Contribution expectations
 - Keep changes atomic and single-purpose.
-- Preserve runtime patching API (`use_in_numpy()`, `restore()`, `is_patched()`) unless explicitly requested.
+- Preserve the runtime patching API (`patch_numpy_umath()`, `restore_numpy_umath()`,
+  `is_patched()`, and the `mkl_umath()` context manager) unless explicitly requested.
 - For behavior changes, update tests in `mkl_umath/tests/` in the same step.
 - For bugs, include a regression test.
 - Do not modify generated artifacts directly when template/source files are the intended edit points.

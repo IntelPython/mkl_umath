@@ -54,6 +54,12 @@ var/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Virtual environments, test caches, local env files
+.venv/
+venv/
+.pytest_cache/
+.env
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -87,3 +93,9 @@ mkl_umath/src/__umath_generated.c
 mkl_umath/src/mkl_umath_loops.c
 mkl_umath/src/mkl_umath_loops.h
 mkl_umath/src/_patch.c
+
+# ASV benchmark artifacts
+.asv/
+
+# Developer-local coding agent settings
+.claude/settings.local.json

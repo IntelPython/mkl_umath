@@ -1,31 +1,17 @@
 # AGENTS.md — conda-recipe/
 
-Conda package build recipe for Intel channel distribution.
+Intel-channel conda packaging.
 
 ## Files
-- **meta.yaml** — package metadata, dependencies, build requirements
-- **build.sh** — Linux build script
-- **bld.bat** — Windows build script
-- **conda_build_config.yaml** — build matrix (Python versions, numpy pins)
-- **run_tests.{sh,bat}** — post-build test invocation
+- `meta.yaml` — package metadata, dependencies, and the package test
+- `build.sh` / `bld.bat` — build a wheel with `python -m build` using `icx`,
+  then install it; `build.sh` also retags the wheel's platform
+- `conda_build_config.yaml` — NumPy and compiler pins
+- `run_tests.sh` / `run_tests.bat` — not used; conda-build runs the test
+  commands in `meta.yaml`
 
-## Build configuration
-- **Channels:** `https://software.repos.intel.com/python/conda`, `conda-forge`
-- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
-- **Build system:** meson-python (via `python -m build`)
-- **Compilers:** Intel C compiler (icx)
-- **Dependencies:** mkl-devel, intel-openmp, dpcpp_{linux,win}-64, numpy
-
-## Build outputs
-- Conda package: `mkl_umath-<version>-<build>.conda`
-- Platform-specific: `linux-64/`, `win-64/`
-
-## CI usage
-- Built in `.github/workflows/conda-package.yml`
-- Artifacts uploaded per Python version
-- Test stage uses built artifacts from channel
-
-## Maintenance
-- Keep `conda_build_config.yaml` in sync with CI matrix
-- NumPy pin: must match Intel channel NumPy versions
-- MKL version: track oneAPI releases
+## Guardrails
+- Treat recipe files as canonical for packaging intent and dependency pins.
+- Keep recipe changes in step with `.github/workflows/conda-package.yml`, which
+  builds this recipe and runs the full test suite against the result.
+- The package test in `meta.yaml` runs only `test_basic.py`.

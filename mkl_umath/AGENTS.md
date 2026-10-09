@@ -1,36 +1,23 @@
 # AGENTS.md — mkl_umath/
 
-Core MKL-backed ufunc implementation: Python interface, Cython patching, and C/MKL integration.
+Package sources: public API, patching entry points, and ufunc code generation.
 
-## Structure
-- `__init__.py` — public API surface (`_ufuncs`, `_patch_numpy`, version)
-- `_init_helper.py` — module initialization helpers
-- `_version.py` — version string (read dynamically by `meson.build`)
-- `src/` — C implementation and Cython patch layer
-- `tests/` — basic functionality and patching tests
-- `generate_umath.py` — code generation for ufunc loops
-- `generate_umath_doc.py` — docstring generation
-- `ufunc_docstrings_numpy{1,2}.py` — NumPy version-specific docstrings
+## Key files
+- `__init__.py` — public API: the ufuncs from `_ufuncs` and the patching
+  functions from `_patch_numpy`
+- `generate_umath.py` — generates `__umath_generated.c` in the build directory
+- `patch.py`, `_patch_startup.py`, `with_patch.py`, `__main__.py` — persistent
+  (`.pth`) and one-shot patching behind `python -m mkl_umath`
+- `_version.py` — the version; `meson.build` reads it
+- `generate_umath_doc.py`, `ufunc_docstrings_numpy{1,2}.py` — docstring sources
+  adapted from NumPy; the build does not run them
+- `src/` — loop templates and the two extensions
+- `tests/` — test suite
 
-## Patching API
-```python
-mkl_umath.patch_numpy_umath()    # Replace NumPy loops with MKL
-mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
-mkl_umath.is_patched()           # Check patch status
-```
-
-## Development guardrails
-- **API stability:** Patching must be runtime-only, no NumPy source modification
-- **Precision:** fp:precise, fimf-precision=high, fprotect-parens are non-negotiable
-- **Compatibility:** Must work with upstream NumPy (NEP-36 compliance)
-- **Testing:** Add tests to `tests/test_basic.py` for new ufuncs or patch behavior
-
-## Code generation
-- `*.src` files are templates processed by `_vendored/conv_template.py`
-- Generated files: `src/__umath_generated.c`, loop implementations
-- Docstrings: dual NumPy 1.x/2.x support via separate docstring modules
-
-## Notes
-- `_patch_numpy.pyx` is Cython; changes require Cython rebuild
-- MKL VM loops in `src/mkl_umath_loops.c.src`
-- `src/ufuncsmodule.c` — NumPy ufunc registration and dispatch
+## Guardrails
+- Use `patch_numpy_umath()` / `restore_numpy_umath()` in new code and docs;
+  `use_in_numpy()` and `restore()` are deprecated aliases.
+- Keep patching reversible: anything installed can be uninstalled, and
+  `is_patched()` reports the truth.
+- New modules must be listed in `py.install_sources` in `meson.build`, or they
+  are not installed.

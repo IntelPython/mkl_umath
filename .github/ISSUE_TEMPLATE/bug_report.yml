@@ -1,0 +1,64 @@
+name: Bug report
+description: Report incorrect results, a crash, or a build failure
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For security vulnerabilities, do not open an issue — follow
+        [SECURITY.md](https://github.com/IntelPython/mkl_umath/blob/main/SECURITY.md).
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened, and what did you expect instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Reproducer
+      description: A minimal, self-contained snippet. Include the ufunc, input values, and dtype.
+      render: python
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-source
+    attributes:
+      label: How was `mkl_umath` installed?
+      options:
+        - Intel conda channel (software.repos.intel.com)
+        - conda-forge
+        - pip, Intel index (software.repos.intel.com)
+        - pip / PyPI
+        - Built from source
+    validations:
+      required: true
+
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: |
+        Output of:
+        ```
+        python -c "import mkl_umath, numpy; print(mkl_umath.__version__); print(numpy.__version__)"
+        ```
+        Add your OS and Python version too.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else
+      description: |
+        Optional. Whether NumPy patching was active (`mkl_umath.is_patched()`),
+        whether the result differs from stock NumPy, or a non-default
+        `MKL_NUM_THREADS`.
+    validations:
+      required: false

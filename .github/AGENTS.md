@@ -3,13 +3,15 @@
 CI/CD workflows and repo automation.
 
 ## Workflows (source of truth)
-- `conda-package.yml` — Intel channel conda build/test pipeline
-- `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
-- `build-with-clang.yml` — Intel clang compatibility checks
-- `build-with-standard-clang.yml` — standard clang compatibility checks
-- `build_pip.yml` — pip build pipeline with pre-release NumPy
+- `conda-package.yml` — Intel-channel conda build and test
+- `conda-package-cf.yml` — conda-forge conda build and test
+- `build_pip.yml` — editable pip build with `icx`, including pre-release NumPy
+- `build-with-clang.yml` — build with `icx` from the oneAPI apt repository
+- `build-with-standard-clang.yml` — build with upstream clang
 - `pre-commit.yml` — lint/format checks
-- `openssf-scorecard.yml` — security scanning
+- `coverity.yml` — Coverity static analysis (see `coverity/README.md`)
+- `openssf-scorecard.yml` — OpenSSF Scorecard
+- `zizmor.yml` — GitHub Actions security lint
 
 ## Policy
 - Treat workflow YAML as canonical for platform/Python matrices.

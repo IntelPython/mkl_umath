@@ -1,40 +1,24 @@
 # AGENTS.md — mkl_umath/src/
 
-C/Cython implementation layer: MKL VM integration, ufunc loops, and NumPy patching.
+C and Cython sources for the ufunc loops and the patching extension.
 
-## Core files
-- **ufuncsmodule.c** — NumPy ufunc registration and module init
-- **ufuncsmodule.h** — ufunc module public headers
-- **mkl_umath_loops.c.src** — MKL VM loop implementations (template, ~60k LOC)
-- **mkl_umath_loops.h.src** — loop function declarations (template)
-- **_patch_numpy.pyx** — Cython patching layer (runtime NumPy loop replacement)
-- **fast_loop_macros.h** — loop generation macros
-- **blocking_utils.h** — blocking/chunking utilities for large arrays
+## Key files
+- `mkl_umath_loops.c.src`, `mkl_umath_loops.h.src` — loop templates, expanded
+  at build time by `_vendored/process_src_template.py` and compiled into the
+  `libmkl_umath_loops` shared library
+- `ufuncsmodule.c` — the `_ufuncs` extension, built with the generated
+  `__umath_generated.c`
+- `_patch_numpy.pyx` — the `_patch_numpy` extension; swaps loops into NumPy's
+  ufuncs with `PyUFunc_ReplaceLoopBySignature` and keeps the originals for
+  restore
+- `fast_loop_macros.h`, `blocking_utils.h` — loop helpers
 
-## Template system
-- `.src` files are processed by `_vendored/conv_template.py` at build time
-- Generates type-specialized loops for float32, float64, complex64, complex128
-- Pattern: `/**begin repeat ... end repeat**/` blocks
-
-## MKL VM integration
-- Calls `vdSin`, `vsExp`, etc. from Intel MKL Vector Math (VM)
-- Blocking strategy: chunk large arrays for cache efficiency
-- Error handling: MKL VM status → NumPy error state
-
-## Patching mechanism (_patch_numpy.pyx)
-- Cython extension exposing `patch_numpy_umath()`, `restore_numpy_umath()`,
-  `is_patched()`
-- Replaces function pointers in NumPy's ufunc loop tables
-- Thread-safe: guards against concurrent patching
-- Reversible: stores original pointers for restoration
-
-## Build output
-- `mkl_umath_loops.c` → shared library (libmkl_umath_loops.so/.dll)
-- `_patch_numpy.pyx` → Python extension (_patch.*.so)
-- `ufuncsmodule.c` + `__umath_generated.c` → `_ufuncs` extension
-
-## Development notes
-- **Precision flags:** fp:precise, fimf-precision=high enforced in `meson.build`
-- **Security:** Stack protections, FORTIFY_SOURCE enabled
-- **Vectorization:** `-fveclib=SVML -fvectorize` for SIMD (Intel compiler only)
-- **Optimization reports:** `-Dopt_report=true` meson option for `-qopt-report=3`
+## Guardrails
+- Edit the `.src` templates, not the generated `.c`/`.h`.
+- Keep results consistent with NumPy for every dtype a loop handles, including
+  NaN and signed-zero handling.
+- Keep the patch lock and the saved original loops so patching stays
+  thread-safe and reversible.
+- Keep both extensions free-threading compatible: `freethreading_compatible=True`
+  in `_patch_numpy.pyx` and `Py_MOD_GIL_NOT_USED` in `ufuncsmodule.c`.
+- Build flags, including precision and hardening flags, live in `meson.build`.

@@ -1,29 +1,21 @@
 # AGENTS.md — mkl_umath/tests/
 
-Unit tests for MKL-backed ufuncs and NumPy patching.
+Test suite for the loops and patching. `meson.build` installs it with the
+package.
 
-## Test files
-- **test_basic.py** — core functionality, numerical correctness
-- **test_patching.py** — patching API and state transitions
-- **test_cli.py** — `python -m mkl_umath` CLI patch install/uninstall/status
+## Files
+- `test_basic.py` — loop results compared against NumPy
+- `test_patching.py` — patch and restore state, and the `mkl_umath()` context
+  manager
+- `test_cli.py` — persistent patch install, uninstall, and status
+- `test_freethreading.py` — concurrent ufunc use and patching; the GIL check
+  runs only on a free-threaded build
 
-## Test coverage
-- Ufunc correctness: compare MKL loops vs NumPy reference
-- Patching: `patch_numpy_umath()`, `restore_numpy_umath()`, `is_patched()` state transitions
-- Edge cases: NaN, Inf, empty arrays, large arrays
-- Dtype coverage: float32, float64, complex64, complex128
+## Expectations
+- Behavior changes include test updates in the same PR; bug fixes include a
+  regression test.
+- Keep tests deterministic and free of timing assertions.
 
-## Running tests
-```bash
-pytest mkl_umath/tests/
-```
-
-## CI integration
-- Tests run in conda-package.yml workflow
-- Separate test jobs per Python version (3.10-3.14)
-- Linux + Windows platforms
-
-## Adding tests
-- New ufuncs → add to `test_basic.py` with NumPy reference comparison
-- Patching behavior → test state transitions and thread safety
-- Use `numpy.testing.assert_allclose` for floating-point comparisons
+## Entry points
+- `pytest mkl_umath/tests` from a checkout
+- `pytest --pyargs mkl_umath` against an installed package

@@ -25,6 +25,7 @@
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
 
 import mkl_umath._ufuncs as mu
 
@@ -189,6 +190,47 @@ def test_reduce_complex(func, dtype):
     assert np.allclose(
         mkl_res, np_res
     ), f"Results for '{func}[reduce]' do not match"
+
+
+def _complex_array(size, dtype):
+    re = np.random.uniform(-10, 10, size)
+    im = np.random.uniform(-10, 10, size)
+    return (re + 1j * im).astype(dtype)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("size", [1, 7, 100, 1001])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_complex_contig(func, size, dtype):
+    # testing the contiguous branch below the VML threshold: out-of-place
+    # and in-place on either input; +/- is exact, so compare bitwise
+    a = _complex_array(size, dtype)
+    b = _complex_array(size, dtype)
+    mkl_func = getattr(mu, func)
+    np_res = getattr(np, func)(a, b)
+
+    out = np.empty_like(a)
+    mkl_func(a, b, out=out)
+    assert_array_equal(out, np_res)
+
+    a_inplace = a.copy()
+    mkl_func(a_inplace, b, out=a_inplace)
+    assert_array_equal(a_inplace, np_res)
+
+    b_inplace = b.copy()
+    mkl_func(a, b_inplace, out=b_inplace)
+    assert_array_equal(b_inplace, np_res)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_accumulate_complex(func, dtype):
+    # accumulate calls the loop with out == in1 + 1 element, so each output
+    # depends on the previous one and must take the strided branch
+    a = _complex_array(100, dtype)
+    mkl_res = getattr(mu, func).accumulate(a)
+    np_res = getattr(np, func).accumulate(a)
+    assert_array_equal(mkl_res, np_res)
 
 
 @pytest.mark.parametrize("size", [100, 8192 + 1])

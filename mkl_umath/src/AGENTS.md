@@ -17,8 +17,12 @@ C and Cython sources for the ufunc loops and the patching extension.
 - Edit the `.src` templates, not the generated `.c`/`.h`.
 - Keep results consistent with NumPy for every dtype a loop handles, including
   NaN and signed-zero handling.
-- Keep the patch lock and the saved original loops so patching stays
-  thread-safe and reversible.
+- Keep the saved original loops so patching stays reversible, and the patch
+  lock, which serializes patch/restore and their reference counts. It does not
+  make patching safe alongside NumPy calls in other threads; see the warning in
+  the `patch_numpy_umath` docstring.
+- Patch and restore are balanced per thread: a thread can only restore patches
+  it applied.
 - Keep both extensions free-threading compatible: `freethreading_compatible=True`
   in `_patch_numpy.pyx` and `Py_MOD_GIL_NOT_USED` in `ufuncsmodule.c`.
 - Build flags, including precision and hardening flags, live in `meson.build`.

@@ -13,6 +13,15 @@ CI/CD workflows and repo automation.
 - `openssf-scorecard.yml` — OpenSSF Scorecard
 - `zizmor.yml` — GitHub Actions security lint
 
+## Templates and config
+- `pull_request_template.md` — PR description, verification, and checklist
+- `ISSUE_TEMPLATE/` — bug report and feature request forms; `config.yml` adds
+  contact links that send security reports to Intel's vulnerability process
+  and usage questions to the README
+- `dependabot.yml` — update schedule for GitHub Actions and pre-commit hooks
+- `CODEOWNERS` — default reviewers
+- `copilot-instructions.md` — behavior policy for coding agents
+
 ## Policy
 - Treat workflow YAML as canonical for platform/Python matrices.
 - Avoid doc claims about CI coverage unless present in workflow config.

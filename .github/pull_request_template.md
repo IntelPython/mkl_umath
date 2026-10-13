@@ -20,6 +20,6 @@ conda build, the benchmarks. Write "none" if you ran everything relevant.
 
 - [ ] Results match stock NumPy, or the difference is intentional and called out above.
 - [ ] Behavior changes have tests in `mkl_umath/tests/`; bug fixes have a regression test.
-- [ ] `CHANGELOG.md` updated under `## [dev]` with a `[gh-NNN]` link, or the change isn't user-visible.
+- [ ] `CHANGELOG.md` updated under `## [dev]` with a `[gh-NNN](https://github.com/IntelPython/mkl_umath/pull/NNN)` link, or the change isn't user-visible.
 
 <!-- See CONTRIBUTING.md for the build and test workflow, and AGENTS.md for the module map. -->

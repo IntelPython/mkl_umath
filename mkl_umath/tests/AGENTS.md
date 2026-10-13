@@ -17,5 +17,6 @@ package.
 - Keep tests deterministic and free of timing assertions.
 
 ## Entry points
-- `pytest mkl_umath/tests` from a checkout
+- `pytest mkl_umath/tests` from a checkout with an editable install (see
+  `CONTRIBUTING.md`); otherwise the source tree shadows the built package
 - `pytest --pyargs mkl_umath` against an installed package

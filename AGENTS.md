@@ -25,8 +25,10 @@ for Python* per NEP-36 (Fair Play).
 - Build deps: `mkl-devel`, `numpy`, `meson-python`, `cmake`, `ninja`, `cython`,
   and a C compiler (CI uses `icx` and `clang`)
 - Runtime deps: `numpy`; the conda recipes add the MKL and compiler runtimes
+- Platforms: Linux and Windows; `.github/workflows/` is canonical for the matrix
 - Setup, checks, and style: `CONTRIBUTING.md`
-- Single test: `pytest mkl_umath/tests/<file>::<test>`
+- Single test: `pytest mkl_umath/tests/<file>::<test>`, from a checkout with the
+  editable install in `CONTRIBUTING.md`
 - Single-file lint: `pre-commit run --files <path>`
 
 ## Development guardrails
@@ -34,6 +36,8 @@ for Python* per NEP-36 (Fair Play).
 - Edit the `*.src` templates and `generate_umath.py`, not generated C.
 - Keep the floating-point precision flags in `meson.build`; Intel-only flags stay
   behind its compiler checks.
+- `meson.build` changes must keep both the GCC-syntax (Linux) and MSVC-syntax
+  (Windows) branches working; CI covers both.
 - Keep patching reversible, with `is_patched()` reporting the truth.
 - Keep both extensions free-threading compatible.
 - Pair behavior changes with tests and keep diffs minimal.

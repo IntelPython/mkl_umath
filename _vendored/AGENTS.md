@@ -1,21 +1,17 @@
 # AGENTS.md — _vendored/
 
-Vendored dependencies from upstream projects (NumPy).
+Build-time template tooling copied from NumPy's `numpy/_build_utils`.
 
 ## Files
-- **conv_template.py** — NumPy's template processor (from `numpy.distutils`)
-- **__init__.py** — Python package marker
+- `conv_template.py` — expands `/**begin repeat ... end repeat**/` blocks in
+  `.src` files
+- `process_src_template.py` — command-line wrapper that `meson.build` runs on
+  the `.src` files; loads `conv_template.py`
+- `README.md` — provenance
 
-## Why vendored?
-- `numpy.distutils` removed in NumPy 2.0+ / Python 3.12+
-- Needed for `.src` template processing at build time
-- Vendored to maintain build compatibility across NumPy versions
-
-## Maintenance
-- Source: NumPy's `numpy/distutils/conv_template.py`
-- Update if template syntax changes upstream (rare)
-- Do not modify vendored code (keep attribution intact)
-
-## Usage
-- Imported by `generate_umath.py` for `.src` → `.c` conversion
-- Processes `/**begin repeat ... end repeat**/` blocks
+## Guardrails
+- Prefer updating upstream source when feasible; keep local vendored diffs
+  minimal.
+- Do not refactor vendored code opportunistically in unrelated PRs.
+- `black` and `isort` are configured to skip the vendored files
+  (`pyproject.toml`).

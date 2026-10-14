@@ -41,7 +41,7 @@ CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported i
 
 ## CI/CD
 - **Platforms:** Linux, Windows
-- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14
+- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14, 3.15
 - **Workflows:** `.github/workflows/`
   - `conda-package.yml` — main conda build/test pipeline
   - `conda-package-cf.yml` — conda-forge-oriented build/test pipeline

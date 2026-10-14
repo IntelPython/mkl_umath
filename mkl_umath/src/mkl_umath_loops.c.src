@@ -862,34 +862,38 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 /*
  * v@s@Pow returns the same values as pow@c@, a scalar exponent is broadcast
  * with v@s@PowI rather than passed to v@s@Powx, which gets -0.0 and -inf
- * wrong for some exponents and does not set the VM error status. v@s@Pow does
- * not raise the same floating-point exception flags as pow@c@ though: it
- * raises spurious invalid and overflow flags for some special inputs (e.g.
- * 0 ** -1), and flags raised in MKL worker threads never reach the calling
- * thread. The VM error status does reach it, so whenever MKL reports a problem
- * the flags are derived from the inputs and results the way C99 (and glibc)
- * raise them, which, unlike calling pow@c@ again, does not depend on the math
- * library or the CPU. r must not alias x or y, which are read again.
+ * wrong for some exponents. The floating-point exception flags MKL raises
+ * cannot be relied on though: they are spurious for some special inputs
+ * (e.g. 0 ** -1 also raises invalid), those raised in MKL worker threads never
+ * reach the calling thread, and on some CPUs float32 domain errors raise
+ * nothing, not even in the VM error status. So MKL's flags are replaced with
+ * the ones C99 (and glibc) raise, derived from the inputs and results: each
+ * such case gives a nan or an inf, which a cheap scan of the results finds.
+ * r must not alias x or y, which are read again.
  */
 static void
 @TYPE@_power_vml(const @type@ *x, const @type@ *y, const int y_is_scalar, @type@ *r, const npy_intp n)
 {
     /* flags raised by earlier calls of the loop are NumPy's to report */
     const int prev_flags = fetestexcept(POW_FPE_FLAGS);
+    int nonfinite = 0;
+    npy_intp i;
 
-    feclearexcept(POW_FPE_FLAGS);
-    vmlClearErrStatus();
     if (y_is_scalar) {
         CHUNKED_VML_CALL3_S2(v@s@PowI, n, @type@, x, y, r);
     }
     else {
         CHUNKED_VML_CALL3(v@s@Pow, n, @type@, @type@, x, y, r);
     }
-    if (vmlGetErrStatus() != VML_STATUS_OK || fetestexcept(POW_FPE_FLAGS)) {
-        int flags = 0;
-        npy_intp i;
+    feclearexcept(POW_FPE_FLAGS);
 
-        feclearexcept(POW_FPE_FLAGS);
+    /* branch-free so that it vectorizes */
+    for (i = 0; i < n; i++) {
+        nonfinite |= !isfinite(r[i]);
+    }
+    if (nonfinite) {
+        int flags = 0;
+
         for (i = 0; i < n; i++) {
             const @type@ in1 = x[i];
             const @type@ in2 = y_is_scalar ? *y : y[i];

@@ -112,16 +112,17 @@
         }                                                                       \
     } while(0)
 
-#define CHUNKED_VML_POWX_CALL(vml_func, n, type, in1, in2, op1)                \
+/* strided VM call with a zero increment for in2, which broadcasts its first element */
+#define CHUNKED_VML_CALL3_S2(vml_func, n, type, in1, in2, op1)                 \
     do  {                                                                       \
         npy_intp _n_ = (n);                                                     \
         const npy_intp _chunk_size = MKL_INT_MAX;                               \
         type *in1p = (type *) (in1);                                            \
-        const type _in2 = *((type *) (in2));                                    \
+        type *in2p = (type *) (in2);                                            \
         type *op1p = (type *) (op1);                                            \
         while (_n_ > 0) {                                                       \
             npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
-            vml_func((MKL_INT) _current_chunk, in1p, _in2, op1p);               \
+            vml_func((MKL_INT) _current_chunk, in1p, 1, in2p, 0, op1p, 1);      \
             _n_ -= _current_chunk;                                              \
             in1p += _current_chunk;                                             \
             op1p += _current_chunk;                                             \
@@ -859,13 +860,16 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
 /**end repeat1**/
 
 /*
- * v@s@Pow and v@s@Powx return the same values as pow@c@, except v@s@Powx for
- * -0.0 and -inf raised to -0.5, 0.5 and 1.5, which are recomputed. They do
- * not raise the same floating-point exception flags though: they raise
- * spurious invalid and overflow flags for some special inputs (e.g. 0 ** -1),
- * and flags raised in MKL worker threads never reach the calling thread. The
- * VM error status does reach it, so whenever MKL reports a problem the flags
- * are recomputed with pow@c@. r must not alias x or y, which are read again.
+ * v@s@Pow returns the same values as pow@c@, a scalar exponent is broadcast
+ * with v@s@PowI rather than passed to v@s@Powx, which gets -0.0 and -inf
+ * wrong for some exponents and does not set the VM error status. v@s@Pow does
+ * not raise the same floating-point exception flags as pow@c@ though: it
+ * raises spurious invalid and overflow flags for some special inputs (e.g.
+ * 0 ** -1), and flags raised in MKL worker threads never reach the calling
+ * thread. The VM error status does reach it, so whenever MKL reports a problem
+ * the flags are derived from the inputs and results the way C99 (and glibc)
+ * raise them, which, unlike calling pow@c@ again, does not depend on the math
+ * library or the CPU. r must not alias x or y, which are read again.
  */
 static void
 @TYPE@_power_vml(const @type@ *x, const @type@ *y, const int y_is_scalar, @type@ *r, const npy_intp n)
@@ -876,36 +880,30 @@ static void
     feclearexcept(POW_FPE_FLAGS);
     vmlClearErrStatus();
     if (y_is_scalar) {
-        CHUNKED_VML_POWX_CALL(v@s@Powx, n, @type@, x, y, r);
+        CHUNKED_VML_CALL3_S2(v@s@PowI, n, @type@, x, y, r);
     }
     else {
         CHUNKED_VML_CALL3(v@s@Pow, n, @type@, @type@, x, y, r);
     }
     if (vmlGetErrStatus() != VML_STATUS_OK || fetestexcept(POW_FPE_FLAGS)) {
+        int flags = 0;
         npy_intp i;
 
         feclearexcept(POW_FPE_FLAGS);
         for (i = 0; i < n; i++) {
-            /* volatile keeps the calls, which are only made for their flags */
-            volatile @type@ res = pow@c@(x[i], y_is_scalar ? *y : y[i]);
-            (void) res;
-        }
-    }
-    if (y_is_scalar && (*y == -0.5 || *y == 0.5 || *y == 1.5)) {
-        const @type@ ninf = -(@type@) NPY_INFINITY;
-        int candidates = 0;
-        npy_intp i;
+            const @type@ in1 = x[i];
+            const @type@ in2 = y_is_scalar ? *y : y[i];
 
-        /* branch-free so that it vectorizes, the fix-up below rarely runs */
-        for (i = 0; i < n; i++) {
-            candidates |= (x[i] == 0) | (x[i] == ninf);
-        }
-        if (candidates) {
-            for (i = 0; i < n; i++) {
-                if ((x[i] == 0 || x[i] == ninf) && signbit(x[i])) {
-                    r[i] = pow@c@(x[i], *y);
-                }
+            if (isnan(r[i]) && !isnan(in1) && !isnan(in2)) {
+                flags |= FE_INVALID;
             }
+            else if (isinf(r[i]) && isfinite(in1) && isfinite(in2)) {
+                /* 0 ** -inf is +inf too, but C99 does not require a flag there */
+                flags |= (in1 == 0) ? FE_DIVBYZERO : FE_OVERFLOW;
+            }
+        }
+        if (flags) {
+            feraiseexcept(flags);
         }
     }
     if (prev_flags) {

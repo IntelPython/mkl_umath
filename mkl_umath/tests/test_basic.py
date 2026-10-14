@@ -221,7 +221,7 @@ def _power_warnings(func, *args):
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         func(*args)
-    return sorted(str(x.message) for x in w)
+    return sorted(str(x.message).split(" encountered")[0] for x in w)
 
 
 @pytest.mark.parametrize("size", [100, 8192 + 1])
@@ -258,17 +258,26 @@ def test_power_inplace(dtype, exponent):
 
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])
 @pytest.mark.parametrize(
-    "base, exponent",
-    [(-1.0, 1.5), (0.0, -1.0), (-0.0, -0.5), (1e30, 3.0), (0.0, -np.inf)],
+    "base, exponent, expected",
+    [
+        (2.0, 1.5, []),
+        (-1.0, 1.5, ["invalid value"]),
+        (0.0, -1.0, ["divide by zero"]),
+        (-0.0, -0.5, ["divide by zero"]),
+        (1e30, 20.0, ["overflow"]),
+        # C99 allows, but does not require, divide by zero here
+        (0.0, -np.inf, []),
+    ],
 )
 @pytest.mark.parametrize("pos", [0, -1])
-def test_power_warnings(dtype, base, exponent, pos):
-    # MKL raises spurious flags for some of these, and flags raised in its
-    # worker threads (for the element at the end) never reach the caller
+def test_power_warnings(dtype, base, exponent, expected, pos):
+    # The flags C99 requires, as glibc raises them. They are spelled out since
+    # NumPy's own loops do not raise them the same way on every CPU. MKL raises
+    # spurious flags for some of these, and flags raised in its worker threads
+    # (for the element at the end) never reach the caller.
     x = np.full(10**6, 2.0, dtype=dtype)
     y = np.full(10**6, 1.5, dtype=dtype)
     x[pos], y[pos] = base, exponent
-    assert _power_warnings(mu.power, x, y) == _power_warnings(np.power, x, y)
-    assert _power_warnings(mu.power, x, y[pos]) == _power_warnings(
-        np.power, x, y[pos]
-    )
+    for args in ((x, y), (x, y[pos])):
+        got = _power_warnings(mu.power, *args)
+        assert got == expected, f"power{(base, exponent)} warned {got}"

@@ -71,6 +71,11 @@
 #define VML_ASM_THRESHOLD 100000
 #define VML_D_THRESHOLD 8000
 
+/* floating-point exceptions reported by NumPy that v?Pow does not raise reliably */
+#define POW_FPE_FLAGS (FE_INVALID | FE_DIVBYZERO | FE_OVERFLOW)
+/* block size, in elements, for in-place power, which goes through a buffer */
+#define POW_INPLACE_BLOCK ((npy_intp) 1 << 16)
+
 #define MKL_INT_MAX ((npy_intp) ((~((MKL_UINT) 0)) >> 1))
 
 #define CHUNKED_VML_CALL2(vml_func, n, type, mkl_type, mkl_ftype, in1, op1)     \
@@ -103,6 +108,22 @@
             _n_ -= _current_chunk;                                              \
             in1p += _current_chunk;                                             \
             in2p += _current_chunk;                                             \
+            op1p += _current_chunk;                                             \
+        }                                                                       \
+    } while(0)
+
+#define CHUNKED_VML_POWX_CALL(vml_func, n, type, in1, in2, op1)                \
+    do  {                                                                       \
+        npy_intp _n_ = (n);                                                     \
+        const npy_intp _chunk_size = MKL_INT_MAX;                               \
+        type *in1p = (type *) (in1);                                            \
+        const type _in2 = *((type *) (in2));                                    \
+        type *op1p = (type *) (op1);                                            \
+        while (_n_ > 0) {                                                       \
+            npy_intp _current_chunk = (_n_ > _chunk_size) ? _chunk_size : _n_;  \
+            vml_func((MKL_INT) _current_chunk, in1p, _in2, op1p);               \
+            _n_ -= _current_chunk;                                              \
+            in1p += _current_chunk;                                             \
             op1p += _current_chunk;                                             \
         }                                                                       \
     } while(0)
@@ -836,6 +857,143 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
     }
 }
 /**end repeat1**/
+
+/*
+ * v@s@Pow and v@s@Powx return the same values as pow@c@, except v@s@Powx for
+ * -0.0 and -inf raised to -0.5, 0.5 and 1.5, which are recomputed. They do
+ * not raise the same floating-point exception flags though: they raise
+ * spurious invalid and overflow flags for some special inputs (e.g. 0 ** -1),
+ * and flags raised in MKL worker threads never reach the calling thread. The
+ * VM error status does reach it, so whenever MKL reports a problem the flags
+ * are recomputed with pow@c@. r must not alias x or y, which are read again.
+ */
+static void
+@TYPE@_power_vml(const @type@ *x, const @type@ *y, const int y_is_scalar, @type@ *r, const npy_intp n)
+{
+    /* flags raised by earlier calls of the loop are NumPy's to report */
+    const int prev_flags = fetestexcept(POW_FPE_FLAGS);
+
+    feclearexcept(POW_FPE_FLAGS);
+    vmlClearErrStatus();
+    if (y_is_scalar) {
+        CHUNKED_VML_POWX_CALL(v@s@Powx, n, @type@, x, y, r);
+    }
+    else {
+        CHUNKED_VML_CALL3(v@s@Pow, n, @type@, @type@, x, y, r);
+    }
+    if (vmlGetErrStatus() != VML_STATUS_OK || fetestexcept(POW_FPE_FLAGS)) {
+        npy_intp i;
+
+        feclearexcept(POW_FPE_FLAGS);
+        for (i = 0; i < n; i++) {
+            /* volatile keeps the calls, which are only made for their flags */
+            volatile @type@ res = pow@c@(x[i], y_is_scalar ? *y : y[i]);
+            (void) res;
+        }
+    }
+    if (y_is_scalar && (*y == -0.5 || *y == 0.5 || *y == 1.5)) {
+        const @type@ ninf = -(@type@) NPY_INFINITY;
+        int candidates = 0;
+        npy_intp i;
+
+        /* branch-free so that it vectorizes, the fix-up below rarely runs */
+        for (i = 0; i < n; i++) {
+            candidates |= (x[i] == 0) | (x[i] == ninf);
+        }
+        if (candidates) {
+            for (i = 0; i < n; i++) {
+                if ((x[i] == 0 || x[i] == ninf) && signbit(x[i])) {
+                    r[i] = pow@c@(x[i], *y);
+                }
+            }
+        }
+    }
+    if (prev_flags) {
+        feraiseexcept(prev_flags);
+    }
+}
+
+void
+mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
+{
+    const npy_intp n = dimensions[0];
+
+#if defined(NPY_2_3_API_VERSION) && NPY_API_VERSION >= NPY_2_3_API_VERSION
+    /* same fast path for a scalar exponent as in NumPy >= 2.3 */
+    if (steps[1] == 0) {
+        const @type@ in2 = *(@type@ *)args[1];
+
+        if (in2 == -1.0 || in2 == 0.0 || in2 == 0.5 || in2 == 1.0 || in2 == 2.0) {
+            BINARY_LOOP {
+                const @type@ in1 = *(@type@ *)ip1;
+
+                if (in2 == -1.0) {
+                    *(@type@ *)op1 = 1.0 / in1;
+                }
+                else if (in2 == 0.0) {
+                    *(@type@ *)op1 = 1.0;
+                }
+                else if (in2 == 0.5) {
+                    *(@type@ *)op1 = sqrt@c@(in1);
+                }
+                else if (in2 == 1.0) {
+                    *(@type@ *)op1 = in1;
+                }
+                else {
+                    *(@type@ *)op1 = in1 * in1;
+                }
+            }
+            return;
+        }
+    }
+#endif
+
+    {
+        const int contig = IS_BINARY_CONT(@type@, @type@);
+        const int contig_scalar = IS_BINARY_CONT_S2(@type@, @type@);
+        const int disjoint_or_same1 = DISJOINT_OR_SAME(args[0], args[2], n, sizeof(@type@));
+        const int disjoint_or_same2 = DISJOINT_OR_SAME(args[1], args[2], n, sizeof(@type@));
+
+        if (n > VML_TRANSCEDENTAL_THRESHOLD && disjoint_or_same1 &&
+            ((contig && disjoint_or_same2) || contig_scalar)) {
+            const @type@ *x = (const @type@ *)args[0];
+            const @type@ *y = (const @type@ *)args[1];
+            @type@ *r = (@type@ *)args[2];
+            const int y_is_scalar = !contig;
+
+            if (r != x && (y_is_scalar || r != y)) {
+                @TYPE@_power_vml(x, y, y_is_scalar, r, n);
+                return;
+            }
+            else {
+                /* in-place: keep the inputs intact until their block is done */
+                const npy_intp block = (n < POW_INPLACE_BLOCK) ? n : POW_INPLACE_BLOCK;
+                @type@ *buf = (@type@ *) malloc(block * sizeof(@type@));
+
+                if (buf != NULL) {
+                    npy_intp off;
+
+                    for (off = 0; off < n; off += block) {
+                        const npy_intp len = (n - off < block) ? n - off : block;
+
+                        @TYPE@_power_vml(x + off, y_is_scalar ? y : y + off, y_is_scalar, buf, len);
+                        memcpy(r + off, buf, len * sizeof(@type@));
+                    }
+                    free(buf);
+                    return;
+                }
+            }
+        }
+    }
+
+    {
+        BINARY_LOOP {
+            const @type@ in1 = *(@type@ *)ip1;
+            const @type@ in2 = *(@type@ *)ip2;
+            *((@type@ *)op1) = pow@c@(in1, in2);
+        }
+    }
+}
 
 /**begin repeat1
  * # kind = cos, sin, tan, arccos, arcsin, arctan, cosh, sinh, tanh, arccosh, arcsinh, arctanh, fabs, floor, ceil, rint, trunc, cbrt, sqrt, expm1, log, log2, log1p, log10#

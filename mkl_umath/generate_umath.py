@@ -501,7 +501,16 @@ defdict = {
         TD(inexactvec + cmplxvec),
     ),
     # '_ones_like':
-    # 'power':
+    # 'power': complex loops are not added since v?Pow computes exp(y*log(x)),
+    #          which is not exact for integer exponents (e.g. 1j**2)
+    "power": Ufunc(
+        2,
+        1,
+        None,
+        docstrings.get("numpy._core.umath.power"),
+        None,
+        TD(inexactvec),
+    ),
     # 'float_power':
     "absolute": Ufunc(
         1,

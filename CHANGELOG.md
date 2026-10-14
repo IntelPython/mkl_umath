@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [dev] - YYYY-MM-DD
 
 ### Added
+* Enabled support of Python 3.15 [gh-279](https://github.com/IntelPython/mkl_umath/pull/279)
 * Added support for free-threaded (GIL-disabled) CPython builds: the Cython extension is compiled with `freethreading_compatible=True` and `_ufuncs` declares `Py_MOD_GIL_NOT_USED`, so importing `mkl_umath` no longer re-enables the GIL [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 
 ### Changed

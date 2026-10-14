@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2026-10-15
 
 ### Added
-* Added oneMKL-backed `power` loops for float32 and float64 arrays, using `v?Pow` and `v?Powx` for a scalar exponent
+* Added oneMKL-backed `power` loops for float32 and float64 arrays, using `v?Pow` and `v?Powx` for a scalar exponent [gh-285](https://github.com/IntelPython/mkl_umath/pull/285)
 * Enabled support of Python 3.15 [gh-279](https://github.com/IntelPython/mkl_umath/pull/279)
 * Added support for free-threaded (GIL-disabled) CPython builds: the Cython extension is compiled with `freethreading_compatible=True` and `_ufuncs` declares `Py_MOD_GIL_NOT_USED`, so importing `mkl_umath` no longer re-enables the GIL [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
 

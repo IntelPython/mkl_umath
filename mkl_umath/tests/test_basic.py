@@ -211,9 +211,14 @@ _power_specials += [3.0, -3.0, 1e-30, 1e30, np.inf, -np.inf, np.nan]
 
 
 def _assert_power_equal(mkl_res, np_res):
-    # MKL may differ from libm by 1 ULP, special values must match exactly
-    eps = np.spacing(np_res.dtype.type(1))
-    np.testing.assert_allclose(mkl_res, np_res, rtol=2 * eps, equal_nan=True)
+    # MKL may differ from libm by 1 ULP, also for subnormal results (NumPy on
+    # Windows returns 0 for float32 1e-30 ** 1.5), special values must match
+    # exactly
+    one = np_res.dtype.type(1)
+    eps, tiny = np.spacing(one), np.nextafter(0 * one, one)
+    np.testing.assert_allclose(
+        mkl_res, np_res, rtol=2 * eps, atol=tiny, equal_nan=True
+    )
     assert (np.signbit(mkl_res) == np.signbit(np_res))[~np.isnan(np_res)].all()
 
 

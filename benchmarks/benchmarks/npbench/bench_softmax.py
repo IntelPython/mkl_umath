@@ -1,4 +1,7 @@
-"""npbench wrapper: Softmax — mkl_umath ops: exp, max, sum.
+"""npbench wrapper: Softmax — mkl_umath ops: exp, sum.
+
+The kernel also calls np.max, which always runs on stock NumPy: oneMKL has
+no NaN-propagating maximum, so mkl_umath does not provide `maximum`.
 
 Preset sizes from npbench bench_info/softmax.json:
   M: N=32,  H=8,   SM=256   (float32)

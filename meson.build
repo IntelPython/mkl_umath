@@ -141,6 +141,17 @@ gen_umath_c = custom_target(
     command: [py, '@INPUT@', '-o', '@OUTPUT@']
 )
 
+gen_umath_doc_h = custom_target(
+    '_umath_doc_generated',
+    output: '_umath_doc_generated.h',
+    input: 'mkl_umath/generate_umath_doc.py',
+    command: [py, '@INPUT@', '-o', '@OUTPUT@'],
+    depend_files: [
+        'mkl_umath/ufunc_docstrings_numpy1.py',
+        'mkl_umath/ufunc_docstrings_numpy2.py'
+    ]
+)
+
 gen_loops_h = custom_target(
     'mkl_umath_loops_h',
     output: ['mkl_umath_loops.h'],
@@ -189,7 +200,10 @@ loops_dep = declare_dependency(link_with: mkl_umath_loops)
 
 py.extension_module(
     '_ufuncs',
-    sources: ['mkl_umath/src/ufuncsmodule.c', gen_umath_c, gen_loops_h],
+    sources: [
+        'mkl_umath/src/ufuncsmodule.c', gen_umath_c, gen_umath_doc_h,
+        gen_loops_h
+    ],
     include_directories: inc_np,
     dependencies: [mkl_dep, loops_dep],
     c_args: c_args + ['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],

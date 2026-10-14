@@ -44,10 +44,8 @@ requirements:
 test:
     requires:
       - pytest
-    source_files:
-      - mkl_umath/tests/test_basic.py
     commands:
-      - pytest mkl_umath/tests/test_basic.py
+      - pytest --pyargs mkl_umath
     imports:
       - mkl_umath
       - mkl_umath._ufuncs

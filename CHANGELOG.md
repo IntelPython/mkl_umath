@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [dev] - YYYY-MM-DD
+## [0.6.0] - 2026-10-15
 
 ### Added
 * Enabled support of Python 3.15 [gh-279](https://github.com/IntelPython/mkl_umath/pull/279)
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)
 * Fixed a leak of the module object when the NumPy C-API import fails during module initialization [gh-263](https://github.com/IntelPython/mkl_umath/pull/263)
 * Fixed `ImportError` on Linux/macOS when built with `meson-python` >= 0.22, which strips the `$ORIGIN` RPATH Meson auto-inserts for internal `link_with` dependencies [gh-275](https://github.com/IntelPython/mkl_umath/pull/275)
+* Fixed the Windows build with `icx` against NumPy >= 2.4.4, where `npy_math.h` fails to compile because NumPy's complex types no longer use the UCRT `_Dcomplex` for `icx` (see numpy/numpy#31337) [gh-265](https://github.com/IntelPython/mkl_umath/pull/265)
 
 ### Removed
 * Removed the `python-gil` constraint from the conda recipes, which pinned `mkl_umath` to GIL-enabled Python 3.14 builds [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)

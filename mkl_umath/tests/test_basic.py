@@ -232,7 +232,7 @@ def _power_warnings(func, *args):
 @pytest.mark.parametrize("size", [100, 8192 + 1])
 @pytest.mark.parametrize("dtype", [np.float32, np.float64])
 def test_power_special_values(size, dtype):
-    # size 100 takes the fallback loop, 8193 takes MKL's v?Pow and v?Powx
+    # size 100 takes the fallback loop, 8193 takes MKL's v?Pow and v?PowI
     specials = np.array(_power_specials, dtype=dtype)
     x, y = (a.ravel() for a in np.meshgrid(specials, specials))
     with np.errstate(all="ignore"):

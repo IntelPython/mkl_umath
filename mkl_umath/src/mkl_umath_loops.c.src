@@ -76,6 +76,20 @@
 /* block size, in elements, for in-place power, which goes through a buffer */
 #define POW_INPLACE_BLOCK ((npy_intp) 1 << 16)
 
+/* not defined by the NumPy < 2.3 headers */
+#ifndef NPY_2_3_API_VERSION
+#define NPY_2_3_API_VERSION 0x00000014
+#endif
+
+/* C-API feature version of the NumPy loaded at runtime, set by _ufuncs on import */
+static int numpy_runtime_version = 0;
+
+void
+mkl_umath_set_numpy_runtime_version(int version)
+{
+    numpy_runtime_version = version;
+}
+
 #define MKL_INT_MAX ((npy_intp) ((~((MKL_UINT) 0)) >> 1))
 
 #define CHUNKED_VML_CALL2(vml_func, n, type, mkl_type, mkl_ftype, in1, op1)     \
@@ -920,9 +934,11 @@ mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *
 {
     const npy_intp n = dimensions[0];
 
-#if defined(NPY_2_3_API_VERSION) && NPY_API_VERSION >= NPY_2_3_API_VERSION
-    /* same fast path for a scalar exponent as in NumPy >= 2.3 */
-    if (steps[1] == 0) {
+    /*
+     * same fast path for a scalar exponent as in NumPy >= 2.3, checked against
+     * the NumPy loaded rather than the headers mkl_umath was built against
+     */
+    if (steps[1] == 0 && numpy_runtime_version >= NPY_2_3_API_VERSION) {
         const @type@ in2 = *(@type@ *)args[1];
 
         if (in2 == -1.0 || in2 == 0.0 || in2 == 0.5 || in2 == 1.0 || in2 == 2.0) {
@@ -948,7 +964,6 @@ mkl_umath_@TYPE@_power(char **args, const npy_intp *dimensions, const npy_intp *
             return;
         }
     }
-#endif
 
     {
         const int contig = IS_BINARY_CONT(@type@, @type@);

@@ -48,6 +48,14 @@
     #define USE_NUMPY_2
 #endif
 
+/*
+ * Records the C-API feature version of the NumPy loaded at runtime, for the
+ * loops whose results depend on it (power in NumPy >= 2.3).
+ */
+MKL_UMATH_API
+void
+mkl_umath_set_numpy_runtime_version(int version);
+
 /**begin repeat
  * Float types
  *  #TYPE = FLOAT, DOUBLE#

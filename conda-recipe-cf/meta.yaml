@@ -42,11 +42,9 @@ test:
     requires:
       - pip
       - pytest
-    source_files:
-      - mkl_umath/tests/test_basic.py
     commands:
       - pip check
-      - pytest mkl_umath/tests/test_basic.py
+      - pytest --pyargs mkl_umath
     imports:
       - mkl_umath
       - mkl_umath._ufuncs

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [dev] - YYYY-MM-DD
+
+### Changed
+* Conda recipes now run the whole test suite with `pytest --pyargs mkl_umath` instead of only `test_basic.py`, and the unused `run_tests.{sh,bat}` scripts were removed [gh-283](https://github.com/IntelPython/mkl_umath/pull/283)
+
 ## [0.6.0] - 2026-10-15
 
 ### Added

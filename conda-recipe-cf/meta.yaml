@@ -10,10 +10,12 @@ source:
 
 build:
     number: {{ buildnumber }}
+    ignore_run_exports_from:
+      - {{ compiler('dpcpp') }}  # [linux]
     ignore_run_exports:
       - blas
-      - numpy
-      - llvm-openmp
+    missing_dso_whitelist:
+      - $RPATH/mkl_umath_loops.dll  # [win]
 
 requirements:
     build:
@@ -29,14 +31,12 @@ requirements:
       - cython >=3.1.0
       - python
       - mkl-devel
+      - intel-cmplr-lib-rt  # [not osx]
       - numpy
       - llvm-openmp
       - pip
     run:
       - python
-      - {{ pin_compatible('mkl') }}
-      - {{ pin_compatible('numpy') }}
-      - {{ pin_compatible('intel-cmplr-lib-rt') }}
 
 test:
     requires:

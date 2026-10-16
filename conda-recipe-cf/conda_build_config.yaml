@@ -1,11 +1,11 @@
-numpy:
-    - '1.26.4'
 c_compiler:                   # [linux]
     - gcc                     # [linux]
+c_compiler_version:           # [linux]
+    - '15'                    # [linux]
 cxx_compiler:                 # [linux]
     - gxx                     # [linux]
 cxx_compiler_version:         # [linux]
-    - '14'                    # [linux]
+    - '15'                    # [linux]
 c_stdlib:                     # [linux]
     - sysroot                 # [linux]
 c_stdlib_version:             # [linux]

@@ -23,6 +23,8 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import warnings
+
 import numpy as np
 import pytest
 
@@ -70,7 +72,7 @@ for umath in umaths:
         if umath in ["arccos", "arcsin", "arctanh"]:
             low = -1
             high = 1
-        elif umath in ["log", "log10", "log1p", "log2", "sqrt"]:
+        elif umath in ["log", "log10", "log1p", "log2", "power", "sqrt"]:
             low = 0
             high = 10
         elif umath == "arccosh":
@@ -202,3 +204,85 @@ def test_absolute_nan_signbit(size, dtype):
             f"absolute({sign}nan) must be +nan for "
             f"{dtype.__name__} at size {size}"
         )
+
+
+_power_specials = [0.0, -0.0, 0.5, -0.5, 1.0, -1.0, 1.5, -1.5, 2.0, -2.0]
+_power_specials += [3.0, -3.0, 1e-30, 1e30, np.inf, -np.inf, np.nan]
+
+
+def _assert_power_equal(mkl_res, np_res):
+    # MKL may differ from libm by 1 ULP, also for subnormal results (NumPy on
+    # Windows returns 0 for float32 1e-30 ** 1.5), special values must match
+    # exactly
+    one = np_res.dtype.type(1)
+    eps, tiny = np.spacing(one), np.nextafter(0 * one, one)
+    np.testing.assert_allclose(
+        mkl_res, np_res, rtol=2 * eps, atol=tiny, equal_nan=True
+    )
+    assert (np.signbit(mkl_res) == np.signbit(np_res))[~np.isnan(np_res)].all()
+
+
+def _power_warnings(func, *args):
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        func(*args)
+    return sorted(str(x.message).split(" encountered")[0] for x in w)
+
+
+@pytest.mark.parametrize("size", [100, 8192 + 1])
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+def test_power_special_values(size, dtype):
+    # size 100 takes the fallback loop, 8193 takes MKL's v?Pow and v?PowI
+    specials = np.array(_power_specials, dtype=dtype)
+    x, y = (a.ravel() for a in np.meshgrid(specials, specials))
+    with np.errstate(all="ignore"):
+        x = np.resize(x, max(size, x.size))
+        y = np.resize(y, max(size, y.size))
+        _assert_power_equal(mu.power(x, y), np.power(x, y))
+        for e in specials:
+            _assert_power_equal(mu.power(x, e), np.power(x, e))
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+@pytest.mark.parametrize("exponent", [None, 2.5, 1.5, -0.5])
+def test_power_inplace(dtype, exponent):
+    x = np.random.uniform(0, 10, 10**5 + 1).astype(dtype)
+    y = np.random.uniform(-3, 3, 10**5 + 1).astype(dtype)
+    if exponent is not None:
+        y = dtype(exponent)
+    np_res = np.power(x, y)
+
+    mkl_res = x.copy()
+    mu.power(mkl_res, y, out=mkl_res)
+    _assert_power_equal(mkl_res, np_res)
+    if exponent is None:
+        mkl_res = y.copy()
+        mu.power(x, mkl_res, out=mkl_res)
+        _assert_power_equal(mkl_res, np_res)
+
+
+@pytest.mark.parametrize("dtype", [np.float32, np.float64])
+@pytest.mark.parametrize(
+    "base, exponent, expected",
+    [
+        (2.0, 1.5, []),
+        (-1.0, 1.5, ["invalid value"]),
+        (0.0, -1.0, ["divide by zero"]),
+        (-0.0, -0.5, ["divide by zero"]),
+        (1e30, 20.0, ["overflow"]),
+        # C99 allows, but does not require, divide by zero here
+        (0.0, -np.inf, []),
+    ],
+)
+@pytest.mark.parametrize("pos", [0, -1])
+def test_power_warnings(dtype, base, exponent, expected, pos):
+    # The flags C99 requires, as glibc raises them. They are spelled out since
+    # NumPy's own loops do not raise them the same way on every CPU. MKL raises
+    # spurious flags for some of these, and flags raised in its worker threads
+    # (for the element at the end) never reach the caller.
+    x = np.full(10**6, 2.0, dtype=dtype)
+    y = np.full(10**6, 1.5, dtype=dtype)
+    x[pos], y[pos] = base, exponent
+    for args in ((x, y), (x, y[pos])):
+        got = _power_warnings(mu.power, *args)
+        assert got == expected, f"power{(base, exponent)} warned {got}"

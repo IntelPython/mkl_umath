@@ -25,7 +25,6 @@ extend-ignore =
 
 per-file-ignores =
     mkl_umath/__init__.py: F401
-    mkl_umath/ufunc_docstrings_numpy1.py: E501
     mkl_umath/ufunc_docstrings_numpy2.py: E501
 
 exclude =

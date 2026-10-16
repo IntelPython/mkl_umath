@@ -37,6 +37,9 @@ requirements:
       - pip
     run:
       - python
+      # NumPy 1 vs 2 loops are chosen at compile time (USE_NUMPY_2), so a build
+      # against NumPy 2 must not run on NumPy 1.x; run_exports add the upper bound
+      - numpy >=2
 
 test:
     requires:

@@ -1,3 +1,5 @@
+numpy:                        # as in conda-forge's global pinning; CI overrides it with --numpy
+    - '2'
 c_compiler:                   # [linux]
     - gcc                     # [linux]
 c_compiler_version:           # [linux]

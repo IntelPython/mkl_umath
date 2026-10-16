@@ -10,7 +10,7 @@ Core MKL-backed ufunc implementation: Python interface, Cython patching, and C/M
 - `tests/` — basic functionality and patching tests
 - `generate_umath.py` — code generation for ufunc loops
 - `generate_umath_doc.py` — docstring generation
-- `ufunc_docstrings_numpy{1,2}.py` — NumPy version-specific docstrings
+- `ufunc_docstrings_numpy2.py` — ufunc docstrings (adapted from NumPy 2)
 
 ## Patching API
 ```python
@@ -28,7 +28,7 @@ mkl_umath.is_patched()           # Check patch status
 ## Code generation
 - `*.src` files are templates processed by `_vendored/conv_template.py`
 - Generated files: `src/__umath_generated.c`, loop implementations
-- Docstrings: dual NumPy 1.x/2.x support via separate docstring modules
+- Docstrings: `ufunc_docstrings_numpy2.py` (NumPy 1 is not supported)
 
 ## Notes
 - `_patch_numpy.pyx` is Cython; changes require Cython rebuild

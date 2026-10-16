@@ -275,7 +275,7 @@ jobs:
         env:
           CACHE_NUMBER: 3  # Increase to reset cache
         with:
-          path: /home/runner/conda_pkgs_dir
+          path: ~/conda_pkgs_dir
           key:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python_tag || matrix.python }}-${{hashFiles('**/meta.yaml') }}
           restore-keys: |
@@ -428,7 +428,7 @@ jobs:
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
-          path: /home/runner/conda_pkgs_dir
+          path: ~/conda_pkgs_dir
           key:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python_tag || matrix.python }}-${{hashFiles('lockfile') }}
           restore-keys: |
@@ -456,20 +456,20 @@ jobs:
       - name: Report content of test environment
         shell: cmd /C CALL {0}
         run: |
-          conda activate
+          CALL conda activate
           echo "Value of CONDA environment variable was: " %CONDA%
           echo "Value of CONDA_PREFIX environment variable was: " %CONDA_PREFIX%
-          conda info && conda list -n ${{ env.TEST_ENV_NAME }}
+          CALL conda info && CALL conda list -n ${{ env.TEST_ENV_NAME }}
 
       - name: Smoke test
         shell: cmd /C CALL {0}
         run: |
           @ECHO ON
-          conda activate ${{ env.TEST_ENV_NAME }}
+          CALL conda activate ${{ env.TEST_ENV_NAME }}
           python -c "import mkl_umath, numpy as np; mkl_umath.patch_numpy_umath(); np.sin(np.linspace(0, 1, num=10**6));"
 
       - name: Run tests
         shell: cmd /C CALL {0}
         run: |
-          conda activate ${{ env.TEST_ENV_NAME }}
+          CALL conda activate ${{ env.TEST_ENV_NAME }}
           python -m pytest -v -s --pyargs ${{ env.MODULE_NAME }}

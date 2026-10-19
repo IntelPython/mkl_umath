@@ -39,7 +39,7 @@ requirements:
       - {{ pin_compatible('mkl') }}
       - {{ pin_compatible('intel-openmp') }}
       - {{ pin_compatible('intel-cmplr-lib-rt') }}
-      - numpy >=1.26.4
+      - numpy >=2
 
 test:
     requires:

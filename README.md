@@ -121,3 +121,10 @@ then build against the existing installation with:
 ```sh
 CC=icx pip install --no-build-isolation --no-deps .
 ```
+
+---
+# Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow: setting up a
+build environment, running the tests and lint hooks, code style, and what to
+include in a pull request.

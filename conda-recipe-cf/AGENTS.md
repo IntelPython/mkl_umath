@@ -9,6 +9,8 @@ conda-forge variant of the conda recipe.
   `build.sh`); `bld.bat` keeps the `intel_thread` default on Windows
 - Uses `llvm-openmp` as a host dependency only, with no run pin; the
   Intel-channel recipe pins `intel-openmp` at run time
+- Pins NumPy at run time with `pin_compatible('numpy')`; the Intel-channel
+  recipe sets only a minimum version
 - Sets its version by hand in `meta.yaml` instead of reading git tags
 
 Both recipes build with `icx`. Each has its own copy of
@@ -20,3 +22,5 @@ intentional.
 - Keep the `meta.yaml` version equal to `mkl_umath/_version.py`.
 - Keep changes in step with `.github/workflows/conda-package-cf.yml`, which
   builds this recipe and runs the full test suite against the result.
+- GitHub CI builds with `--no-test`, so the package test in `meta.yaml` does not
+  run there.

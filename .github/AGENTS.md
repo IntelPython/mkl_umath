@@ -5,13 +5,19 @@ CI/CD workflows and repo automation.
 ## Workflows (source of truth)
 - `conda-package.yml` — Intel-channel conda build and test
 - `conda-package-cf.yml` — conda-forge conda build and test
-- `build_pip.yml` — editable pip build with `icx`, including pre-release NumPy
-- `build-with-clang.yml` — build with `icx` from the oneAPI apt repository
-- `build-with-standard-clang.yml` — build with upstream clang
+- `build_pip.yml` — editable pip build and test with `icx`, including
+  pre-release NumPy
+- `build-with-clang.yml` — build and test with `icx` from the oneAPI apt
+  repository
+- `build-with-standard-clang.yml` — build and test with upstream clang
 - `pre-commit.yml` — lint/format checks
 - `coverity.yml` — Coverity static analysis (see `coverity/README.md`)
 - `openssf-scorecard.yml` — OpenSSF Scorecard
 - `zizmor.yml` — GitHub Actions security lint
+
+The three pip workflows run `pytest --pyargs mkl_umath` against the editable
+install. The conda workflows build with `conda build --no-test` and run the
+same command in separate test jobs on the built package.
 
 ## Templates and config
 - `pull_request_template.md` — PR description, verification, and checklist

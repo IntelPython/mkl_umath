@@ -15,8 +15,7 @@ body:
     attributes:
       label: Proposal
       description: |
-        What you would like `mkl_umath` to do. If it covers a NumPy ufunc, name
-        it — NumPy's semantics are the contract for patched loops.
+        What you would like `mkl_umath` to do. If it covers a NumPy ufunc, name it — NumPy's semantics are the contract for patched loops.
     validations:
       required: true
 

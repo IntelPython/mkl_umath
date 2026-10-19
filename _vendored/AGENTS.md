@@ -13,5 +13,6 @@ Build-time template tooling copied from NumPy's `numpy/_build_utils`.
 - Prefer updating upstream source when feasible; keep local vendored diffs
   minimal.
 - Do not refactor vendored code opportunistically in unrelated PRs.
-- `black` and `isort` are configured to skip the vendored files
-  (`pyproject.toml`).
+- `black`, `isort`, and `flake8` skip the vendored files (`pyproject.toml`,
+  `.flake8`). `codespell`, `pylint`, and the whitespace and end-of-file hooks
+  still run on them.

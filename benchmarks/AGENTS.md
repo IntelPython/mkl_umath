@@ -21,4 +21,4 @@ ASV performance suite for `mkl_umath`.
 - Keep inputs deterministic; benchmarks seed their own RNG.
 - Report performance numbers with reproducible context: hardware, thread count,
   versions, and the command used.
-- Results under `benchmarks/.asv/` are local artifacts.
+- Results under `.asv/` are local artifacts.

@@ -14,4 +14,5 @@ Intel-channel conda packaging.
 - Treat recipe files as canonical for packaging intent and dependency pins.
 - Keep recipe changes in step with `.github/workflows/conda-package.yml`, which
   builds this recipe and runs the full test suite against the result.
-- The package test in `meta.yaml` runs only `test_basic.py`.
+- The package test in `meta.yaml` runs only `test_basic.py`. GitHub CI builds
+  with `--no-test`, so it never runs this test; Intel's internal CI does.

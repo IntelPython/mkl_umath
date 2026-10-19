@@ -15,6 +15,8 @@ package.
 - Behavior changes include test updates in the same PR; bug fixes include a
   regression test.
 - Keep tests deterministic and free of timing assertions.
+- Tests that patch NumPy restore it before returning, in the same thread: use
+  `try`/`finally` or `with mkl_umath.mkl_umath():`.
 
 ## Entry points
 - `pytest mkl_umath/tests` from a checkout with an editable install (see

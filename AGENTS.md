@@ -13,8 +13,8 @@ for Python* per NEP-36 (Fair Play).
   from `mkl_umath/generate_umath.py`
 - **Loop templates:** `mkl_umath/src/mkl_umath_loops.{c,h}.src`
 - **Patching:** `mkl_umath/src/_patch_numpy.pyx`; persistent and one-shot
-  patching in `patch.py`, `with_patch.py`, `_patch_startup.py`, and the
-  `__main__.py` CLI
+  patching in `mkl_umath/patch.py`, `mkl_umath/with_patch.py`,
+  `mkl_umath/_patch_startup.py`, and the `mkl_umath/__main__.py` CLI
 - **Tests:** `mkl_umath/tests/`
 - **Vendored helpers:** `_vendored/`
 - **Packaging:** `conda-recipe/`, `conda-recipe-cf/`
@@ -34,10 +34,15 @@ for Python* per NEP-36 (Fair Play).
 ## Development guardrails
 - Preserve NumPy ufunc behavior; patched loops stand in for NumPy's own.
 - Edit the `*.src` templates and `generate_umath.py`, not generated C.
-- Keep the floating-point precision flags in `meson.build`; Intel-only flags stay
-  behind its compiler checks.
+- Keep the floating-point precision flags in `meson.build` and, for Windows, in
+  both recipes' `conda_build_config.yaml`; Intel-only flags stay behind the
+  compiler checks in `meson.build`.
 - `meson.build` changes must keep both the GCC-syntax (Linux) and MSVC-syntax
   (Windows) branches working; CI covers both.
+- Preserve the patching API (`patch_numpy_umath()`, `restore_numpy_umath()`,
+  `is_patched()`, and the `mkl_umath()` context manager) unless asked to change
+  it. The deprecated `use_in_numpy()` and `restore()` aliases stay until a
+  release removes them.
 - Keep patching reversible, with `is_patched()` reporting the truth.
 - Keep both extensions free-threading compatible.
 - Pair behavior changes with tests and keep diffs minimal.

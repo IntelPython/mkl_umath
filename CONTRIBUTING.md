@@ -17,8 +17,9 @@ CC=icx pip install -e . --no-build-isolation --no-deps \
 ```
 
 `--override-channels` keeps MKL and its OpenMP runtime from mixing with your
-configured channels. `gnu_thread` is required with conda-forge's MKL; the
-default threading layer fails at import.
+configured channels. On Linux, `gnu_thread` is required with conda-forge's MKL;
+the default threading layer fails at import. Windows keeps the `intel_thread`
+default.
 
 Windows is also supported, and the conda workflows build and test it in CI.
 `meson.build` has separate GCC-syntax and MSVC-syntax branches, so keep both
@@ -26,7 +27,8 @@ working when you change it.
 
 ## Checks
 
-From the editable install above:
+Work on a branch: on `main`, the `no-commit-to-branch` hook makes
+`pre-commit run --all-files` fail. From the editable install above:
 
 ```sh
 pytest mkl_umath/tests
@@ -44,13 +46,14 @@ The pre-commit hooks enforce formatting; otherwise, match the surrounding code.
 - Match stock NumPy results, and call out any intentional difference.
 - Add tests with behavior changes, and a regression test with bug fixes.
 - Edit the `*.src` templates and `generate_umath.py`, not generated C.
-- Keep the floating-point precision flags in `meson.build`.
+- Keep the floating-point precision flags in `meson.build` and the recipes'
+  `conda_build_config.yaml`.
 - Keep patching reversible.
 
 ## Pull requests
 
-Work on a branch and fill in the PR template. For user-visible changes, add a
-`CHANGELOG.md` entry under `## [dev]`, in the matching section, with a
+Fill in the PR template. For user-visible changes, add a `CHANGELOG.md` entry
+under `## [dev]`, in the matching section, with a
 `[gh-NNN](https://github.com/IntelPython/mkl_umath/pull/NNN)` link.
 
 Contributions are licensed under the terms in [LICENSE.txt](LICENSE.txt).

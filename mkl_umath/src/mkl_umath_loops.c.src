@@ -1282,6 +1282,64 @@ pairwise_sum_@TYPE@(@ftype@ *rr, @ftype@ * ri, char * a, npy_intp n, npy_intp st
  * #PW = 1, 0#
  * #VML = Add, Sub#
  */
+/*
+ * Kept out of line so that adding these loops does not change the
+ * register allocation of the strided BINARY_LOOP in the caller.
+ */
+NPY_NOINLINE void
+contig_@kind@_@TYPE@(char **args, npy_intp n)
+{
+    /*
+     * Contiguous and either disjoint or exactly in-place, but too
+     * small for the VML call in the caller. +/- acts on the real and
+     * imaginary parts independently, so treat them as one flat
+     * run of 2*n @ftype@ elements. The in-place cases get their
+     * own loops so icx's runtime alias check compares only the two
+     * distinct buffers; with three pointers icx sees out == in as
+     * an overlap and runs its scalar fallback (gcc and clang
+     * vectorize the three-pointer loop either way).
+     * Partially overlapping operands (e.g. accumulate, where
+     * out == in1 + 1) take the caller's strided loop.
+     */
+    const npy_intp n2 = n * 2;
+    npy_intp i;
+
+    if (args[2] == args[0]) {
+        @ftype@ *iop1 = (@ftype@ *)args[0];
+
+        if (args[1] == args[0]) {
+            /* z += z: a single pointer leaves no alias check to fail */
+            for (i = 0; i < n2; i++) {
+                iop1[i] = iop1[i] @OP@ iop1[i];
+            }
+        }
+        else {
+            const @ftype@ *ip2 = (const @ftype@ *)args[1];
+
+            for (i = 0; i < n2; i++) {
+                iop1[i] = iop1[i] @OP@ ip2[i];
+            }
+        }
+    }
+    else if (args[2] == args[1]) {
+        const @ftype@ *ip1 = (const @ftype@ *)args[0];
+        @ftype@ *iop2 = (@ftype@ *)args[1];
+
+        for (i = 0; i < n2; i++) {
+            iop2[i] = ip1[i] @OP@ iop2[i];
+        }
+    }
+    else {
+        const @ftype@ *ip1 = (const @ftype@ *)args[0];
+        const @ftype@ *ip2 = (const @ftype@ *)args[1];
+        @ftype@ *op1 = (@ftype@ *)args[2];
+
+        for (i = 0; i < n2; i++) {
+            op1[i] = ip1[i] @OP@ ip2[i];
+        }
+    }
+}
+
 void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func))
 {
@@ -1307,45 +1365,7 @@ mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp 
             return;
         }
         else if (can_vectorize) {
-            /*
-             * Contiguous and either disjoint or exactly in-place, but too
-             * small for the VML call above. +/- acts on the real and
-             * imaginary parts independently, so treat them as one flat
-             * run of 2*n @ftype@ elements. The in-place cases get their
-             * own loops so the compiler's runtime alias check compares
-             * only the two distinct buffers; with three pointers it sees
-             * out == in as an overlap and runs the scalar fallback.
-             * Partially overlapping operands (e.g. accumulate, where
-             * out == in1 + 1) take the strided loop below.
-             */
-            const npy_intp n2 = dimensions[0] * 2;
-            npy_intp i;
-
-            if (args[2] == args[0]) {
-                @ftype@ *iop1 = (@ftype@ *)args[0];
-                const @ftype@ *ip2 = (const @ftype@ *)args[1];
-
-                for (i = 0; i < n2; i++) {
-                    iop1[i] = iop1[i] @OP@ ip2[i];
-                }
-            }
-            else if (args[2] == args[1]) {
-                const @ftype@ *ip1 = (const @ftype@ *)args[0];
-                @ftype@ *iop2 = (@ftype@ *)args[1];
-
-                for (i = 0; i < n2; i++) {
-                    iop2[i] = ip1[i] @OP@ iop2[i];
-                }
-            }
-            else {
-                const @ftype@ *ip1 = (const @ftype@ *)args[0];
-                const @ftype@ *ip2 = (const @ftype@ *)args[1];
-                @ftype@ *op1 = (@ftype@ *)args[2];
-
-                for (i = 0; i < n2; i++) {
-                    op1[i] = ip1[i] @OP@ ip2[i];
-                }
-            }
+            contig_@kind@_@TYPE@(args, dimensions[0]);
         }
         else {
             BINARY_LOOP {

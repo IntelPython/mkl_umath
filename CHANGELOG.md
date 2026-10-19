@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [dev] - YYYY-MM-DD
+
+### Changed
+* Raised the minimum NumPy version to 2.0 at build time and at runtime in `pyproject.toml` and the conda recipe. `mkl_umath` built against NumPy 2 kept NumPy 2 behavior when run with NumPy 1.x, which the previous `numpy >=1.26.4` requirement allowed: complex `sign` returned NumPy 2 results and, on Windows, `patch_numpy_umath()` could not find NumPy loops matching the `int64` `ldexp` loops [gh-289](https://github.com/IntelPython/mkl_umath/pull/289)
+
+### Removed
+* Removed the NumPy 1 code paths: the `USE_NUMPY_2` switch with the NumPy 1 complex `sign` and `ldexp_long` loops, and `ufunc_docstrings_numpy1.py`. Building against NumPy 1 headers now fails with an explicit error [gh-289](https://github.com/IntelPython/mkl_umath/pull/289)
+
 ## [0.6.0] - 2026-10-15
 
 ### Added

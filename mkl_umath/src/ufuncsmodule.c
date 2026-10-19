@@ -45,6 +45,10 @@ PyMODINIT_FUNC PyInit__ufuncs(void)
     import_array();
     import_umath();
 
+    /* PyArray_RUNTIME_VERSION, which the NumPy 1.x headers do not provide */
+    mkl_umath_set_numpy_runtime_version(
+        (int)PyArray_GetNDArrayCFeatureVersion());
+
     m = PyModule_Create(&_ufuncs_module);
     if (m == NULL)
         return NULL;

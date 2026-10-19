@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - YYYY-MM-DD
 
+### Changed
+* Raised the minimum NumPy version to 2.0 at build time and at runtime in `pyproject.toml` and the conda recipe. `mkl_umath` built against NumPy 2 kept NumPy 2 behavior when run with NumPy 1.x, which the previous `numpy >=1.26.4` requirement allowed: complex `sign` returned NumPy 2 results and, on Windows, `patch_numpy_umath()` could not find NumPy loops matching the `int64` `ldexp` loops [gh-289](https://github.com/IntelPython/mkl_umath/pull/289)
+
+### Removed
+* Removed the NumPy 1 code paths: the `USE_NUMPY_2` switch with the NumPy 1 complex `sign` and `ldexp_long` loops, and `ufunc_docstrings_numpy1.py`. Building against NumPy 1 headers now fails with an explicit error [gh-289](https://github.com/IntelPython/mkl_umath/pull/289)
+
+## [0.6.0] - 2026-10-15
+
 ### Added
 * Enabled support of Python 3.15 [gh-279](https://github.com/IntelPython/mkl_umath/pull/279)
 * Added support for free-threaded (GIL-disabled) CPython builds: the Cython extension is compiled with `freethreading_compatible=True` and `_ufuncs` declares `Py_MOD_GIL_NOT_USED`, so importing `mkl_umath` no longer re-enables the GIL [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)
@@ -20,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Fixed an over-decref of the borrowed module dictionary reference on the module initialization error path [gh-264](https://github.com/IntelPython/mkl_umath/pull/264)
 * Fixed a leak of the module object when the NumPy C-API import fails during module initialization [gh-263](https://github.com/IntelPython/mkl_umath/pull/263)
 * Fixed `ImportError` on Linux/macOS when built with `meson-python` >= 0.22, which strips the `$ORIGIN` RPATH Meson auto-inserts for internal `link_with` dependencies [gh-275](https://github.com/IntelPython/mkl_umath/pull/275)
+* Fixed the Windows build with `icx` against NumPy >= 2.4.4, where `npy_math.h` fails to compile because NumPy's complex types no longer use the UCRT `_Dcomplex` for `icx` [gh-265](https://github.com/IntelPython/mkl_umath/pull/265)
 
 ### Removed
 * Removed the `python-gil` constraint from the conda recipes, which pinned `mkl_umath` to GIL-enabled Python 3.14 builds [gh-255](https://github.com/IntelPython/mkl_umath/pull/255)

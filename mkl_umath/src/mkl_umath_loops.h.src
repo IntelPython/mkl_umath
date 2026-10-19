@@ -44,8 +44,8 @@
 
 // NPY_2_0_API_VERSION 0x00000012 is defined in numpy-2
 // inside numpy/_core/include/numpy/numpyconfig.h
-#if NPY_API_VERSION >= 0x00000012
-    #define USE_NUMPY_2
+#if NPY_API_VERSION < 0x00000012
+    #error "mkl_umath must be built against NumPy >= 2.0"
 #endif
 
 /*
@@ -74,15 +74,9 @@ void
 mkl_umath_@TYPE@_@kind@(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
 /**end repeat1**/
 
-#ifdef USE_NUMPY_2
 MKL_UMATH_API
 void
 mkl_umath_@TYPE@_ldexp_int64(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-#else
-MKL_UMATH_API
-void
-mkl_umath_@TYPE@_ldexp_long(char **args, const npy_intp *dimensions, const npy_intp *steps, void *NPY_UNUSED(func));
-#endif
 
 /**end repeat**/
 

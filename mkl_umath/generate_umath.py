@@ -44,8 +44,6 @@ import re
 import string
 import textwrap
 
-import numpy as np
-
 # identity objects
 Zero = "PyLong_FromLong(0)"
 One = "PyLong_FromLong(1)"
@@ -425,20 +423,12 @@ uint64 = "K"
 # an object which expands a list of character codes into an array of
 # TypeDescriptions.
 
-if np.lib.NumpyVersion(np.__version__) < "2.0.0":
-    ldexp_signature = [
-        TypeDescription("f", None, "fi", "f"),
-        TypeDescription("f", FuncNameSuffix("long"), "fl", "f"),
-        TypeDescription("d", None, "di", "d"),
-        TypeDescription("d", FuncNameSuffix("long"), "dl", "d"),
-    ]
-else:
-    ldexp_signature = [
-        TypeDescription("f", None, "fi", "f"),
-        TypeDescription("f", FuncNameSuffix("int64"), "f" + int64, "f"),
-        TypeDescription("d", None, "di", "d"),
-        TypeDescription("d", FuncNameSuffix("int64"), "d" + int64, "d"),
-    ]
+ldexp_signature = [
+    TypeDescription("f", None, "fi", "f"),
+    TypeDescription("f", FuncNameSuffix("int64"), "f" + int64, "f"),
+    TypeDescription("d", None, "di", "d"),
+    TypeDescription("d", FuncNameSuffix("int64"), "d" + int64, "d"),
+]
 
 defdict = {
     "add": Ufunc(

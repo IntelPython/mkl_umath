@@ -105,13 +105,13 @@ jobs:
             conda-recipe
 
       - name: Upload artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python_tag || matrix.python }}
           path: ${{ env.CONDA_BLD }}/${{ env.PACKAGE_NAME }}-*.conda
 
       - name: Upload wheels artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python_tag || matrix.python }}
           path: ${{ env.WHEELS_OUTPUT_FOLDER }}${{ env.PACKAGE_NAME }}-*.whl
@@ -151,7 +151,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python_tag || matrix.python }}
       - name: Update conda
@@ -275,7 +275,7 @@ jobs:
         env:
           CACHE_NUMBER: 3  # Increase to reset cache
         with:
-          path: /home/runner/conda_pkgs_dir
+          path: ~/conda_pkgs_dir
           key:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python_tag || matrix.python }}-${{hashFiles('**/meta.yaml') }}
           restore-keys: |
@@ -300,13 +300,13 @@ jobs:
           conda build --no-test --python "${{ matrix.python_spec || matrix.python }}" --numpy ${{ matrix.numpy }} -c https://software.repos.intel.com/python/conda -c conda-forge --override-channels conda-recipe
 
       - name: Upload artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python_tag || matrix.python }}
           path: ${{ env.CONDA_BLD }}${{ env.PACKAGE_NAME }}-*.conda
 
       - name: Upload wheels artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Wheels Python ${{ matrix.python_tag || matrix.python }}
           path: ${{ env.WHEELS_OUTPUT_FOLDER }}${{ env.PACKAGE_NAME }}-*.whl
@@ -349,7 +349,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python_tag || matrix.python }}
 
@@ -428,7 +428,7 @@ jobs:
         env:
           CACHE_NUMBER: 0  # Increase to reset cache
         with:
-          path: /home/runner/conda_pkgs_dir
+          path: ~/conda_pkgs_dir
           key:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python_tag || matrix.python }}-${{hashFiles('lockfile') }}
           restore-keys: |
@@ -456,20 +456,20 @@ jobs:
       - name: Report content of test environment
         shell: cmd /C CALL {0}
         run: |
-          conda activate
+          CALL conda activate
           echo "Value of CONDA environment variable was: " %CONDA%
           echo "Value of CONDA_PREFIX environment variable was: " %CONDA_PREFIX%
-          conda info && conda list -n ${{ env.TEST_ENV_NAME }}
+          CALL conda info && CALL conda list -n ${{ env.TEST_ENV_NAME }}
 
       - name: Smoke test
         shell: cmd /C CALL {0}
         run: |
           @ECHO ON
-          conda activate ${{ env.TEST_ENV_NAME }}
+          CALL conda activate ${{ env.TEST_ENV_NAME }}
           python -c "import mkl_umath, numpy as np; mkl_umath.patch_numpy_umath(); np.sin(np.linspace(0, 1, num=10**6));"
 
       - name: Run tests
         shell: cmd /C CALL {0}
         run: |
-          conda activate ${{ env.TEST_ENV_NAME }}
+          CALL conda activate ${{ env.TEST_ENV_NAME }}
           python -m pytest -v -s --pyargs ${{ env.MODULE_NAME }}

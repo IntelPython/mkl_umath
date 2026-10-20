@@ -68,7 +68,7 @@ mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 - **Compatibility:** Must work with upstream NumPy APIs (NEP-36 compliance)
 - **Testing:** Add tests to `mkl_umath/tests/test_basic.py`
 - **Build hygiene:** `meson.build` is the source of truth for build config — verify Linux + Windows
-- **Docs:** Update docstrings via `ufunc_docstrings_numpy{1,2}.py`
+- **Docs:** Update docstrings via `ufunc_docstrings_numpy2.py`
 
 ## Code structure
 - **Generated code:** `*.src` files are templates (conv_template.py processes them)

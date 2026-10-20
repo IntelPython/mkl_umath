@@ -31,13 +31,9 @@ import os
 import sys
 import textwrap
 
-import numpy as np
-
 sys.path.insert(0, os.path.dirname(__file__))
-if np.lib.NumpyVersion(np.__version__) < "2.0.0":
-    import ufunc_docstrings_numpy1 as docstrings
-else:
-    import ufunc_docstrings_numpy2 as docstrings
+import ufunc_docstrings_numpy2 as docstrings  # noqa: E402
+
 sys.path.pop(0)
 
 

@@ -146,10 +146,7 @@ gen_umath_doc_h = custom_target(
     output: '_umath_doc_generated.h',
     input: 'mkl_umath/generate_umath_doc.py',
     command: [py, '@INPUT@', '-o', '@OUTPUT@'],
-    depend_files: [
-        'mkl_umath/ufunc_docstrings_numpy1.py',
-        'mkl_umath/ufunc_docstrings_numpy2.py'
-    ]
+    depend_files: ['mkl_umath/ufunc_docstrings_numpy2.py']
 )
 
 gen_loops_h = custom_target(

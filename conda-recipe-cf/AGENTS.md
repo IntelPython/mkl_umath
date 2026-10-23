@@ -3,7 +3,8 @@
 Conda-forge compatible build recipe (alternative to Intel channel recipe).
 
 ## Difference from conda-recipe/
-- No `conda_build_config.yaml` (uses conda-forge defaults)
+- `conda_build_config.yaml` lists the Python versions Intel Python CI builds, NumPy 2 and the compilers;
+  its `python:` list is read by `ci/matrix.py`: plain versions, no selectors
 - May use different compiler toolchain
 - For conda-forge feedstock integration (if upstreamed)
 
@@ -13,7 +14,7 @@ Conda-forge compatible build recipe (alternative to Intel channel recipe).
 - **run_tests.{sh,bat}** — test invocation
 
 ## Status
-- Not currently used in main CI workflows
+- Built and tested by `conda-package-cf.yml` and by Intel Python CI (`intel-ci.yml`)
 - Maintained for potential conda-forge submission
 - Use `conda-recipe/` for Intel channel builds
 

@@ -45,6 +45,7 @@ CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported i
 - **Workflows:** `.github/workflows/`
   - `conda-package.yml` — main conda build/test pipeline
   - `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+  - `intel-ci.yml` — Intel Python CI: builds and tests `conda-recipe-cf`; see `ci/README.md`
   - `build_pip.yml` — validates pip build with pre-release NumPy
   - `build-with-clang.yml` — Intel clang compatibility check
   - `build-with-standard-clang.yml` — standard clang compatibility check

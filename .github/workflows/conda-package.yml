@@ -53,10 +53,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - name: Set pkgs_dirs
-        run: |
-          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
-
       - name: Cache conda packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         env:
@@ -69,8 +65,11 @@ jobs:
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-python-${{ matrix.python_tag || matrix.python }}-
             ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-
 
-      - name: Add conda to system path
-        run: echo "$CONDA/bin" >> "$GITHUB_PATH"
+      - uses: conda-incubator/setup-miniconda@be893c923ea9cf1cf7cd510fbdde27c7e18cbdcb # v4.1.0
+        with:
+          miniforge-version: latest
+          activate-environment: ""
+          pkgs-dirs: ~/.conda/pkgs
 
       - name: Update conda
         run: |
@@ -166,8 +165,11 @@ jobs:
       - name: List base environment packages
         run: |
           conda list -n base
-      - name: Add conda to system path
-        run: echo "$CONDA/bin" >> "$GITHUB_PATH"
+      - uses: conda-incubator/setup-miniconda@be893c923ea9cf1cf7cd510fbdde27c7e18cbdcb # v4.1.0
+        with:
+          miniforge-version: latest
+          activate-environment: ""
+          pkgs-dirs: ~/.conda/pkgs
       - name: Create conda channel
         run: |
           mkdir -p "$GITHUB_WORKSPACE/channel/linux-64"
@@ -186,10 +188,6 @@ jobs:
           conda create -n "${{ env.TEST_ENV_NAME }}" "${PACKAGE_NAME}=${PACKAGE_VERSION}" "python=${{ matrix.python_spec || matrix.python }}" ${{ matrix.numpy }} "${CHANNELS[@]}" --only-deps --dry-run > lockfile
       - name: Display lockfile
         run: cat lockfile
-
-      - name: Set pkgs_dirs
-        run: |
-          echo "pkgs_dirs: [~/.conda/pkgs]" >> ~/.condarc
 
       - name: Cache conda packages
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

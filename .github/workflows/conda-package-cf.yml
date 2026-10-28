@@ -144,6 +144,11 @@ jobs:
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: ${{ env.PACKAGE_NAME }} ${{ runner.os }} Python ${{ matrix.python_tag || matrix.python }}
+      - uses: conda-incubator/setup-miniconda@be893c923ea9cf1cf7cd510fbdde27c7e18cbdcb # v4.1.0
+        with:
+          miniforge-version: latest
+          activate-environment: ""
+          pkgs-dirs: ~/.conda/pkgs
       - name: Update conda
         run: |
           conda update -n base --all
@@ -156,11 +161,6 @@ jobs:
       - name: List base environment packages
         run: |
           conda list -n base
-      - uses: conda-incubator/setup-miniconda@be893c923ea9cf1cf7cd510fbdde27c7e18cbdcb # v4.1.0
-        with:
-          miniforge-version: latest
-          activate-environment: ""
-          pkgs-dirs: ~/.conda/pkgs
       - name: Create conda channel
         run: |
           mkdir -p "$GITHUB_WORKSPACE/channel/linux-64"

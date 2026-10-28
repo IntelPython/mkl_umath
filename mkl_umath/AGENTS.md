@@ -11,7 +11,7 @@ Package sources: public API, patching entry points, and ufunc code generation.
 - `patch.py`, `_patch_startup.py`, `with_patch.py`, `__main__.py` — persistent
   (`.pth`) and one-shot patching behind `python -m mkl_umath`
 - `_version.py` — the version; `meson.build` reads it
-- `generate_umath_doc.py`, `ufunc_docstrings_numpy{1,2}.py` — docstring sources
+- `generate_umath_doc.py`, `ufunc_docstrings_numpy2.py` — docstring sources
   adapted from NumPy; the build does not run them
 - `src/` — loop templates and the two extensions
 - `tests/` — test suite

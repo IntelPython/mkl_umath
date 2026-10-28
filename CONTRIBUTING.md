@@ -36,7 +36,10 @@ pre-commit run --all-files
 ```
 
 The `pylint` and `shellcheck` hooks run the copies installed in the
-environment. Run `pre-commit install` once to run the hooks on each commit.
+environment, so activate `mkl_umath-dev` first. The first run needs network
+access: pre-commit fetches each hook, and builds `gitleaks` and `actionlint`
+from source with Go, downloading a Go toolchain if none is on `PATH`. Run
+`pre-commit install` once to run the hooks on each commit.
 
 The pre-commit hooks enforce formatting; otherwise, match the surrounding code.
 

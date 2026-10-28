@@ -27,7 +27,7 @@ for Python* per NEP-36 (Fair Play).
 - Runtime deps: `numpy`; the conda recipes add the MKL and compiler runtimes
 - Platforms: Linux and Windows; `.github/workflows/` is canonical for the matrix
 - Setup, checks, and style: `CONTRIBUTING.md`
-- Single test: `pytest mkl_umath/tests/<file>::<test>`, from a checkout with the
+- Single test: `pytest mkl_umath/tests/<file>.py::<test>`, from a checkout with the
   editable install in `CONTRIBUTING.md`
 - Single-file lint: `pre-commit run --files <path>`
 

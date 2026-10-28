@@ -1,6 +1,7 @@
 # AGENTS.md — benchmarks/
 
-ASV performance suite for `mkl_umath`.
+ASV performance suite for `mkl_umath`. Paths are relative to this directory,
+so the suite itself is under `benchmarks/benchmarks/`.
 
 ## Scope
 - `asv.conf.json` — ASV configuration, channels, and regression thresholds

@@ -1,16 +1,17 @@
 # AGENTS.md — conda-recipe-cf/
 
-conda-forge variant of the conda recipe.
+conda-forge variant of the conda recipe, kept aligned with
+conda-forge/mkl_umath-feedstock.
 
 ## Differences from `conda-recipe/`
 - Resolves dependencies from conda-forge only
 - Installs with `pip install` directly; no wheel build or retag
 - On Linux, links MKL's GNU threading layer (`-Dmkl_threading=gnu_thread` in
   `build.sh`); `bld.bat` keeps the `intel_thread` default on Windows
-- Uses `llvm-openmp` as a host dependency only, with no run pin; the
-  Intel-channel recipe pins `intel-openmp` at run time
-- Pins NumPy at run time with `pin_compatible('numpy')`; the Intel-channel
-  recipe sets only a minimum version
+- Takes run dependencies from `run_exports`, including `llvm-openmp` and
+  NumPy's upper bound; the Intel-channel recipe uses `pin_compatible` for
+  `mkl`, `intel-openmp` and `intel-cmplr-lib-rt`, and ignores NumPy's
+- Builds with gcc/gxx 15 on Linux, as in conda-forge's global pinning
 - Sets its version by hand in `meta.yaml` instead of reading git tags
 
 Both recipes build with `icx`. Each has its own copy of
@@ -21,6 +22,7 @@ intentional.
 - Keep conda-forge recipe semantics separate from the Intel-channel recipe.
 - Keep the `meta.yaml` version equal to `mkl_umath/_version.py`.
 - Keep changes in step with `.github/workflows/conda-package-cf.yml`, which
-  builds this recipe and runs the full test suite against the result.
+  builds this recipe with `--error-overlinking` and runs the full test suite
+  against the result.
 - GitHub CI builds with `--no-test`, so the package test in `meta.yaml` does not
   run there.

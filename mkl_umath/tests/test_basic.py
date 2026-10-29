@@ -202,3 +202,11 @@ def test_absolute_nan_signbit(size, dtype):
             f"absolute({sign}nan) must be +nan for "
             f"{dtype.__name__} at size {size}"
         )
+
+
+@pytest.mark.parametrize("func", umaths)
+def test_docstring(func):
+    # the ufunc must carry the docstring text, not the name of its C macro
+    doc = getattr(mu, func).__doc__
+    assert "DOC_" not in doc, f"'{func}' docstring is an unexpanded macro"
+    assert "Parameters" in doc, f"'{func}' docstring is missing its body"

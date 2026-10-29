@@ -11,7 +11,8 @@ conda-forge/mkl_umath-feedstock.
 - Takes run dependencies from `run_exports`, including `llvm-openmp` and
   NumPy's upper bound; the Intel-channel recipe uses `pin_compatible` for
   `mkl`, `intel-openmp` and `intel-cmplr-lib-rt`, and ignores NumPy's
-- Builds with gcc/gxx 15 on Linux, as in conda-forge's global pinning
+- Pins the Linux compiler to conda-forge's global pinning (see
+  `conda_build_config.yaml`)
 - Sets its version by hand in `meta.yaml` instead of reading git tags
 
 Both recipes build with `icx`. Each has its own copy of

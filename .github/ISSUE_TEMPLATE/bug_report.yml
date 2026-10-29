@@ -47,6 +47,7 @@ body:
         python -c "import mkl_umath, numpy; print(mkl_umath.__version__); print(numpy.__version__)"
         ```
         Add the MKL version (`conda list mkl` or `pip list | grep -i mkl`), your OS, and your Python version too.
+        If you built from source, or the build failed: the compiler and version (`icx --version` or `clang --version`), the `-Dmkl_threading` value, and the build log. Skip the `python -c` line if the import fails.
       render: shell
     validations:
       required: true

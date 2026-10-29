@@ -31,3 +31,6 @@ same command in separate test jobs on the built package.
 ## Policy
 - Treat workflow YAML as canonical for platform/Python matrices.
 - Avoid doc claims about CI coverage unless present in workflow config.
+- Follow the conventions every workflow here uses and zizmor checks: pin each
+  action to a full commit SHA with a version comment, set least-privilege
+  `permissions`, and set `persist-credentials: false` on checkouts.

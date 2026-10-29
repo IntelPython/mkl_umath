@@ -21,14 +21,19 @@ configured channels. On Linux, `gnu_thread` is required with conda-forge's MKL;
 the default threading layer fails at import. Windows keeps the `intel_thread`
 default.
 
+The editable install rebuilds the extensions on the next import after a source
+change, so run `pytest` and `python` with `mkl_umath-dev` active: the rebuild
+needs its `icx` and `ninja`.
+
 Windows is also supported, and the conda workflows build and test it in CI.
 `meson.build` has separate GCC-syntax and MSVC-syntax branches, so keep both
 working when you change it.
 
 ## Checks
 
-Work on a branch: on `main`, the `no-commit-to-branch` hook makes
-`pre-commit run --all-files` fail. From the editable install above:
+Work on a branch: on `main` or a `maintenance/*` branch, the
+`no-commit-to-branch` hook makes `pre-commit run` fail, with `--all-files` or
+`--files`. From the editable install above:
 
 ```sh
 pytest mkl_umath/tests
@@ -48,7 +53,8 @@ The pre-commit hooks enforce formatting; otherwise, match the surrounding code.
 - Keep changes small and focused.
 - Match stock NumPy results, and call out any intentional difference.
 - Add tests with behavior changes, and a regression test with bug fixes.
-- Edit the `*.src` templates and `generate_umath.py`, not generated C.
+- Edit the `*.src` templates, `generate_umath.py`, and
+  `ufunc_docstrings_numpy2.py`, not generated C or headers.
 - Keep the floating-point precision flags in `meson.build` and the recipes'
   `conda_build_config.yaml`.
 - Keep patching reversible.

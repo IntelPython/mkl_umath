@@ -17,6 +17,8 @@ package.
 - Keep tests deterministic and free of timing assertions.
 - Tests that patch NumPy restore it before returning, in the same thread: use
   `try`/`finally` or `with mkl_umath.mkl_umath():`.
+- Tests assume NumPy starts unpatched, so the suite fails while the persistent
+  patch is installed; run `python -m mkl_umath --patch uninstall` first.
 
 ## Entry points
 - `pytest mkl_umath/tests` from a checkout with an editable install (see

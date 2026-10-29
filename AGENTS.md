@@ -10,7 +10,8 @@ for Python* per NEP-36 (Fair Play).
 ## Key components
 - **Package and public API:** `mkl_umath/`, `mkl_umath/__init__.py`
 - **Ufunc extension:** `mkl_umath/src/ufuncsmodule.c`, plus `__umath_generated.c`
-  from `mkl_umath/generate_umath.py`
+  from `mkl_umath/generate_umath.py` and `_umath_doc_generated.h` from
+  `mkl_umath/ufunc_docstrings_numpy2.py`
 - **Loop templates:** `mkl_umath/src/mkl_umath_loops.{c,h}.src`
 - **Patching:** `mkl_umath/src/_patch_numpy.pyx`; persistent and one-shot
   patching in `mkl_umath/patch.py`, `mkl_umath/with_patch.py`,
@@ -24,19 +25,29 @@ for Python* per NEP-36 (Fair Play).
 - Build system: `pyproject.toml` + `meson.build`, with options in `meson.options`
 - Build deps: `mkl-devel`, `numpy`, `meson-python`, `cmake`, `ninja`, `cython`,
   and a C compiler (CI uses `icx` and `clang`)
-- Runtime deps: `numpy`; the conda recipes add the MKL and compiler runtimes
+- Runtime deps: `numpy`, NumPy 2 only (see `pyproject.toml`); the conda recipes
+  add the MKL and compiler runtimes
 - Platforms: Linux and Windows; `.github/workflows/` is canonical for the matrix
 - Setup, checks, and style: `CONTRIBUTING.md`
 - Single test: `pytest mkl_umath/tests/<file>.py::<test>`, from a checkout with the
   editable install in `CONTRIBUTING.md`
-- Single-file lint: `pre-commit run --files <path>`
+- Single-file lint: `pre-commit run --files <path>`, from a branch (see
+  `CONTRIBUTING.md`)
 
 ## Development guardrails
 - Preserve NumPy ufunc behavior; patched loops stand in for NumPy's own.
-- Edit the `*.src` templates and `generate_umath.py`, not generated C.
-- Keep the floating-point precision flags in `meson.build` and, for Windows, in
-  both recipes' `conda_build_config.yaml`; Intel-only flags stay behind the
-  compiler checks in `meson.build`.
+- Edit the `*.src` templates, `generate_umath.py`, and
+  `ufunc_docstrings_numpy2.py`, not generated C or headers.
+- Keep the floating-point precision flags in `meson.build`: `-fno-fast-math`,
+  `-fimf-precision=high`, `-fprotect-parens` (GCC syntax) and `/fp:precise`,
+  `/Qimf-precision=high`, `/Qprotect-parens` (MSVC syntax). Both recipes'
+  `conda_build_config.yaml` also set `/fp:precise` on Windows. Intel-only flags
+  stay behind the compiler checks in `meson.build`.
+- Keep the hardening flags in `meson.build`: `-fstack-protector-all`,
+  `-D_FORTIFY_SOURCE=2`, `-z relro`/`now`/`noexecstack`, `/GS`, `/DynamicBase`,
+  and `/NXCompat`.
+- Performance changes must not compromise numerical correctness.
+- Avoid hardcoded ISA assumptions beyond what the build configuration sets.
 - `meson.build` changes must keep both the GCC-syntax (Linux) and MSVC-syntax
   (Windows) branches working; CI covers both.
 - Preserve the patching API (`patch_numpy_umath()`, `restore_numpy_umath()`,
@@ -46,7 +57,9 @@ for Python* per NEP-36 (Fair Play).
 - Keep patching reversible, with `is_patched()` reporting the truth.
 - Keep both extensions free-threading compatible.
 - Pair behavior changes with tests and keep diffs minimal.
-- Avoid hardcoding mutable versions/matrices/channels in docs.
+- Avoid hardcoding mutable versions/matrices/channels in docs, and never invent
+  versions, compilers, or CI matrix values; take them from the files below.
+- Never put secrets or credentials in code or docs.
 
 ## Where truth lives
 - Build/config: `pyproject.toml`, `meson.build`, `meson.options`

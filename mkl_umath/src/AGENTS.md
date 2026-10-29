@@ -14,7 +14,10 @@ C and Cython sources for the ufunc loops and the patching extension.
 - `fast_loop_macros.h`, `blocking_utils.h` — loop helpers
 
 ## Guardrails
-- Edit the `.src` templates, not the generated `.c`/`.h`.
+- Edit sources, not generated files; the root `AGENTS.md` names the edit points.
+- Every type signature in `_ufuncs` must match a loop NumPy already has for that
+  ufunc, or the first `patch_numpy_umath()` raises `RuntimeError`. The patcher
+  finds the ufuncs by scanning `_ufuncs`, so there is no list to update.
 - Keep results consistent with NumPy for every dtype a loop handles, including
   NaN and signed-zero handling.
 - Keep the saved original loops so patching stays reversible, and the patch

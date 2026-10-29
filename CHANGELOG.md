@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [dev] - YYYY-MM-DD
 
+### Added
+* Added oneMKL-backed `power` loops for float32 and float64 arrays, using `v?Pow`, and `v?PowI` to broadcast a scalar exponent [gh-285](https://github.com/IntelPython/mkl_umath/pull/285)
+
 ### Changed
 * Raised the minimum NumPy version to 2.0 at build time and at runtime in `pyproject.toml` and the conda recipe. `mkl_umath` built against NumPy 2 kept NumPy 2 behavior when run with NumPy 1.x, which the previous `numpy >=1.26.4` requirement allowed: complex `sign` returned NumPy 2 results and, on Windows, `patch_numpy_umath()` could not find NumPy loops matching the `int64` `ldexp` loops [gh-289](https://github.com/IntelPython/mkl_umath/pull/289)
 * Conda recipes now run the whole test suite with `pytest --pyargs mkl_umath` instead of only `test_basic.py`, and the unused `run_tests.{sh,bat}` scripts were removed [gh-283](https://github.com/IntelPython/mkl_umath/pull/283)

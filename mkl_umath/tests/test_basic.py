@@ -25,6 +25,7 @@
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
 
 import mkl_umath._ufuncs as mu
 
@@ -189,6 +190,88 @@ def test_reduce_complex(func, dtype):
     assert np.allclose(
         mkl_res, np_res
     ), f"Results for '{func}[reduce]' do not match"
+
+
+def _complex_array(size, dtype):
+    re = np.random.uniform(-10, 10, size)
+    im = np.random.uniform(-10, 10, size)
+    return (re + 1j * im).astype(dtype)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("size", [1, 7, 100, 1001, 10**5])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_complex_contig(func, size, dtype):
+    # testing the contiguous branch below the VML threshold: out-of-place
+    # and in-place on either input; results must equal NumPy's exactly
+    a = _complex_array(size, dtype)
+    b = _complex_array(size, dtype)
+    mkl_func = getattr(mu, func)
+    np_res = getattr(np, func)(a, b)
+
+    out = np.empty_like(a)
+    mkl_func(a, b, out=out)
+    assert_array_equal(out, np_res)
+
+    a_inplace = a.copy()
+    mkl_func(a_inplace, b, out=a_inplace)
+    assert_array_equal(a_inplace, np_res)
+
+    b_inplace = b.copy()
+    mkl_func(a, b_inplace, out=b_inplace)
+    assert_array_equal(b_inplace, np_res)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_accumulate_complex(func, dtype):
+    # accumulate calls the loop with out == in1 + 1 element, so each output
+    # depends on the previous one and must take the strided branch
+    a = _complex_array(100, dtype)
+    mkl_res = getattr(mu, func).accumulate(a)
+    np_res = getattr(np, func).accumulate(a)
+    assert_array_equal(mkl_res, np_res)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("size", [1, 7, 100, 1001, 10**5])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_complex_contig_same_input(func, size, dtype):
+    # in1 is in2: out-of-place takes the disjoint loop with ip1 == ip2,
+    # out=a takes the out == in1 loop with ip2 == iop1
+    a = _complex_array(size, dtype)
+    mkl_func = getattr(mu, func)
+    np_res = getattr(np, func)(a, a)
+
+    assert_array_equal(mkl_func(a, a), np_res)
+
+    a_inplace = a.copy()
+    mkl_func(a_inplace, a_inplace, out=a_inplace)
+    assert_array_equal(a_inplace, np_res)
+
+
+@pytest.mark.parametrize("func", ["add", "subtract"])
+@pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
+def test_complex_contig_signed_zero(func, dtype):
+    # every (+-0, +-0) pair in both the real and the imaginary part;
+    # assert_array_equal treats -0.0 == 0.0, so compare the sign bits
+    ftype = np.float32 if dtype == np.complex64 else np.float64
+    zeros = np.array([0.0, -0.0], dtype=ftype)
+    x, y = np.meshgrid(zeros, zeros)
+    a = np.tile(np.repeat(x.ravel(), 2), 8).view(dtype)
+    b = np.tile(np.repeat(y.ravel(), 2), 8).view(dtype)
+    mkl_func = getattr(mu, func)
+    np_res = getattr(np, func)(a, b)
+
+    for out_is in ("new", "a", "b"):
+        a_, b_ = a.copy(), b.copy()
+        out = {"new": np.empty_like(a), "a": a_, "b": b_}[out_is]
+        mkl_func(a_, b_, out=out)
+        assert_array_equal(
+            np.signbit(out.view(ftype)),
+            np.signbit(np_res.view(ftype)),
+            err_msg=f"signed zero mismatch for '{func}' with out={out_is}",
+        )
 
 
 @pytest.mark.parametrize("size", [100, 8192 + 1])

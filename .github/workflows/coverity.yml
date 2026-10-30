@@ -79,11 +79,8 @@ jobs:
         run: |
           # shellcheck disable=SC1091
           source "${ONEAPI_ROOT}/setvars.sh"
-          # Build with icx to match the shipped conda packages (both
-          # conda-recipe and conda-recipe-cf use CC=icx). meson.build only
-          # applies -fveclib=SVML, -fvectorize, -fimf-precision=high and
-          # -fprotect-parens when the compiler id is Intel, so gcc would not
-          # exercise that branch.
+          # Build with icx, as conda-recipe-cf does: meson.build adds its SVML
+          # and precision flags only for an Intel compiler.
           export CC="${CMPLR_ROOT}/bin/icx"
           # icx is not auto-configured by the Coverity front-end, so register it
           # explicitly first. Two constraints on this command:

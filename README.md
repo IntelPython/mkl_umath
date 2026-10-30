@@ -1,4 +1,4 @@
-[![Conda package](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package.yml)
+[![Conda package using conda-forge](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package-cf.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/conda-package-cf.yml)
 [![Build using pip and pre-release NumPy](https://github.com/IntelPython/mkl_umath/actions/workflows/build_pip.yml/badge.svg)](https://github.com/IntelPython/mkl_umath/actions/workflows/build_pip.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/IntelPython/mkl_umath/badge)](https://securityscorecards.dev/viewer/?uri=github.com/IntelPython/mkl_umath)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/33201/badge.svg)](https://scan.coverity.com/projects/intelpython-mkl_umath)

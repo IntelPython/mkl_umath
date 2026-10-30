@@ -112,6 +112,12 @@ else
     error('Unsupported system.')
 endif
 
+# mkl-devel's CMake config is under Library on Windows, which CMake doesn't search
+mkl_cmake_prefix = []
+if host_machine.system() == 'windows'
+    mkl_cmake_prefix += '-DCMAKE_PREFIX_PATH=' + (py.get_path('data') / 'Library')
+endif
+
 mkl_dep = dependency('MKL', method: 'cmake',
     modules: ['MKL::MKL'],
     cmake_args: [
@@ -119,7 +125,7 @@ mkl_dep = dependency('MKL', method: 'cmake',
         '-DMKL_LINK=dynamic',
         '-DMKL_THREADING=' + get_option('mkl_threading'),
         '-DMKL_INTERFACE=lp64'
-    ],
+    ] + mkl_cmake_prefix,
     required: true
 )
 

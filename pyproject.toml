@@ -80,9 +80,31 @@ extend-exclude = "(^|/)_vendored/"
 force-exclude = "(^|/)_vendored/"
 line-length = 80
 
-[tool.cython-lint]
-ignore = ['E722']  # do not use bare 'except'
-max-line-length = 80
+[tool.cibuildwheel]
+build-verbosity = 1
+
+[tool.cibuildwheel.linux]
+# Intel's icx, as the conda recipe builds with, from Intel's repository
+before-all = [
+  "rpm --import https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB",
+  "printf '[oneAPI]\\nname=Intel oneAPI\\nbaseurl=https://yum.repos.intel.com/oneapi\\nenabled=1\\ngpgcheck=1\\nrepo_gpgcheck=1\\ngpgkey=https://yum.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB\\n' > /etc/yum.repos.d/oneAPI.repo",
+  "dnf install -y intel-oneapi-compiler-dpcpp-cpp"
+]
+environment = { CC = "/opt/intel/oneapi/compiler/latest/bin/icx" }
+# MKL, OpenMP and icx's runtime come from wheels at run time, see [tool.gh-ci]
+repair-wheel-command = "auditwheel repair --exclude libmkl_intel_lp64.so.3 --exclude libmkl_intel_thread.so.3 --exclude libmkl_core.so.3 --exclude libiomp5.so --exclude libimf.so --exclude libsvml.so --exclude libirng.so --exclude libintlc.so.5 -w {dest_dir} {wheel}"
+
+[tool.cibuildwheel.windows]
+# MSVC's environment, as python.org builds CPython with, and icx from conda-forge
+before-all = "python {project}/ci/install_icx.py C:/icx"
+config-settings = { setup-args = "--vsenv" }
+environment = { CC = "C:/icx/Library/bin/icx.exe", LIB = "C:/icx/Library/lib;$LIB", LINK = "/LIBPATH:C:/icx/Library/lib" }
+# MKL, OpenMP and icx's runtime come from wheels at run time, see [tool.gh-ci]
+repair-wheel-command = "delvewheel repair --no-dll mkl_umath_loops.dll;mkl_intel_thread.3.dll;mkl_core.3.dll;libiomp5md.dll;libmmd.dll;svml_dispmd.dll;libircmd.dll;libirngmd.dll -w {dest_dir} {wheel}"
+
+[tool.gh-ci]
+# What the wheels need at run time, which conda packages get from the recipe
+wheel-requires = ["mkl >=2026.2,<2027", "intel-openmp >=2026.2,<2027", "intel-cmplr-lib-rt >=2026.2,<2027"]
 
 [tool.isort]
 ensure_newline_before_comments = true

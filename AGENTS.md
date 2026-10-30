@@ -43,8 +43,8 @@ CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported i
 - **Platforms:** Linux, Windows
 - **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14, 3.15
 - **Workflows:** `.github/workflows/`
-  - `conda-package.yml` — main conda build/test pipeline
   - `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+  - `intel-ci.yml` — Intel Python CI: builds and tests the conda packages and the wheels; see `ci/README.md`
   - `build_pip.yml` — validates pip build with pre-release NumPy
   - `build-with-clang.yml` — Intel clang compatibility check
   - `build-with-standard-clang.yml` — standard clang compatibility check
@@ -97,8 +97,7 @@ Below directories have local `AGENTS.md` for deeper context:
 - `mkl_umath/AGENTS.md` — Python API and code generation
 - `mkl_umath/src/AGENTS.md` — C/Cython implementation layer
 - `mkl_umath/tests/AGENTS.md` — unit tests and validation
-- `conda-recipe/AGENTS.md` — Intel channel conda packaging
-- `conda-recipe-cf/AGENTS.md` — conda-forge compatible recipe
+- `conda-recipe-cf/AGENTS.md` — the conda recipe
 - `_vendored/AGENTS.md` — vendored NumPy utilities
 
 ---

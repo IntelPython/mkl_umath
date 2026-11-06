@@ -15,7 +15,7 @@
 | `test.py` | Runs the installed package's test suite with pytest. |
 | `benchmark.py` | Runs the asv suite in `../benchmarks/` against the installed package. |
 
-The scripts need only the Python standard library. The recipe skips macOS, as `conda-forge/mkl_umath-feedstock` does.
+The scripts need nothing beyond the Python standard library and the tools each one's docstring names. The recipe skips macOS, as `conda-forge/mkl_umath-feedstock` does.
 
 **A pull request into `main`.** Actions builds the oldest and the newest regular Python versions on Linux and Windows, as a conda package and, where `pyproject.toml` declares the platform, as a wheel, and tests each package.
 

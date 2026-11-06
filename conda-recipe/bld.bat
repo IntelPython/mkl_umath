@@ -5,21 +5,6 @@ set "INCLUDE=%BUILD_PREFIX%\include;%INCLUDE%"
 set "CC=icx"
 set "CXX=icx"
 
-%PYTHON% -m build -w -n -x
-if %ERRORLEVEL% neq 0 exit 1
-
-for /f %%f in ('dir /b /S .\dist') do (
-    %PYTHON% -m pip install %%f ^
-        --no-build-isolation ^
-        --no-deps ^
-        --only-binary :all: ^
-        --no-index ^
-        --prefix %PREFIX% ^
-        -vv
-    if %ERRORLEVEL% neq 0 exit 1
-)
-
-if NOT "%WHEELS_OUTPUT_FOLDER%"=="" (
-    copy dist\mkl_umath*.whl %WHEELS_OUTPUT_FOLDER%
-    if %ERRORLEVEL% neq 0 exit 1
-)
+REM -Ccompile-args=-v makes ninja print full compiler commands (verbose build)
+%PYTHON% -m pip install --no-build-isolation --no-deps -Ccompile-args=-v . -vv
+if errorlevel 1 exit 1

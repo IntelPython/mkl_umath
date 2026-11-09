@@ -1,30 +1,13 @@
 # AGENTS.md — conda-recipe/
 
-Conda package build recipe for Intel channel distribution.
+The conda recipe, built against conda-forge only.
 
 ## Files
-- **meta.yaml** — package metadata, dependencies, build requirements, test commands (`pytest --pyargs mkl_umath`)
-- **build.sh** — Linux build script
-- **bld.bat** — Windows build script
-- **conda_build_config.yaml** — build matrix (Python versions, numpy pins)
+- **meta.yaml** — metadata, dependencies, test commands (`pytest --pyargs mkl_umath`)
+- **build.sh** / **bld.bat** — platform build scripts
+- **conda_build_config.yaml** — the Python versions Intel CI builds, NumPy 2 and the compilers;
+  its `python:` list is read by `ci/matrix.py`: one version per line, no selectors
 
-## Build configuration
-- **Channels:** `https://software.repos.intel.com/python/conda`, `conda-forge`
-- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14, 3.15
-- **Build system:** meson-python (via `python -m build`)
-- **Compilers:** Intel C compiler (icx)
-- **Dependencies:** mkl-devel, intel-openmp, dpcpp_{linux,win}-64, numpy
-
-## Build outputs
-- Conda package: `mkl_umath-<version>-<build>.conda`
-- Platform-specific: `linux-64/`, `win-64/`
-
-## CI usage
-- Built in `.github/workflows/conda-package.yml`
-- Artifacts uploaded per Python version
-- Test stage uses built artifacts from channel
-
-## Maintenance
-- Keep `conda_build_config.yaml` in sync with CI matrix
-- NumPy pin: must match Intel channel NumPy versions
-- MKL version: track oneAPI releases
+## CI
+- Built and tested by Intel CI (`intel-ci.yml`)
+- Wheels don't come from this recipe: `intel-ci.yml` builds them from `pyproject.toml` with `ci/build.py`

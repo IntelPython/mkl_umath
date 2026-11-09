@@ -3,11 +3,10 @@
 Conda package build recipe for Intel channel distribution.
 
 ## Files
-- **meta.yaml** — package metadata, dependencies, build requirements
+- **meta.yaml** — package metadata, dependencies, build requirements, test commands (`pytest --pyargs mkl_umath`)
 - **build.sh** — Linux build script
 - **bld.bat** — Windows build script
 - **conda_build_config.yaml** — build matrix (Python versions, numpy pins)
-- **run_tests.{sh,bat}** — post-build test invocation
 
 ## Build configuration
 - **Channels:** `https://software.repos.intel.com/python/conda`, `conda-forge`

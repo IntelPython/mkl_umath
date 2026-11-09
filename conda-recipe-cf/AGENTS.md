@@ -8,9 +8,8 @@ Conda-forge compatible build recipe (alternative to Intel channel recipe).
 - For conda-forge feedstock integration (if upstreamed)
 
 ## Files
-- **meta.yaml** — conda-forge compatible metadata
+- **meta.yaml** — conda-forge compatible metadata, test commands (`pytest --pyargs mkl_umath`)
 - **build.sh** / **bld.bat** — platform build scripts
-- **run_tests.{sh,bat}** — test invocation
 
 ## Status
 - Not currently used in main CI workflows

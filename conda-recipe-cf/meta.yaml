@@ -10,10 +10,12 @@ source:
 
 build:
     number: {{ buildnumber }}
+    ignore_run_exports_from:
+      - {{ compiler('dpcpp') }}  # [linux]
     ignore_run_exports:
       - blas
-      - numpy
-      - llvm-openmp
+    missing_dso_whitelist:
+      - $RPATH/mkl_umath_loops.dll  # [win]
 
 requirements:
     build:
@@ -29,24 +31,23 @@ requirements:
       - cython >=3.1.0
       - python
       - mkl-devel
+      - intel-cmplr-lib-rt  # [not osx]
       - numpy
       - llvm-openmp
       - pip
     run:
       - python
-      - {{ pin_compatible('mkl') }}
-      - {{ pin_compatible('numpy') }}
-      - {{ pin_compatible('intel-cmplr-lib-rt') }}
+      # NumPy 1 vs 2 loops are chosen at compile time (USE_NUMPY_2), so a build
+      # against NumPy 2 must not run on NumPy 1.x; run_exports add the upper bound
+      - numpy >=2
 
 test:
     requires:
       - pip
       - pytest
-    source_files:
-      - mkl_umath/tests/test_basic.py
     commands:
       - pip check
-      - pytest mkl_umath/tests/test_basic.py
+      - pytest --pyargs mkl_umath
     imports:
       - mkl_umath
       - mkl_umath._ufuncs

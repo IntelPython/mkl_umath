@@ -1,18 +1,22 @@
+{% set version = "0.6.0" %}
+{% set buildnumber = 0 %}
+
 package:
     name: mkl_umath
-    version: {{ GIT_DESCRIBE_TAG }}
+    version: {{ version }}
 
 source:
     path: ../
 
 build:
-    number: {{ GIT_DESCRIBE_NUMBER }}
-    script_env:
-      - WHEELS_OUTPUT_FOLDER
+    number: {{ buildnumber }}
+    skip: true  # [osx]
+    ignore_run_exports_from:
+      - {{ compiler('dpcpp') }}  # [linux]
     ignore_run_exports:
       - blas
-      - numpy
-      - intel-openmp   # [win]
+    missing_dso_whitelist:
+      - $RPATH/mkl_umath_loops.dll  # [win]
 
 requirements:
     build:
@@ -27,24 +31,23 @@ requirements:
       - git
       - cython >=3.1.0
       - python
-      - python-build >=1.2.2
       - mkl-devel
-      - intel-openmp
-      - intel-cmplr-lib-rt
+      - intel-cmplr-lib-rt  # [not osx]
       - numpy
-      - wheel  >=0.41.3
+      - llvm-openmp
       - pip
     run:
       - python
-      - {{ pin_compatible('mkl') }}
-      - {{ pin_compatible('intel-openmp') }}
-      - {{ pin_compatible('intel-cmplr-lib-rt') }}
+      # NumPy 1 vs 2 loops are chosen at compile time (USE_NUMPY_2), so a build
+      # against NumPy 2 must not run on NumPy 1.x; run_exports add the upper bound
       - numpy >=2
 
 test:
     requires:
+      - pip
       - pytest
     commands:
+      - pip check
       - pytest --pyargs mkl_umath
     imports:
       - mkl_umath

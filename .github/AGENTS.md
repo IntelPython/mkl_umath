@@ -3,8 +3,7 @@
 CI/CD workflows and repo automation.
 
 ## Workflows (source of truth)
-- `conda-package.yml` — Intel channel conda build/test pipeline
-- `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+- `intel-ci.yml` — Intel CI: builds and tests the conda packages of `conda-recipe` and the wheels, for the platforms and Python versions the recipe and `pyproject.toml` declare (`ci/matrix.py`); see `ci/README.md`
 - `build-with-clang.yml` — Intel clang compatibility checks
 - `build-with-standard-clang.yml` — standard clang compatibility checks
 - `build_pip.yml` — pip build pipeline with pre-release NumPy
@@ -12,5 +11,5 @@ CI/CD workflows and repo automation.
 - `openssf-scorecard.yml` — security scanning
 
 ## Policy
-- Treat workflow YAML as canonical for platform/Python matrices.
+- Treat workflow YAML as canonical for platform/Python matrices, except `intel-ci.yml`, whose conda matrix is `conda-recipe/conda_build_config.yaml` and whose wheel matrix is the Python classifiers in `pyproject.toml`.
 - Avoid doc claims about CI coverage unless present in workflow config.

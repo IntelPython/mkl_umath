@@ -29,8 +29,7 @@
 # 1) The `defdict` dictionary is completely different.
 # 2) In the `make_arrays` function, `cfunc_fname = f"{tname}_*"` is changed to
 # `cfunc_fname = f"mkl_umath_{tname}_*"`
-# 3) In the `make_ufuncs` function, line 988: `{doc}` is changed to `"{doc}"`
-# 4) In the `make_code` function, the string used there is different.
+# 3) In the `make_code` function, the string used there is different.
 
 """
 Generate the code to build all the internal ufuncs. At the base is the defdict:
@@ -1151,7 +1150,7 @@ def make_ufuncs(funcdict):
             f = PyUFunc_FromFuncAndDataAndSignatureAndIdentity(
                 {funcs}, {data}, {signatures}, {nloops},
                 {nin}, {nout}, {identity}, "{name}",
-                "{doc}", 0, {sig}, identity
+                {doc}, 0, {sig}, identity
             );
             if ({has_identity}) {{
                 Py_DECREF(identity);
@@ -1244,6 +1243,7 @@ def make_code(funcdict, filename):
     #include "numpy/arrayobject.h"
     #include "numpy/ufuncobject.h"
     #include "mkl_umath_loops.h"
+    #include "_umath_doc_generated.h"
     %s
 
     static int

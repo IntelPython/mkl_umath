@@ -41,10 +41,9 @@ CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported i
 
 ## CI/CD
 - **Platforms:** Linux, Windows
-- **Python versions:** 3.10, 3.11, 3.12, 3.13, 3.14, 3.15
+- **Python versions:** 3.11, 3.12, 3.13, 3.14, 3.15
 - **Workflows:** `.github/workflows/`
-  - `conda-package.yml` — main conda build/test pipeline
-  - `conda-package-cf.yml` — conda-forge-oriented build/test pipeline
+  - `intel-ci.yml` — Intel CI: builds and tests the conda packages and the wheels; see `ci/README.md`
   - `build_pip.yml` — validates pip build with pre-release NumPy
   - `build-with-clang.yml` — Intel clang compatibility check
   - `build-with-standard-clang.yml` — standard clang compatibility check
@@ -53,7 +52,7 @@ CC=icx pip install --no-deps --no-build-isolation .  # clang is also supported i
 ## Distribution
 - **Conda:** `https://software.repos.intel.com/python/conda`
 - **PyPI:** `https://software.repos.intel.com/python/pypi`
-- Requires Intel-optimized NumPy from Intel channels
+- Needs NumPy 2 (see `pyproject.toml`), from conda-forge or PyPI
 
 ## Usage
 ```python
@@ -78,7 +77,7 @@ mkl_umath.restore_numpy_umath()  # Restore original NumPy loops
 
 
 ## Common pitfalls
-- **NumPy source:** Requires Intel-optimized NumPy from Intel channel (`software.repos.intel.com/python/conda`). PyPI NumPy may cause runtime failures or incorrect results.
+- **NumPy source:** NumPy 2, from conda-forge or PyPI: the conda packages are tested with conda-forge's, the wheels with PyPI's.
 - **Precision flags:** `fp:precise`, `fimf-precision=high` enforce IEEE 754 compliance. Removing them breaks numerical correctness in scientific computing.
 - **Patching order:** If using multiple Intel patches (e.g., `mkl_random` + `mkl_umath`), apply `mkl_umath` last. Verify with `is_patched()` after each.
 - **Compiler/toolchain:** `icx` and `clang` are both supported; when using clang, keep Intel-only flags behind compiler guards.
@@ -97,8 +96,7 @@ Below directories have local `AGENTS.md` for deeper context:
 - `mkl_umath/AGENTS.md` — Python API and code generation
 - `mkl_umath/src/AGENTS.md` — C/Cython implementation layer
 - `mkl_umath/tests/AGENTS.md` — unit tests and validation
-- `conda-recipe/AGENTS.md` — Intel channel conda packaging
-- `conda-recipe-cf/AGENTS.md` — conda-forge compatible recipe
+- `conda-recipe/AGENTS.md` — the conda recipe
 - `_vendored/AGENTS.md` — vendored NumPy utilities
 
 ---

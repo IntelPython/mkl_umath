@@ -98,3 +98,50 @@ class BenchPower:
 
     def time_power(self, dtype, size):
         np.power(self.base, self.exp)
+
+
+def _uniform(rng, size, dtype):
+    """Uniform [-1, 1) values; complex parts drawn independently"""
+    dtype = np.dtype(dtype)
+    if dtype.kind == "c":
+        parts = rng.uniform(-1.0, 1.0, 2 * size)
+        return parts.astype(np.finfo(dtype).dtype).view(dtype)
+    return rng.uniform(-1.0, 1.0, size).astype(dtype)
+
+
+class BenchAdd:
+    """Binary ufunc add (MKL v?Add above 100k elements)"""
+
+    params = (
+        ["float32", "float64", "complex64", "complex128"],
+        [10_000, 100_000, 1_000_000],
+    )
+    param_names = ["dtype", "size"]
+
+    def setup(self, dtype, size):
+        rng = np.random.default_rng(42)
+        self.a = _uniform(rng, size, dtype)
+        self.b = _uniform(rng, size, dtype)
+        np.add(self.a, self.b)
+
+    def time_add(self, dtype, size):
+        np.add(self.a, self.b)
+
+
+class BenchSubtract:
+    """Binary ufunc subtract (MKL v?Sub above 100k elements)"""
+
+    params = (
+        ["float32", "float64", "complex64", "complex128"],
+        [10_000, 100_000, 1_000_000],
+    )
+    param_names = ["dtype", "size"]
+
+    def setup(self, dtype, size):
+        rng = np.random.default_rng(42)
+        self.a = _uniform(rng, size, dtype)
+        self.b = _uniform(rng, size, dtype)
+        np.subtract(self.a, self.b)
+
+    def time_subtract(self, dtype, size):
+        np.subtract(self.a, self.b)

@@ -112,6 +112,13 @@ else
     error('Unsupported system.')
 endif
 
+# mkl-devel's CMake config is under <prefix>\Library on Windows, which CMake only
+# finds through a Library\bin PATH entry: a conda env has one, a venv doesn't
+mkl_cmake_prefix = []
+if host_machine.system() == 'windows'
+    mkl_cmake_prefix += '-DCMAKE_PREFIX_PATH=' + (py.get_path('data') / 'Library')
+endif
+
 mkl_dep = dependency('MKL', method: 'cmake',
     modules: ['MKL::MKL'],
     cmake_args: [
@@ -119,7 +126,7 @@ mkl_dep = dependency('MKL', method: 'cmake',
         '-DMKL_LINK=dynamic',
         '-DMKL_THREADING=' + get_option('mkl_threading'),
         '-DMKL_INTERFACE=lp64'
-    ],
+    ] + mkl_cmake_prefix,
     required: true
 )
 
@@ -139,6 +146,14 @@ gen_umath_c = custom_target(
     output: '__umath_generated.c',
     input: 'mkl_umath/generate_umath.py',
     command: [py, '@INPUT@', '-o', '@OUTPUT@']
+)
+
+gen_umath_doc_h = custom_target(
+    '_umath_doc_generated',
+    output: '_umath_doc_generated.h',
+    input: 'mkl_umath/generate_umath_doc.py',
+    command: [py, '@INPUT@', '-o', '@OUTPUT@'],
+    depend_files: ['mkl_umath/ufunc_docstrings_numpy2.py']
 )
 
 gen_loops_h = custom_target(
@@ -189,7 +204,10 @@ loops_dep = declare_dependency(link_with: mkl_umath_loops)
 
 py.extension_module(
     '_ufuncs',
-    sources: ['mkl_umath/src/ufuncsmodule.c', gen_umath_c, gen_loops_h],
+    sources: [
+        'mkl_umath/src/ufuncsmodule.c', gen_umath_c, gen_umath_doc_h,
+        gen_loops_h
+    ],
     include_directories: inc_np,
     dependencies: [mkl_dep, loops_dep],
     c_args: c_args + ['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],

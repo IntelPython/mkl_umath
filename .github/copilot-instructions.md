@@ -19,7 +19,9 @@ Higher-precedence rules override lower-precedence context.
 
 ## Contribution expectations
 - Keep changes atomic and single-purpose.
-- Preserve runtime patching API (`use_in_numpy()`, `restore()`, `is_patched()`) unless explicitly requested.
+- Preserve the runtime patching API (`patch_numpy_umath()`, `restore_numpy_umath()`,
+  `is_patched()`, and the `mkl_umath()` context manager) unless explicitly requested.
+  Keep the deprecated `use_in_numpy()` and `restore()` aliases until a release removes them.
 - For behavior changes, update tests in `mkl_umath/tests/` in the same step.
 - For bugs, include a regression test.
 - Do not modify generated artifacts directly when template/source files are the intended edit points.
@@ -32,9 +34,9 @@ Higher-precedence rules override lower-precedence context.
 - Never include secrets or credentials in code/docs.
 
 ## Source-of-truth files
-- Build/config: `pyproject.toml`, `meson.build`
-- Dependencies/packaging: `pyproject.toml`, `conda-recipe*/meta.yaml`
-- CI: `.github/workflows/*.yml`
+- Build/config: `pyproject.toml`, `meson.build`, `meson.options`
+- Dependencies/packaging: `pyproject.toml`, `conda-recipe/meta.yaml`
+- CI: `.github/workflows/*.yml`, `ci/README.md`
 - API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch_numpy.pyx`
 - Core implementation: `mkl_umath/src/*.{c,c.src,pyx}`
 - Tests: `mkl_umath/tests/`

@@ -34,9 +34,9 @@ Higher-precedence rules override lower-precedence context.
 - Never include secrets or credentials in code/docs.
 
 ## Source-of-truth files
-- Build/config: `pyproject.toml`, `meson.build`
-- Dependencies/packaging: `pyproject.toml`, `conda-recipe*/meta.yaml`
-- CI: `.github/workflows/*.yml`
+- Build/config: `pyproject.toml`, `meson.build`, `meson.options`
+- Dependencies/packaging: `pyproject.toml`, `conda-recipe/meta.yaml`
+- CI: `.github/workflows/*.yml`, `ci/README.md`
 - API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch_numpy.pyx`
 - Core implementation: `mkl_umath/src/*.{c,c.src,pyx}`
 - Tests: `mkl_umath/tests/`

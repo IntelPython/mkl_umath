@@ -11,7 +11,7 @@ for Python* per NEP-36 (Fair Play).
 - **Package and public API:** `mkl_umath/`, `mkl_umath/__init__.py`
 - **Ufunc extension:** `mkl_umath/src/ufuncsmodule.c`, plus `__umath_generated.c`
   from `mkl_umath/generate_umath.py` and `_umath_doc_generated.h` from
-  `mkl_umath/ufunc_docstrings_numpy2.py`
+  `mkl_umath/generate_umath_doc.py`, which reads `ufunc_docstrings_numpy2.py`
 - **Loop templates:** `mkl_umath/src/mkl_umath_loops.{c,h}.src`
 - **Patching:** `mkl_umath/src/_patch_numpy.pyx`; persistent and one-shot
   patching in `mkl_umath/patch.py`, `mkl_umath/with_patch.py`,

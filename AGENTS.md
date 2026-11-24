@@ -18,16 +18,19 @@ for Python* per NEP-36 (Fair Play).
   `mkl_umath/_patch_startup.py`, and the `mkl_umath/__main__.py` CLI
 - **Tests:** `mkl_umath/tests/`
 - **Vendored helpers:** `_vendored/`
-- **Packaging:** `conda-recipe/`, `conda-recipe-cf/`
+- **Packaging:** `conda-recipe/` for the conda packages, `pyproject.toml` for
+  the wheels
+- **CI scripts:** `ci/`
 - **Benchmarks:** `benchmarks/`
 
 ## Build/runtime basics
 - Build system: `pyproject.toml` + `meson.build`, with options in `meson.options`
 - Build deps: `mkl-devel`, `numpy`, `meson-python`, `cmake`, `ninja`, `cython`,
   and a C compiler (CI uses `icx` and `clang`)
-- Runtime deps: `numpy`, NumPy 2 only (see `pyproject.toml`); the conda recipes
-  add the MKL and compiler runtimes
-- Platforms: Linux and Windows; `.github/workflows/` is canonical for the matrix
+- Runtime deps: `numpy`, NumPy 2 only (see `pyproject.toml`); the conda recipe
+  and `[tool.gh-ci]` in `pyproject.toml` add the MKL and compiler runtimes
+- Platforms: Linux and Windows; `.github/workflows/` is canonical for the
+  matrix, except `intel-ci.yml` (see `.github/AGENTS.md`)
 - Setup, checks, and style: `CONTRIBUTING.md`
 - Single test: `pytest mkl_umath/tests/<file>.py::<test>`, from a checkout with the
   editable install in `CONTRIBUTING.md`
@@ -40,9 +43,9 @@ for Python* per NEP-36 (Fair Play).
   `ufunc_docstrings_numpy2.py`, not generated C or headers.
 - Keep the floating-point precision flags in `meson.build`: `-fno-fast-math`,
   `-fimf-precision=high`, `-fprotect-parens` (GCC syntax) and `/fp:precise`,
-  `/Qimf-precision=high`, `/Qprotect-parens` (MSVC syntax). Both recipes'
-  `conda_build_config.yaml` also set `/fp:precise` on Windows. Intel-only flags
-  stay behind the compiler checks in `meson.build`.
+  `/Qimf-precision=high`, `/Qprotect-parens` (MSVC syntax).
+  `conda-recipe/conda_build_config.yaml` also sets `/fp:precise` on Windows.
+  Intel-only flags stay behind the compiler checks in `meson.build`.
 - Keep the hardening flags in `meson.build`: `-fstack-protector-all`,
   `-D_FORTIFY_SOURCE=2`, `-z relro`/`now`/`noexecstack`, `/GS`, `/DynamicBase`,
   and `/NXCompat`.
@@ -63,8 +66,8 @@ for Python* per NEP-36 (Fair Play).
 
 ## Where truth lives
 - Build/config: `pyproject.toml`, `meson.build`, `meson.options`
-- Dependencies: `pyproject.toml`, `conda-recipe*/meta.yaml`
-- CI/workflows: `.github/workflows/*.yml`
+- Dependencies: `pyproject.toml`, `conda-recipe/meta.yaml`
+- CI/workflows: `.github/workflows/*.yml`, `ci/README.md`
 - Public API: `mkl_umath/__init__.py`, `mkl_umath/src/_patch_numpy.pyx`
 - Tests: `mkl_umath/tests/`
 
@@ -76,7 +79,6 @@ Use nearest local `AGENTS.md` when present:
 - `mkl_umath/AGENTS.md` — package modules, API, and code generation
 - `mkl_umath/src/AGENTS.md` — loop templates and the two extensions
 - `mkl_umath/tests/AGENTS.md` — test scope and conventions
-- `conda-recipe/AGENTS.md` — Intel-channel conda packaging
-- `conda-recipe-cf/AGENTS.md` — conda-forge recipe
+- `conda-recipe/AGENTS.md` — the conda recipe
 - `_vendored/AGENTS.md` — vendored NumPy template tooling
 - `benchmarks/AGENTS.md` — ASV performance suite

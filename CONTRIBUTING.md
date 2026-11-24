@@ -25,7 +25,7 @@ The editable install rebuilds the extensions on the next import after a source
 change, so run `pytest` and `python` with `mkl_umath-dev` active: the rebuild
 needs its `icx` and `ninja`.
 
-Windows is also supported, and the conda workflows build and test it in CI.
+Windows is also supported, and `intel-ci.yml` builds and tests it in CI.
 `meson.build` has separate GCC-syntax and MSVC-syntax branches, so keep both
 working when you change it.
 
@@ -55,7 +55,7 @@ The pre-commit hooks enforce formatting; otherwise, match the surrounding code.
 - Add tests with behavior changes, and a regression test with bug fixes.
 - Edit the `*.src` templates, `generate_umath.py`, and
   `ufunc_docstrings_numpy2.py`, not generated C or headers.
-- Keep the floating-point precision flags in `meson.build` and the recipes'
+- Keep the floating-point precision flags in `meson.build` and the recipe's
   `conda_build_config.yaml`.
 - Keep patching reversible.
 

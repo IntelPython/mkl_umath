@@ -29,4 +29,4 @@ C and Cython sources for the ufunc loops and the patching extension.
 - Keep both extensions free-threading compatible: `freethreading_compatible=True`
   in `_patch_numpy.pyx` and `Py_MOD_GIL_NOT_USED` in `ufuncsmodule.c`.
 - Build flags, including precision and hardening flags, live in `meson.build`;
-  the recipes' `conda_build_config.yaml` also sets `/fp:precise` on Windows.
+  the recipe's `conda_build_config.yaml` also sets `/fp:precise` on Windows.
